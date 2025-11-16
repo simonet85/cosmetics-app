@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"c:\\laragon\\bin\\mysql\\mysql-8.0.30-winx64\\bin\\mysql.exe\" -u root cosmetics_db -e \"UPDATE orders SET payment_status = ''paid'', status = ''processing'' WHERE id = 6;\")",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

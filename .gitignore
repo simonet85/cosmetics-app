@@ -1,0 +1,84 @@
+# Laravel specific
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+
+# IDE specific files
+/.idea
+/.vscode
+/.fleet
+/.phpstorm.meta.php
+/_ide_helper.php
+/.phpunit.cache
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Build files
+/public/build
+/build
+
+# Storage folders
+/storage/logs/*.log
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+
+# Deployment files
+*.zip
+*.tar.gz
+cosmetics-app.zip
+database-export-*.sql
+
+# Development tools
+/.phpunit.cache
+/coverage
+*.cache
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Ngrok
+ngrok.exe
+ngrok.yml
+
+# Local development
+/laragon
+/.laragon
+
+# Screenshots and test images
+/public/images/others/*.png
+/public/images/others/*.jpg
+/public/images/others/*.jpeg
+!/public/images/others/logo-*.png
+!/public/images/others/logo-*.svg
+!/public/images/others/logo-*.webp
+!/public/images/others/favicon.ico
