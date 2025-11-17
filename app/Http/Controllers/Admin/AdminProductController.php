@@ -289,7 +289,9 @@ class AdminProductController extends Controller
 
             // Delete images from storage
             foreach ($product->images as $image) {
-                Storage::disk('public')->delete($image->image_path);
+                if ($image->image_path) {
+                    Storage::disk('public')->delete($image->image_path);
+                }
             }
 
             // Delete product (cascading will handle images, reviews, etc.)
