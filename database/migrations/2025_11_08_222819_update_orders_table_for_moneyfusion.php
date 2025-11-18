@@ -12,13 +12,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            // Add shipping_cost column as an alias/additional column
-            $table->decimal('shipping_cost', 10, 2)->default(0)->after('tax');
+        // Check if shipping_cost column already exists
+        if (!Schema::hasColumn('orders', 'shipping_cost')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->decimal('shipping_cost', 10, 2)->default(0)->after('tax');
+            });
+        }
 
-            // Update payment_method enum to include moneyfusion
+        // For SQLite, we don't modify ENUM (it uses CHECK constraints)
+        // The payment_method column already accepts text values, so 'moneyfusion' will work
+        // For MySQL, update the ENUM to include moneyfusion
+        $driver = DB::getDriverName();
+        if ($driver === 'mysql') {
             DB::statement("ALTER TABLE orders MODIFY COLUMN payment_method ENUM('credit_card','paypal','stripe','cash_on_delivery','bank_transfer','moneyfusion') NULL");
-        });
+        }
+        // For SQLite, no action needed - it stores enums as text with CHECK constraints
     }
 
     /**
@@ -26,11 +34,15 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('shipping_cost');
+        if (Schema::hasColumn('orders', 'shipping_cost')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->dropColumn('shipping_cost');
+            });
+        }
 
-            // Revert payment_method enum
+        $driver = DB::getDriverName();
+        if ($driver === 'mysql') {
             DB::statement("ALTER TABLE orders MODIFY COLUMN payment_method ENUM('credit_card','paypal','stripe','cash_on_delivery') NULL");
-        });
+        }
     }
 };

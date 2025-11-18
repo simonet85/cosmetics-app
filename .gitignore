@@ -82,3 +82,9 @@ ngrok.yml
 !/public/images/others/logo-*.svg
 !/public/images/others/logo-*.webp
 !/public/images/others/favicon.ico
+
+# Claude Code settings and screenshots
+/.claude/settings.local.json
+/.claude/*.png
+/.claude/*.jpg
+/.claude/*.jpeg
