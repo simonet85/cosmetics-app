@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'force-https' => \App\Http\Middleware\ForceHttps::class,
         ]);
+
+        // Exclude MoneyFusion webhook from CSRF protection
+        $middleware->validateCsrfTokens(except: [
+            'api/moneyfusion/webhook',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
