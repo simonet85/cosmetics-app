@@ -116,6 +116,10 @@ Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/callback', [PaymentCallbackController::class, 'callback'])->name('callback');
 });
 
+// MoneyFusion Webhook (POST endpoint - no CSRF protection)
+// Note: Package also registers a webhook route, but we use our custom controller
+Route::post('/api/moneyfusion/webhook', [WebhookController::class, 'handle'])
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 // Account Routes (Auth required)
 Route::middleware(['auth'])->prefix('account')->name('account.')->group(function () {
