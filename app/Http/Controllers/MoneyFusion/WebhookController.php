@@ -24,13 +24,14 @@ class WebhookController extends Controller
 
             $data = $request->all();
 
+            // Support both 'token' and 'tokenPay' field names
+            $token = $data['token'] ?? $data['tokenPay'] ?? null;
+
             // Valider les données du webhook
-            if (!isset($data['token'])) {
-                Log::warning('MoneyFusion Webhook: Missing token');
+            if (!$token) {
+                Log::warning('MoneyFusion Webhook: Missing token', ['data' => $data]);
                 return response()->json(['error' => 'Missing token'], 400);
             }
-
-            $token = $data['token'];
             $payment = MoneyFusionPayment::where('token_pay', $token)->first();
 
             if (!$payment) {
