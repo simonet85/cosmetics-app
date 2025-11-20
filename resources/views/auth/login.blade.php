@@ -85,21 +85,21 @@
                     </div>
 
                     <div class="space-y-3">
-                        <button
-                            type="button"
+                        <a
+                            href="{{ route('social.redirect', 'facebook') }}"
                             class="w-full border-2 border-gray-300 text-gray-700 font-medium py-3 rounded hover:border-gray-900 transition-colors flex items-center justify-center gap-2"
                         >
                             <i class="fab fa-facebook text-blue-600"></i>
                             Continuer avec Facebook
-                        </button>
+                        </a>
 
-                        <button
-                            type="button"
+                        <a
+                            href="{{ route('social.redirect', 'google') }}"
                             class="w-full border-2 border-gray-300 text-gray-700 font-medium py-3 rounded hover:border-gray-900 transition-colors flex items-center justify-center gap-2"
                         >
                             <i class="fab fa-google text-red-600"></i>
                             Continuer avec Google
-                        </button>
+                        </a>
                     </div>
                 </form>
             </div>
