@@ -25,7 +25,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Statut de la commande</label>
                 <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
                     <option value="">Tous les statuts</option>
                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>En attente</option>
@@ -37,7 +37,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Paiement</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Statut Paiement</label>
                 <select name="payment_status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
                     <option value="">Tous les paiements</option>
                     <option value="pending" {{ request('payment_status') === 'pending' ? 'selected' : '' }}>En attente</option>

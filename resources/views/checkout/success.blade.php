@@ -57,9 +57,8 @@
                     @endphp
                     <div class="text-sm text-gray-600">
                         <p class="font-medium text-gray-900">{{ $shipping['first_name'] }} {{ $shipping['last_name'] }}</p>
-                        <p>{{ $shipping['address'] }}</p>
-                        <p>{{ $shipping['city'] }}, {{ $shipping['state'] }} {{ $shipping['zip_code'] }}</p>
-                        <p>{{ $shipping['country'] }}</p>
+                        <p>Ville : {{ $shipping['city'] }}</p>
+                        <p>Quartier : {{ $shipping['quartier'] }}</p>
                         <p class="mt-2">{{ $shipping['phone'] }}</p>
                     </div>
                 </div>

@@ -161,9 +161,8 @@
                     @endphp
                     <div class="text-sm text-gray-700 space-y-1">
                         <p class="font-semibold text-gray-900">{{ $shipping['first_name'] }} {{ $shipping['last_name'] }}</p>
-                        <p>{{ $shipping['address'] }}</p>
-                        <p>{{ $shipping['city'] }}, {{ $shipping['state'] }} {{ $shipping['zip_code'] }}</p>
-                        <p>{{ $shipping['country'] }}</p>
+                        <p>Ville : {{ $shipping['city'] }}</p>
+                        <p>Quartier : {{ $shipping['quartier'] }}</p>
                         <p class="mt-3">
                             <i class="fas fa-phone mr-2"></i>
                             {{ $shipping['phone'] }}

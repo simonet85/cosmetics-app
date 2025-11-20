@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\OrderStatusUpdated;
 
 class AdminOrderController extends Controller
 {
@@ -52,10 +55,28 @@ class AdminOrderController extends Controller
     {
         $request->validate([
             'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'tracking_number' => 'nullable|string|max:255',
+            'shipping_carrier' => 'nullable|string|max:255',
+            'tracking_url' => 'nullable|url|max:500',
         ]);
 
         $oldStatus = $order->status;
-        $order->update(['status' => $request->status]);
+
+        // Prepare update data
+        $updateData = ['status' => $request->status];
+
+        // Add tracking information if provided
+        if ($request->filled('tracking_number')) {
+            $updateData['tracking_number'] = $request->tracking_number;
+        }
+        if ($request->filled('shipping_carrier')) {
+            $updateData['shipping_carrier'] = $request->shipping_carrier;
+        }
+        if ($request->filled('tracking_url')) {
+            $updateData['tracking_url'] = $request->tracking_url;
+        }
+
+        $order->update($updateData);
 
         // If order is cancelled, restore stock
         if ($request->status === 'cancelled' && $oldStatus !== 'cancelled') {
@@ -72,6 +93,26 @@ class AdminOrderController extends Controller
                 if ($item->product) {
                     $item->product->decrement('stock', $item->quantity);
                 }
+            }
+        }
+
+        // Send email notification if status changed
+        if ($oldStatus !== $request->status) {
+            try {
+                Mail::to($order->customer_email)->send(new OrderStatusUpdated($order, $oldStatus));
+                Log::info('Order status update email sent', [
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'old_status' => $oldStatus,
+                    'new_status' => $request->status,
+                    'email' => $order->customer_email
+                ]);
+            } catch (\Exception $emailError) {
+                Log::error('Failed to send order status update email', [
+                    'order_id' => $order->id,
+                    'error' => $emailError->getMessage()
+                ]);
+                // Don't fail the status update if email fails
             }
         }
 

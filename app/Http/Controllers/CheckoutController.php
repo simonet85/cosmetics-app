@@ -75,21 +75,15 @@ class CheckoutController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
-            'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'zip_code' => 'required|string|max:20',
-            'country' => 'required|string|max:255',
+            'quartier' => 'required|string|max:255',
             'payment_method' => 'required|in:credit_card,paypal,bank_transfer,cash_on_delivery,moneyfusion',
             'billing_same_as_shipping' => 'nullable',
             // Billing address fields (required only when checkbox is NOT checked)
             'billing_first_name' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
             'billing_last_name' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
-            'billing_address' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
             'billing_city' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
-            'billing_state' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
-            'billing_zip_code' => 'required_without:billing_same_as_shipping|nullable|string|max:20',
-            'billing_country' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
+            'billing_quartier' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
         ], [
             // Shipping address messages
             'first_name.required' => 'Le prénom est obligatoire.',
@@ -97,21 +91,15 @@ class CheckoutController extends Controller
             'email.required' => 'L\'adresse email est obligatoire.',
             'email.email' => 'L\'adresse email doit être valide.',
             'phone.required' => 'Le numéro de téléphone est obligatoire.',
-            'address.required' => 'L\'adresse est obligatoire.',
             'city.required' => 'La ville est obligatoire.',
-            'state.required' => 'La province/état est obligatoire.',
-            'zip_code.required' => 'Le code postal est obligatoire.',
-            'country.required' => 'Le pays est obligatoire.',
+            'quartier.required' => 'Le quartier est obligatoire.',
             'payment_method.required' => 'La méthode de paiement est obligatoire.',
 
             // Billing address messages
             'billing_first_name.required_without' => 'Le prénom de facturation est obligatoire.',
             'billing_last_name.required_without' => 'Le nom de facturation est obligatoire.',
-            'billing_address.required_without' => 'L\'adresse de facturation est obligatoire.',
             'billing_city.required_without' => 'La ville de facturation est obligatoire.',
-            'billing_state.required_without' => 'La province/état de facturation est obligatoire.',
-            'billing_zip_code.required_without' => 'Le code postal de facturation est obligatoire.',
-            'billing_country.required_without' => 'Le pays de facturation est obligatoire.',
+            'billing_quartier.required_without' => 'Le quartier de facturation est obligatoire.',
         ]);
 
         $cart = session()->get('cart', []);
@@ -144,11 +132,8 @@ class CheckoutController extends Controller
             $shippingAddress = [
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
-                'address' => $request->address,
                 'city' => $request->city,
-                'state' => $request->state,
-                'zip_code' => $request->zip_code,
-                'country' => $request->country,
+                'quartier' => $request->quartier,
                 'phone' => $request->phone,
             ];
 
@@ -158,11 +143,8 @@ class CheckoutController extends Controller
                 : [
                     'first_name' => $request->billing_first_name,
                     'last_name' => $request->billing_last_name,
-                    'address' => $request->billing_address,
                     'city' => $request->billing_city,
-                    'state' => $request->billing_state,
-                    'zip_code' => $request->billing_zip_code,
-                    'country' => $request->billing_country,
+                    'quartier' => $request->billing_quartier,
                 ];
 
             // Create order

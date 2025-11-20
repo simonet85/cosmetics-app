@@ -106,20 +106,6 @@
                             @enderror
                         </div>
 
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-900 mb-2">Adresse *</label>
-                            <input
-                                type="text"
-                                name="address"
-                                value="{{ old('address') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('address') border-red-500 @enderror"
-                                required
-                            >
-                            @error('address')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-900 mb-2">Ville *</label>
                             <input
@@ -135,48 +121,15 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">Province/État *</label>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Quartier *</label>
                             <input
                                 type="text"
-                                name="state"
-                                value="{{ old('state') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('state') border-red-500 @enderror"
+                                name="quartier"
+                                value="{{ old('quartier') }}"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('quartier') border-red-500 @enderror"
                                 required
                             >
-                            @error('state')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">Code postal *</label>
-                            <input
-                                type="text"
-                                name="zip_code"
-                                value="{{ old('zip_code') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('zip_code') border-red-500 @enderror"
-                                required
-                            >
-                            @error('zip_code')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">Pays *</label>
-                            <select
-                                name="country"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('country') border-red-500 @enderror"
-                                required
-                            >
-                                <option value="">Sélectionner un pays</option>
-                                <option value="Canada" {{ old('country') == 'Canada' ? 'selected' : '' }}>Canada</option>
-                                <option value="France" {{ old('country') == 'France' ? 'selected' : '' }}>France</option>
-                                <option value="Belgium" {{ old('country') == 'Belgium' ? 'selected' : '' }}>Belgique</option>
-                                <option value="Switzerland" {{ old('country') == 'Switzerland' ? 'selected' : '' }}>Suisse</option>
-                                <option value="USA" {{ old('country') == 'USA' ? 'selected' : '' }}>États-Unis</option>
-                            </select>
-                            @error('country')
+                            @error('quartier')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -223,16 +176,6 @@
                             >
                         </div>
 
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-900 mb-2">Adresse</label>
-                            <input
-                                type="text"
-                                name="billing_address"
-                                value="{{ old('billing_address') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                            >
-                        </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-900 mb-2">Ville</label>
                             <input
@@ -244,38 +187,13 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">Province/État</label>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Quartier</label>
                             <input
                                 type="text"
-                                name="billing_state"
-                                value="{{ old('billing_state') }}"
+                                name="billing_quartier"
+                                value="{{ old('billing_quartier') }}"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
                             >
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">Code postal</label>
-                            <input
-                                type="text"
-                                name="billing_zip_code"
-                                value="{{ old('billing_zip_code') }}"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                            >
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900 mb-2">Pays</label>
-                            <select
-                                name="billing_country"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                            >
-                                <option value="">Sélectionner un pays</option>
-                                <option value="Canada" {{ old('billing_country') == 'Canada' ? 'selected' : '' }}>Canada</option>
-                                <option value="France" {{ old('billing_country') == 'France' ? 'selected' : '' }}>France</option>
-                                <option value="Belgium" {{ old('billing_country') == 'Belgium' ? 'selected' : '' }}>Belgique</option>
-                                <option value="Switzerland" {{ old('billing_country') == 'Switzerland' ? 'selected' : '' }}>Suisse</option>
-                                <option value="USA" {{ old('billing_country') == 'USA' ? 'selected' : '' }}>États-Unis</option>
-                            </select>
                         </div>
                     </div>
                 </div>

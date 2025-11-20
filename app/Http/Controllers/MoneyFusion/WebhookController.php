@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Simonet85\LaravelMoneyFusion\Models\MoneyFusionPayment;
 use App\Models\Order;
+use App\Mail\OrderPaid;
 
 class WebhookController extends Controller
 {
@@ -64,6 +66,21 @@ class WebhookController extends Controller
                             'payment_status' => 'paid',
                             'status' => 'processing',
                         ]);
+
+                        // Send order confirmation email with invoice
+                        try {
+                            Mail::to($order->customer_email)->send(new OrderPaid($order));
+                            Log::info('Order confirmation email sent', [
+                                'order_id' => $order->id,
+                                'order_number' => $order->order_number,
+                                'email' => $order->customer_email
+                            ]);
+                        } catch (\Exception $emailError) {
+                            Log::error('Failed to send order confirmation email', [
+                                'order_id' => $order->id,
+                                'error' => $emailError->getMessage()
+                            ]);
+                        }
                     } elseif (($data['statut'] ?? '') === 'failed') {
                         $order->update(['payment_status' => 'failed']);
                     } elseif (($data['statut'] ?? '') === 'cancelled') {
