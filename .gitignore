@@ -88,3 +88,6 @@ ngrok.yml
 /.claude/*.png
 /.claude/*.jpg
 /.claude/*.jpeg
+
+# Documentation files
+/.docs
