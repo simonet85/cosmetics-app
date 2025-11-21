@@ -242,7 +242,7 @@
                     <p class="text-gray-700"><strong>Glowing Cosmetics</strong></p>
                     <p class="text-gray-700">Email : <a href="mailto:support@klab-consulting.com" class="text-[#5a7c6f] hover:underline">support@klab-consulting.com</a></p>
                     <p class="text-gray-700">Site web : <a href="https://klab-consulting.com" class="text-[#5a7c6f] hover:underline">https://klab-consulting.com</a></p>
-                    <p class="text-gray-700">Page de contact : <a href="{{ route('contact') }}" class="text-[#5a7c6f] hover:underline">Nous contacter</a></p>
+                    <p class="text-gray-700">Page de contact : <a href="{{ route('pages.contact') }}" class="text-[#5a7c6f] hover:underline">Nous contacter</a></p>
                 </div>
             </section>
 
