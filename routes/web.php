@@ -113,6 +113,10 @@ Route::prefix('pages')->name('pages.')->group(function () {
     Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 });
 
+// Legal Pages
+Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
+Route::get('/terms', [PageController::class, 'terms'])->name('terms');
+
 // Newsletter
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
