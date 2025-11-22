@@ -93,22 +93,19 @@
                     <div class="border-t border-gray-200 pt-4 mb-4">
                         <div class="flex items-start gap-2 text-sm text-gray-600 mb-2">
                             <i class="fas fa-truck mt-1"></i>
-                            <span>Récupérer entre <strong>Fév 3 - Fév 14 2021</strong></span>
+                            <span id="qv-delivery-date">Récupérer entre <strong>Jan 15 - Jan 25 2026</strong></span>
                         </div>
                         <div class="flex items-start gap-2 text-sm text-gray-600">
                             <i class="fas fa-undo mt-1"></i>
-                            <span>Livraison & Retours Gratuits: Sur toutes les commandes de plus de $200</span>
+                            <span>Livraison & Retours Gratuits: Sur toutes les commandes de plus de 50 000 FCFA</span>
                         </div>
                     </div>
 
                     <!-- Payment Methods -->
-                    <div class="flex items-center justify-center gap-3 mb-2">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" class="h-8">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-8">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="Amex" class="h-8">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" alt="JCB" class="h-8">
+                    <div class="flex flex-col items-center gap-2 mb-6">
+                        <img src="/images/others/logo-money-fusion.svg" alt="MoneyFusion" class="h-12">
+                        <p class="text-sm text-gray-500">Paiement sécurisé garanti</p>
                     </div>
-                    <p class="text-sm text-gray-500 text-center mb-6">Paiement sécurisé garanti</p>
 
                     <!-- SKU & Categories -->
                     <div class="border-t border-gray-200 pt-4 space-y-2 text-sm">
@@ -222,6 +219,17 @@ function renderQuickView(product) {
             categoriesContainer.appendChild(document.createTextNode(', '));
         }
     });
+
+    // Delivery dates (dynamic calculation: 7-15 days from now)
+    const today = new Date();
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() + 7);
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + 15);
+
+    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const deliveryText = `Récupérer entre <strong>${months[startDate.getMonth()]} ${startDate.getDate()} - ${months[endDate.getMonth()]} ${endDate.getDate()} ${endDate.getFullYear()}</strong>`;
+    document.getElementById('qv-delivery-date').innerHTML = deliveryText;
 }
 
 // Close Quick View
