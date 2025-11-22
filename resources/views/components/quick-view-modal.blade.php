@@ -40,22 +40,19 @@
 
                 <!-- Right Column - Product Info -->
                 <div>
-                    <!-- Price & Discount -->
-                    <div class="flex items-center gap-3 mb-2">
-                        <span id="qv-old-price" class="text-lg text-gray-400 line-through"></span>
-                        <span id="qv-price" class="text-2xl font-bold text-gray-900"></span>
-                        <span id="qv-discount-badge" class="hidden bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded"></span>
+                    <!-- Price -->
+                    <div class="mb-4">
+                        <span id="qv-price" class="text-3xl font-bold text-gray-900"></span>
                     </div>
 
                     <!-- Product Name -->
-                    <h2 id="qv-name" class="text-2xl font-bold text-gray-900 mb-3"></h2>
+                    <h2 id="qv-name" class="text-3xl font-bold text-gray-900 mb-4"></h2>
 
                     <!-- Rating & Reviews -->
                     <div class="flex items-center gap-2 mb-4">
                         <div id="qv-rating" class="flex items-center gap-1">
                             <!-- Stars will be inserted here -->
                         </div>
-                        <span id="qv-rating-value" class="text-gray-900 font-semibold"></span>
                         <span id="qv-reviews-count" class="text-gray-600"></span>
                     </div>
 
@@ -105,33 +102,23 @@
                     </div>
 
                     <!-- Payment Methods -->
-                    <div class="flex items-center gap-2 mb-4">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" class="h-6">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-6">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="Amex" class="h-6">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" alt="JCB" class="h-6">
+                    <div class="flex items-center justify-center gap-3 mb-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" class="h-8">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-8">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="Amex" class="h-8">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" alt="JCB" class="h-8">
                     </div>
-                    <p class="text-xs text-gray-500 text-center mb-4">Paiement sécurisé garanti</p>
+                    <p class="text-sm text-gray-500 text-center mb-6">Paiement sécurisé garanti</p>
 
                     <!-- SKU & Categories -->
                     <div class="border-t border-gray-200 pt-4 space-y-2 text-sm">
                         <div class="flex items-center gap-2">
                             <span class="text-gray-600">Sku:</span>
-                            <span id="qv-sku" class="text-gray-900"></span>
+                            <span id="qv-sku" class="text-gray-900 font-semibold"></span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-gray-600">Catégories:</span>
                             <div id="qv-categories" class="flex flex-wrap gap-1"></div>
-                        </div>
-                    </div>
-
-                    <!-- Social Share -->
-                    <div class="border-t border-gray-200 mt-4 pt-4">
-                        <div class="flex items-center gap-3">
-                            <a href="#" class="text-gray-600 hover:text-blue-600 transition"><i class="fab fa-facebook text-lg"></i></a>
-                            <a href="#" class="text-gray-600 hover:text-blue-400 transition"><i class="fab fa-twitter text-lg"></i></a>
-                            <a href="#" class="text-gray-600 hover:text-red-600 transition"><i class="fab fa-youtube text-lg"></i></a>
-                            <a href="#" class="text-gray-600 hover:text-pink-600 transition"><i class="fab fa-instagram text-lg"></i></a>
                         </div>
                     </div>
                 </div>
@@ -189,21 +176,7 @@ function renderQuickView(product) {
     });
 
     // Price
-    if (product.compare_price && product.compare_price > product.price) {
-        document.getElementById('qv-old-price').textContent = `${new Intl.NumberFormat('fr-FR').format(product.compare_price)} FCFA`;
-        document.getElementById('qv-old-price').classList.remove('hidden');
-    } else {
-        document.getElementById('qv-old-price').classList.add('hidden');
-    }
     document.getElementById('qv-price').textContent = `${new Intl.NumberFormat('fr-FR').format(product.price)} FCFA`;
-
-    // Discount Badge
-    if (product.discount_percentage > 0) {
-        document.getElementById('qv-discount-badge').textContent = `-${product.discount_percentage}%`;
-        document.getElementById('qv-discount-badge').classList.remove('hidden');
-    } else {
-        document.getElementById('qv-discount-badge').classList.add('hidden');
-    }
 
     // Product Name
     document.getElementById('qv-name').textContent = product.name;
@@ -213,11 +186,11 @@ function renderQuickView(product) {
     ratingContainer.innerHTML = '';
     for (let i = 1; i <= 5; i++) {
         const star = document.createElement('i');
-        star.className = i <= Math.round(product.reviews_avg_rating) ? 'fas fa-star text-yellow-400 text-sm' : 'far fa-star text-gray-300 text-sm';
+        star.className = i <= Math.round(product.reviews_avg_rating || 0) ? 'fas fa-star text-yellow-400 text-sm' : 'far fa-star text-gray-300 text-sm';
         ratingContainer.appendChild(star);
     }
-    document.getElementById('qv-rating-value').textContent = product.reviews_avg_rating;
-    document.getElementById('qv-reviews-count').textContent = `Lire ${product.reviews_count} avis`;
+    const reviewsCount = product.reviews_count || 0;
+    document.getElementById('qv-reviews-count').textContent = `${reviewsCount} Lire ${reviewsCount} avis`;
 
     // Description
     document.getElementById('qv-description').textContent = product.short_description;
