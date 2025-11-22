@@ -68,8 +68,11 @@
             @foreach($featuredProducts->take(4) as $product)
             <div class="group">
                 <div class="relative overflow-hidden rounded-lg mb-4 bg-gray-100">
+                    @if($product->is_featured)
+                    <span class="absolute top-3 left-3 bg-yellow-500 text-gray-900 text-xs font-bold px-3 py-1 z-10">EN VEDETTE</span>
+                    @endif
                     @if($product->discount_percentage)
-                    <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded z-10">-{{ $product->discount_percentage }}%</span>
+                    <span class="absolute {{ $product->is_featured ? 'top-12' : 'top-3' }} left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 z-10">-{{ $product->discount_percentage }}%</span>
                     @endif
                     @if($product->is_new)
                     <span class="absolute top-3 right-3 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded z-10">Nouveau</span>
@@ -211,8 +214,14 @@
             @foreach($bestSellers->take(8) as $product)
             <div class="group">
                 <div class="relative overflow-hidden rounded-lg mb-4 bg-gray-100">
+                    @if($product->is_featured)
+                    <span class="absolute top-3 left-3 bg-yellow-500 text-gray-900 text-xs font-bold px-3 py-1 z-10">EN VEDETTE</span>
+                    @endif
+                    @if($product->discount_percentage)
+                    <span class="absolute {{ $product->is_featured ? 'top-12' : 'top-3' }} left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 z-10">-{{ $product->discount_percentage }}%</span>
+                    @endif
                     @if($product->is_best_seller)
-                    <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-semibold px-2 py-1 rounded z-10">Meilleures Ventes</span>
+                    <span class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded z-10">Best-Seller</span>
                     @endif
                     <a href="{{ route('products.show', $product->slug) }}">
                         @if($product->primary_image)

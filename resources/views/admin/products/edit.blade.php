@@ -89,19 +89,20 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-xl font-bold text-gray-900 mb-6">Prix</h2>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div>
                         <label class="block text-sm font-semibold text-gray-900 mb-2">Prix de vente *</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">FCFA</span>
                             <input
                                 type="number"
                                 name="price"
                                 value="{{ old('price', $product->price) }}"
                                 step="0.01"
                                 min="0"
-                                class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('price') border-red-500 @enderror"
+                                class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('price') border-red-500 @enderror"
                                 required
+                                id="price-input-edit"
                             >
                         </div>
                         @error('price')
@@ -112,14 +113,14 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-900 mb-2">Prix comparé</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">FCFA</span>
                             <input
                                 type="number"
                                 name="compare_price"
                                 value="{{ old('compare_price', $product->compare_price) }}"
                                 step="0.01"
                                 min="0"
-                                class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('compare_price') border-red-500 @enderror"
+                                class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('compare_price') border-red-500 @enderror"
                             >
                         </div>
                         @error('compare_price')
@@ -130,14 +131,14 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-900 mb-2">Prix coûtant</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">FCFA</span>
                             <input
                                 type="number"
                                 name="cost_price"
                                 value="{{ old('cost_price', $product->cost_price) }}"
                                 step="0.01"
                                 min="0"
-                                class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('cost_price') border-red-500 @enderror"
+                                class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('cost_price') border-red-500 @enderror"
                             >
                         </div>
                         @error('cost_price')
@@ -145,7 +146,81 @@
                         @enderror
                     </div>
                 </div>
+
+                {{-- Promotion Section --}}
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Promotion / Réduction</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {{-- Discount Price --}}
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">Prix promotionnel</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">FCFA</span>
+                                <input
+                                    type="number"
+                                    name="discount_price"
+                                    value="{{ old('discount_price', $product->discount_price) }}"
+                                    step="0.01"
+                                    min="0"
+                                    class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('discount_price') border-red-500 @enderror"
+                                    id="discount-price-input-edit"
+                                >
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Laisser vide si aucune promotion</p>
+                            @error('discount_price')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Discount Percentage (Auto-calculated) --}}
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">Pourcentage de réduction</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+                                <input
+                                    type="number"
+                                    name="discount_percentage"
+                                    value="{{ old('discount_percentage', $product->discount_percentage) }}"
+                                    min="0"
+                                    max="100"
+                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('discount_percentage') border-red-500 @enderror"
+                                    id="discount-percentage-input-edit"
+                                    readonly
+                                >
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Calculé automatiquement</p>
+                            @error('discount_percentage')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <script>
+                // Auto-calculate discount percentage (Edit form)
+                document.addEventListener('DOMContentLoaded', function() {
+                    const priceInput = document.getElementById('price-input-edit');
+                    const discountPriceInput = document.getElementById('discount-price-input-edit');
+                    const discountPercentageInput = document.getElementById('discount-percentage-input-edit');
+
+                    function calculateDiscountPercentage() {
+                        const price = parseFloat(priceInput.value) || 0;
+                        const discountPrice = parseFloat(discountPriceInput.value) || 0;
+
+                        if (price > 0 && discountPrice > 0 && discountPrice < price) {
+                            const percentage = Math.round(((price - discountPrice) / price) * 100);
+                            discountPercentageInput.value = percentage;
+                        } else {
+                            discountPercentageInput.value = '';
+                        }
+                    }
+
+                    priceInput.addEventListener('input', calculateDiscountPercentage);
+                    discountPriceInput.addEventListener('input', calculateDiscountPercentage);
+                });
+            </script>
 
             {{-- Inventory --}}
             <div class="bg-white rounded-lg shadow p-6">
