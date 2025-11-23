@@ -22,7 +22,9 @@
       "Bash(composer require:*)",
       "Bash(scp:*)",
       "Bash(git pull:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(dir \"c:\\laragon\\www\\cosmetics-app\\public\\images\\others\\logo-money-fusion.svg\")",
+      "Bash(\"c:\\laragon\\bin\\mysql\\mysql-8.0.30-winx64\\bin\\mysql.exe\" -u root cosmetics_db -e \"DESCRIBE products;\")"
     ],
     "deny": [],
     "ask": []

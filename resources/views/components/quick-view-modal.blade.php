@@ -90,7 +90,7 @@
                     </div>
 
                     <!-- Delivery Info -->
-                    <div class="border-t border-gray-200 pt-4 mb-4">
+                    <div id="qv-delivery-info" class="border-t border-gray-200 pt-4 mb-4">
                         <div class="flex items-start gap-2 text-sm text-gray-600 mb-2">
                             <i class="fas fa-truck mt-1"></i>
                             <span id="qv-delivery-date">Récupérer entre <strong>Jan 15 - Jan 25 2026</strong></span>
@@ -220,16 +220,29 @@ function renderQuickView(product) {
         }
     });
 
-    // Delivery dates (dynamic calculation: 7-15 days from now)
+    // Delivery dates (dynamic calculation based on settings)
+    const estimatedDays = product.settings.estimated_delivery_days || '3-5';
+    const daysRange = estimatedDays.split('-');
+    const minDays = parseInt(daysRange[0]);
+    const maxDays = parseInt(daysRange[1] || daysRange[0]);
+
     const today = new Date();
     const startDate = new Date(today);
-    startDate.setDate(today.getDate() + 7);
+    startDate.setDate(today.getDate() + minDays);
     const endDate = new Date(today);
-    endDate.setDate(today.getDate() + 15);
+    endDate.setDate(today.getDate() + maxDays);
 
     const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
     const deliveryText = `Récupérer entre <strong>${months[startDate.getMonth()]} ${startDate.getDate()} - ${months[endDate.getMonth()]} ${endDate.getDate()} ${endDate.getFullYear()}</strong>`;
     document.getElementById('qv-delivery-date').innerHTML = deliveryText;
+
+    // Free shipping threshold
+    const freeShippingThreshold = product.settings.free_shipping_threshold || 50000;
+    const freeShippingText = `Livraison & Retours Gratuits: Sur toutes les commandes de plus de ${new Intl.NumberFormat('fr-FR').format(freeShippingThreshold)} FCFA`;
+    const deliveryInfoElements = document.querySelectorAll('#qv-delivery-info .text-gray-600');
+    if (deliveryInfoElements.length > 1) {
+        deliveryInfoElements[1].innerHTML = `<i class="fas fa-undo mt-1"></i><span>${freeShippingText}</span>`;
+    }
 }
 
 // Close Quick View

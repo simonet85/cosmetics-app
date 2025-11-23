@@ -62,8 +62,8 @@ class CartController extends Controller
             ], 400);
         }
 
-        // Get price (variant price or product price)
-        $price = $product->price;
+        // Get price (variant price or product price, with discount if available)
+        $price = $product->discount_price && $product->discount_price > 0 ? $product->discount_price : $product->price;
         if ($request->variant_id) {
             $variant = ProductVariant::findOrFail($request->variant_id);
             $price = $variant->price;

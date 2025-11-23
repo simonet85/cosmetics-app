@@ -105,7 +105,11 @@ class ProductController extends Controller
             }),
             'reviews_count' => $product->reviews_count,
             'reviews_avg_rating' => round($product->reviews_avg_rating ?? 0, 1),
-            'url' => route('products.show', $product->slug)
+            'url' => route('products.show', $product->slug),
+            'settings' => [
+                'estimated_delivery_days' => getSetting('estimated_delivery_days', '3-5'),
+                'free_shipping_threshold' => floatval(getSetting('free_shipping_threshold', '50000')),
+            ]
         ]);
     }
 }

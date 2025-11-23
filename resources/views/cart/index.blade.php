@@ -79,7 +79,7 @@
                             <div class="col-span-1 md:col-span-2">
                                 <div class="md:text-center">
                                     <span class="md:hidden font-medium text-gray-700">Prix: </span>
-                                    <span class="text-gray-900 font-semibold">{{ number_format($item['price'], 0) }} FCFA</span>
+                                    <span class="text-gray-900 font-semibold">{{ number_format($item['price'], 2, ',', ' ') }} FCFA</span>
                                 </div>
                             </div>
 
@@ -119,7 +119,7 @@
                             <div class="col-span-1 md:col-span-2">
                                 <div class="flex items-center justify-between md:justify-end gap-4">
                                     <span class="md:hidden font-medium text-gray-700">Total: </span>
-                                    <span class="text-gray-900 font-bold item-subtotal">{{ number_format($item['subtotal'], 0) }} FCFA</span>
+                                    <span class="text-gray-900 font-bold item-subtotal">{{ number_format($item['subtotal'], 2, ',', ' ') }} FCFA</span>
 
                                     {{-- Remove Button (Desktop) --}}
                                     <button
@@ -157,11 +157,11 @@
                 <div class="space-y-4 mb-6 pb-6 border-b border-gray-200">
                     <div class="flex justify-between text-gray-700">
                         <span>Sous-total</span>
-                        <span class="font-semibold" id="cart-subtotal">{{ number_format($subtotal, 0) }} FCFA</span>
+                        <span class="font-semibold" id="cart-subtotal">{{ number_format($subtotal, 2, ',', ' ') }} FCFA</span>
                     </div>
                     <div class="flex justify-between text-gray-700">
-                        <span>Taxes (15%)</span>
-                        <span class="font-semibold" id="cart-tax">{{ number_format($tax, 0) }} FCFA</span>
+                        <span>Taxes</span>
+                        <span class="font-semibold" id="cart-tax">{{ number_format($tax, 2, ',', ' ') }} FCFA</span>
                     </div>
                     <div class="flex justify-between text-gray-700">
                         <span>Livraison</span>
@@ -169,22 +169,15 @@
                             @if($shipping == 0)
                             <span class="text-green-600">GRATUIT</span>
                             @else
-                            {{ number_format($shipping, 0) }} FCFA
+                            {{ number_format($shipping, 2, ',', ' ') }} FCFA
                             @endif
                         </span>
                     </div>
-
-                    @if($subtotal < 50)
-                    <p class="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
-                        <i class="fas fa-info-circle text-blue-600 mr-1"></i>
-                        Ajoutez <span class="font-semibold">{{ number_format(50 - $subtotal, 0) }} FCFA</span> pour la livraison gratuite!
-                    </p>
-                    @endif
                 </div>
 
                 <div class="flex justify-between text-lg font-bold text-gray-900 mb-6">
                     <span>Total</span>
-                    <span id="cart-total">{{ number_format($total, 0) }} FCFA</span>
+                    <span id="cart-total">{{ number_format($total, 2, ',', ' ') }} FCFA</span>
                 </div>
 
                 <a href="{{ route('checkout.index') }}" class="btn btn-primary w-full mb-4">
@@ -218,6 +211,14 @@
 
 @push('scripts')
 <script>
+// Format number to French format (space for thousands, comma for decimals)
+function formatPrice(price) {
+    return parseFloat(price).toLocaleString('fr-FR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
 // Update quantity
 function updateQuantity(cartItemId, quantity) {
     if (quantity < 1) return;
@@ -240,19 +241,19 @@ function updateQuantity(cartItemId, quantity) {
             document.querySelector(`input[data-cart-item-id="${cartItemId}"]`).value = quantity;
 
             // Update item subtotal
-            document.querySelector(`[data-cart-item-id="${cartItemId}"] .item-subtotal`).textContent = data.item_subtotal + ' FCFA';
+            document.querySelector(`[data-cart-item-id="${cartItemId}"] .item-subtotal`).textContent = formatPrice(data.item_subtotal) + ' FCFA';
 
             // Update cart summary
-            document.getElementById('cart-subtotal').textContent = data.subtotal + ' FCFA';
-            document.getElementById('cart-tax').textContent = data.tax + ' FCFA';
+            document.getElementById('cart-subtotal').textContent = formatPrice(data.subtotal) + ' FCFA';
+            document.getElementById('cart-tax').textContent = formatPrice(data.tax) + ' FCFA';
 
             if (parseFloat(data.shipping) === 0) {
                 document.getElementById('cart-shipping').innerHTML = '<span class="text-green-600">GRATUIT</span>';
             } else {
-                document.getElementById('cart-shipping').textContent = data.shipping + ' FCFA';
+                document.getElementById('cart-shipping').textContent = formatPrice(data.shipping) + ' FCFA';
             }
 
-            document.getElementById('cart-total').textContent = data.total + ' FCFA';
+            document.getElementById('cart-total').textContent = formatPrice(data.total) + ' FCFA';
 
             // Update cart count in header
             updateCartCount(data.cart_count);
@@ -289,16 +290,16 @@ function removeFromCart(cartItemId) {
             document.querySelector(`[data-cart-item-id="${cartItemId}"]`).remove();
 
             // Update cart summary
-            document.getElementById('cart-subtotal').textContent = data.subtotal + ' FCFA';
-            document.getElementById('cart-tax').textContent = data.tax + ' FCFA';
+            document.getElementById('cart-subtotal').textContent = formatPrice(data.subtotal) + ' FCFA';
+            document.getElementById('cart-tax').textContent = formatPrice(data.tax) + ' FCFA';
 
             if (parseFloat(data.shipping) === 0) {
                 document.getElementById('cart-shipping').innerHTML = '<span class="text-green-600">GRATUIT</span>';
             } else {
-                document.getElementById('cart-shipping').textContent = data.shipping + ' FCFA';
+                document.getElementById('cart-shipping').textContent = formatPrice(data.shipping) + ' FCFA';
             }
 
-            document.getElementById('cart-total').textContent = data.total + ' FCFA';
+            document.getElementById('cart-total').textContent = formatPrice(data.total) + ' FCFA';
 
             // Update cart count in header
             updateCartCount(data.cart_count);
