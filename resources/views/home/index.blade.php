@@ -154,7 +154,7 @@
                     <i class="fas fa-truck text-2xl text-gray-900"></i>
                 </div>
                 <h3 class="font-semibold text-gray-900 mb-2">Livraison Gratuite</h3>
-                <p class="text-gray-600">Livraison gratuite à partir de 300 FCFA</p>
+                <p class="text-gray-600">Livraison gratuite à partir de {{ number_format(floatval(getSetting('free_shipping_threshold', '50000')), 0, ',', ' ') }} FCFA</p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
