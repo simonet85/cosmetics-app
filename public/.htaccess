@@ -5,8 +5,11 @@
 
     RewriteEngine On
 
-    # Force HTTPS redirection
-    RewriteCond %{HTTPS} off
+    # Force HTTPS redirection (compatible with LiteSpeed and proxies)
+    RewriteCond %{HTTPS} off [OR]
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteCond %{HTTP_HOST} !^localhost [NC]
+    RewriteCond %{HTTP_HOST} !\.test$ [NC]
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
     # Handle Authorization Header
