@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use Simonet85\LaravelMoneyFusion\MoneyFusionService;
-use Simonet85\LaravelMoneyFusion\Exceptions\MoneyFusionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 class CustomMoneyFusionService extends MoneyFusionService
 {
@@ -36,13 +36,13 @@ class CustomMoneyFusionService extends MoneyFusionService
                 ->post($this->apiUrl, $payload);
 
             if (!$response->successful()) {
-                throw new MoneyFusionException('API error: ' . $response->body());
+                throw new Exception('API error: ' . $response->body());
             }
 
             $result = $response->json();
 
             if (!($result['statut'] ?? false)) {
-                throw new MoneyFusionException('Payment creation failed: ' . ($result['message'] ?? 'Unknown error'));
+                throw new Exception('Payment creation failed: ' . ($result['message'] ?? 'Unknown error'));
             }
 
             // Sauvegarder en base
@@ -55,7 +55,7 @@ class CustomMoneyFusionService extends MoneyFusionService
                 'error' => $e->getMessage(),
                 'data' => $data
             ]);
-            throw new MoneyFusionException($e->getMessage(), 0, $e);
+            throw new Exception($e->getMessage(), 0, $e);
         }
     }
 
@@ -103,7 +103,7 @@ class CustomMoneyFusionService extends MoneyFusionService
                     ];
                 }
 
-                throw new MoneyFusionException('API error: ' . $response->body());
+                throw new Exception('API error: ' . $response->body());
             }
 
             $result = $response->json();
@@ -120,7 +120,7 @@ class CustomMoneyFusionService extends MoneyFusionService
                 'error' => $e->getMessage(),
                 'token' => $tokenPay
             ]);
-            throw new MoneyFusionException($e->getMessage(), 0, $e);
+            throw new Exception($e->getMessage(), 0, $e);
         }
     }
 }
