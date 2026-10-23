@@ -85,14 +85,13 @@
 ### Backend
 - **Laravel 12.35.1** - Framework PHP
 - **PHP 8.2.28** - Langage serveur
-- **MySQL 8.0.30** - Base de données
+- **MySQL 8** - Base de données (conteneur Docker en développement)
 - **Spatie Laravel Permission** - Gestion des rôles
 - **DomPDF** - Génération de PDF
 
 ### Frontend
 - **Blade Templates** - Moteur de templates Laravel
 - **Tailwind CSS** - Framework CSS utility-first
-- **Alpine.js** - Framework JavaScript léger
 - **Font Awesome** - Icônes
 - **Slick Carousel** - Carrousel de produits
 - **Vite** - Build tool moderne
@@ -113,7 +112,38 @@
 
 ---
 
-## 🚀 Installation
+## 🐳 Démarrage rapide avec Docker (recommandé)
+
+Prérequis : Docker et Docker Compose.
+
+```bash
+git clone https://github.com/votre-username/cosmetics-app.git
+cd cosmetics-app
+docker compose up --build
+```
+
+Au premier démarrage, le conteneur `app` crée `.env` depuis `.env.example`, installe les dépendances Composer, génère la clé, exécute les migrations et crée le lien `storage`. La première installation peut prendre quelques minutes.
+
+| Service | Rôle | Accès |
+|---|---|---|
+| `web` | nginx | http://localhost:8000 |
+| `app` | PHP 8.3-FPM | - |
+| `db` | MySQL 8 | `localhost:3307` (base `cosmetics_db`, utilisateur `cosmetics`) |
+| `node` | Vite (dev) | http://localhost:5173 |
+| `queue`, `scheduler` | workers (profil `workers`) | `docker compose --profile workers up` |
+
+Commandes utiles :
+
+```bash
+docker compose exec app php artisan db:seed          # données de démonstration
+docker compose exec app php artisan test             # tests PHPUnit
+docker compose exec app vendor/bin/pint              # formatage du code
+docker compose down                                  # arrêter (ajouter -v pour supprimer la base)
+```
+
+---
+
+## 🚀 Installation (sans Docker)
 
 ### 1. Cloner le dépôt
 
