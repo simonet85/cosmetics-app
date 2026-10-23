@@ -24,7 +24,7 @@ Goal: `git clone` + `docker compose up` gives a working app, without changing ap
 - [x] 1.3 Feature test: guest cart add/update/remove.
 - [x] 1.4 Feature test: checkout creates an order (COD) (18 tests: totals, tax and shipping from settings, stock, addresses, validation, rollback).
 - [x] 1.5 Feature test: MoneyFusion webhook marks an order paid (fake HTTP) (20 webhook tests + 4 MoneyFusion checkout tests; the webhook now verifies with the gateway).
-- [x] 1.6 GitHub Actions workflow running Pint and PHPUnit (`.github/workflows/ci.yml`: Pint job; tests job on MySQL 8 with the Vite build, checked with actionlint and by running the suite without the dev server).
+- [x] 1.6 (CI on stand-by: PR #1 is open but GitHub refuses to start jobs while the account has a billing lock; re-run the jobs once it is lifted) GitHub Actions workflow running Pint and PHPUnit (`.github/workflows/ci.yml`: Pint job; tests job on MySQL 8 with the Vite build, checked with actionlint and by running the suite without the dev server).
 
 ## Phase 2 — Upgrade to Laravel 13 and stock MoneyFusion package
 
@@ -38,12 +38,12 @@ Packagist shows `laravel/framework` v13.x (requires PHP ^8.3) and `simonet85/lar
 
 ## Phase 3 — Payment reconciliation (TODO phase 1)
 
-- [ ] 3.1 `moneyfusion:check-pending` command with `--age` and `--limit`, no scheduling yet.
-- [ ] 3.2 Test for the command (paid, failed, still pending).
-- [ ] 3.3 Register the schedule in `routes/console.php` (every 10 min, `withoutOverlapping`).
-- [ ] 3.4 Daily sweep of old pending payments.
-- [ ] 3.5 Callback verifies status live before redirecting, falling back to local data on API error.
-- [ ] 3.6 Production: cron `schedule:run` and a queue worker; document in the README.
+- [x] 3.1 `moneyfusion:check-pending` command (`--age`, `--limit`, `--expire-after`, `--pause`): asks the gateway, applies outcomes through `OrderPayments`, progress bar and summary table.
+- [x] 3.2 Tests for the command (paid, failed, cancelled, still pending, too young, limit, gateway down, wrong amount, report): `CheckPendingPaymentsCommandTest`.
+- [x] 3.3 Schedule in `routes/console.php`: every 10 minutes, `withoutOverlapping`.
+- [x] 3.4 Nightly sweep (03:00, larger batch). Payments still pending after 24 h are treated as abandoned: order cancelled, stock released; a late payment revives the order.
+- [x] 3.5 Callback verifies status live before redirecting, falling back to local data on API error.
+- [x] 3.6 Production: cron `schedule:run` every minute and the required MoneyFusion variables documented in the README (Hostinger cron entry); Docker `workers` profile runs the scheduler locally.
 
 ## Phase 4 — Payment UX (TODO phase 2)
 

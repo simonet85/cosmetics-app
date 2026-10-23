@@ -326,6 +326,27 @@ php artisan migrate --force
 chmod -R 755 storage bootstrap/cache
 ```
 
+### Tâches planifiées (vérification des paiements MoneyFusion)
+
+Le planificateur Laravel exécute `moneyfusion:check-pending` toutes les 10 minutes (et un balayage chaque nuit à 03:00).
+La commande interroge MoneyFusion pour les paiements restés « en attente », met à jour les commandes (payée, échouée,
+annulée) et **annule les commandes abandonnées** (paiement toujours en attente après 24 h), ce qui remet leur stock en vente.
+Si le payeur paie quand même plus tard, la commande est rétablie automatiquement.
+
+Il faut une entrée cron qui lance le planificateur **chaque minute** (Hostinger : hPanel > Avancé > Tâches Cron) :
+
+```bash
+* * * * * cd ~/domains/klab-consulting.com/laravel && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Variables nécessaires en production : `MONEYFUSION_APP_KEY`, `MONEYFUSION_API_URL`, `MONEYFUSION_CHECK_PAYMENT_URL`,
+`MONEYFUSION_WEBHOOK_URL`, `MONEYFUSION_RETURN_URL` (sans clé, aucun paiement ne peut être vérifié).
+
+Lancer à la main : `php artisan moneyfusion:check-pending --age=10 --limit=100 --expire-after=1440`
+(`--expire-after=0` désactive l'annulation des paiements abandonnés ; `--pause` règle l'attente entre deux appels, en ms).
+
+En développement avec Docker : `docker compose --profile workers up` démarre le planificateur (`schedule:work`) et la file.
+
 ### Points de vigilance en production
 
 - Toujours définir `APP_DEBUG=false`
