@@ -233,11 +233,7 @@ class CheckoutController extends Controller
 
         // Order ids are sequential, so the page is only for the owner or someone holding the signed link
         // (guests are redirected to it right after ordering).
-        $isOwner = auth()->check() && $order->user_id === auth()->id();
-
-        if (! $isOwner && ! $request->hasValidSignature()) {
-            abort(403);
-        }
+        abort_unless($order->isViewableBy(auth()->user(), $request), 403);
 
         return view('checkout.success', compact('order'));
     }
@@ -254,5 +250,24 @@ class CheckoutController extends Controller
             'cash_on_delivery' => getSetting('payment_cash_on_delivery_enabled', '1') === '1',
             'moneyfusion' => getSetting('payment_moneyfusion_enabled', '1') === '1',
         ];
+    }
+
+    /**
+     * Shown after the payer comes back from MoneyFusion while the payment is not confirmed yet.
+     * It polls the payment status and moves on by itself once the gateway confirms.
+     */
+    public function pending(Request $request, Order $order)
+    {
+        abort_unless($order->isViewableBy(auth()->user(), $request), 403);
+
+        if ($order->payment_status === 'paid') {
+            return redirect($order->successUrl());
+        }
+
+        return view('checkout.pending', [
+            'order' => $order,
+            'statusUrl' => $order->paymentStatusUrl(),
+            'failed' => in_array($order->payment_status, ['failed', 'refunded'], true) || $order->status === 'cancelled',
+        ]);
     }
 }

@@ -47,12 +47,12 @@ Packagist shows `laravel/framework` v13.x (requires PHP ^8.3) and `simonet85/lar
 
 ## Phase 4 — Payment UX (TODO phase 2)
 
-- [ ] 4.1 Route and controller `checkStatus` returning JSON for a token.
-- [ ] 4.2 "Vérifier maintenant" button on the customer order page (plain `fetch`).
-- [ ] 4.3 30-second auto-poll while the payment is pending.
-- [ ] 4.4 `AdminOrderController::checkPayment` and its route.
-- [ ] 4.5 "Vérifier le paiement" button on the admin order page.
-- [ ] 4.6 `checkout.pending` page with auto-redirect once paid.
+- [x] 4.1 JSON status endpoint `GET /payment/status/{order}` (`PaymentStatusController`): owner or signed link, rate limited, asks MoneyFusion at most once per 10 s per payment, states paid / pending / failed / unavailable.
+- [x] 4.2 "Vérifier maintenant" button on the customer order page (plain `fetch`, no reload).
+- [x] 4.3 30-second auto-poll while the payment is pending; the page reloads once the payment is confirmed or failed.
+- [x] 4.4 `AdminOrderController::checkPayment` and `POST admin/orders/{order}/check-payment`, through the shared `PaymentVerifier`.
+- [x] 4.5 "Vérifier le paiement" button on the admin order page, with the MoneyFusion token, creation date and local status; hidden once paid.
+- [x] 4.6 `checkout.pending` page (signed link or owner): polls every 5 s, redirects to the confirmation once paid, shows a retry box on failure; the payer's return from the gateway lands there while the payment is pending.
 
 ## Phase 5 — Notifications (TODO phase 3)
 

@@ -306,7 +306,7 @@ class MoneyFusionWebhookTest extends TestCase
         $this->payment($order);
         $this->gatewayAnswers('pending');
 
-        $this->get('/payment/callback?token='.self::TOKEN.'&statut=paid')->assertOk();
+        $this->get('/payment/callback?token='.self::TOKEN.'&statut=paid')->assertRedirect($order->pendingUrl());
 
         $this->assertSame('pending', $order->fresh()->payment_status);
         Mail::assertNothingSent();
@@ -504,7 +504,7 @@ class MoneyFusionWebhookTest extends TestCase
         $this->payment($order);
         $this->gatewayAnswers('pending');
 
-        $this->get(route('payment.callback', ['order' => $order->id]))->assertOk();
+        $this->get(route('payment.callback', ['order' => $order->id]))->assertRedirect($order->pendingUrl());
 
         $this->assertSame('pending', $order->fresh()->payment_status);
         Mail::assertNothingSent();

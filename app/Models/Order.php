@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\AddressCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
@@ -80,6 +81,27 @@ class Order extends Model
         $this->stock_released_at = null;
 
         return true;
+    }
+
+    /** Page shown to a payer whose MoneyFusion payment is not confirmed yet (signed link for guests). */
+    public function pendingUrl(): string
+    {
+        return URL::signedRoute('checkout.pending', ['order' => $this->id]);
+    }
+
+    /** JSON endpoint polled by the pending page and the order page (signed link for guests). */
+    public function paymentStatusUrl(): string
+    {
+        return URL::signedRoute('payment.status', ['order' => $this->id]);
+    }
+
+    /**
+     * Order ids are sequential, so an order is only visible to its owner or to someone holding a signed link
+     * (guests are redirected to one right after ordering).
+     */
+    public function isViewableBy(?User $user, Request $request): bool
+    {
+        return ($user && $this->user_id === $user->id) || $request->hasValidSignature();
     }
 
     public function user()

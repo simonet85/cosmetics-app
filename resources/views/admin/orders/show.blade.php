@@ -211,6 +211,40 @@
                             </span>
                         </span>
                     </div>
+
+                    @if($order->payment_method === 'moneyfusion')
+                        @php $mfPayment = $order->moneyFusionPayment; @endphp
+                        @if($mfPayment)
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Jeton MoneyFusion</span>
+                            <span class="font-mono text-xs break-all text-right ml-4">{{ $mfPayment->token_pay }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Paiement créé le</span>
+                            <span class="font-medium">{{ $mfPayment->created_at->format('d/m/Y H:i') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Statut côté MoneyFusion (local)</span>
+                            <span class="font-medium">{{ $mfPayment->statut }}</span>
+                        </div>
+                        @if($mfPayment->paid_at)
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Payé le</span>
+                            <span class="font-medium">{{ $mfPayment->paid_at->format('d/m/Y H:i') }}</span>
+                        </div>
+                        @endif
+                        @endif
+
+                        @if($order->payment_status !== 'paid')
+                        <form action="{{ route('admin.orders.check-payment', $order) }}" method="POST" class="pt-3">
+                            @csrf
+                            <button type="submit" class="w-full px-4 py-2 bg-[#5a7c6f] text-white rounded-lg hover:bg-[#4a6c5f] transition-colors">
+                                <i class="fas fa-sync-alt mr-2"></i>Vérifier le paiement
+                            </button>
+                            <p class="text-xs text-gray-500 mt-1">Interroge MoneyFusion et met la commande à jour.</p>
+                        </form>
+                        @endif
+                    @endif
                 </div>
             </div>
 

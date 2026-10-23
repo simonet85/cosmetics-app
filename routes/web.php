@@ -18,6 +18,7 @@ use App\Http\Controllers\MoneyFusion\PaymentCallbackController;
 use App\Http\Controllers\MoneyFusion\WebhookController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SocialAuthController;
@@ -103,6 +104,7 @@ Route::prefix('checkout')->name('checkout.')->group(function () {
     Route::get('/', [CheckoutController::class, 'index'])->name('index');
     Route::post('/process', [CheckoutController::class, 'process'])->name('process');
     Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
+    Route::get('/pending/{order}', [CheckoutController::class, 'pending'])->name('pending');
 });
 
 // Static Pages
@@ -123,6 +125,8 @@ Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
 // MoneyFusion Payment Routes
 Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/callback', [PaymentCallbackController::class, 'callback'])->name('callback');
+    // Owner or signed link; each call may ask MoneyFusion, so it is rate limited
+    Route::get('/status/{order}', [PaymentStatusController::class, 'show'])->middleware('throttle:60,1')->name('status');
 });
 
 // MoneyFusion Webhook (POST endpoint - CSRF excluded in bootstrap/app.php)
@@ -155,6 +159,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('orders', AdminOrderController::class)->only(['index', 'show', 'update']);
     Route::put('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
     Route::put('orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
+    Route::post('orders/{order}/check-payment', [AdminOrderController::class, 'checkPayment'])->name('orders.check-payment');
 
     // Customers Management
     Route::resource('customers', AdminCustomerController::class)->only(['index', 'show', 'destroy']);

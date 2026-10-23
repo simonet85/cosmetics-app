@@ -195,6 +195,10 @@
                             </span>
                         </p>
                     </div>
+
+                    @if($order->payment_method === 'moneyfusion' && $order->payment_status === 'pending' && $order->status !== 'cancelled')
+                        @include('account.partials.payment-check', ['statusUrl' => route('payment.status', $order)])
+                    @endif
                 </div>
 
                 {{-- Actions --}}

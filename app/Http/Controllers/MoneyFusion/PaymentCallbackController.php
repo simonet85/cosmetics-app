@@ -88,6 +88,10 @@ class PaymentCallbackController extends Controller
                     'order' => $order,
                 ]);
             } else {
+                if ($order) {
+                    return redirect($order->pendingUrl());
+                }
+
                 return view('moneyfusion.pending', [
                     'payment' => $payment,
                     'order' => $order,

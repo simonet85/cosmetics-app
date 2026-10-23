@@ -4,10 +4,10 @@ namespace App\Console\Commands;
 
 use App\Models\Order;
 use App\Services\OrderPayments;
+use App\Services\PaymentVerifier;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Simonet85\LaravelMoneyFusion\Models\MoneyFusionPayment;
-use Simonet85\LaravelMoneyFusion\MoneyFusionService;
 
 /**
  * Reconciles MoneyFusion payments that are still "pending" locally.
@@ -38,7 +38,7 @@ class CheckPendingPayments extends Command
         'errors' => 0,
     ];
 
-    public function handle(MoneyFusionService $moneyFusion, OrderPayments $orderPayments): int
+    public function handle(PaymentVerifier $verifier, OrderPayments $orderPayments): int
     {
         $age = max(0, (int) $this->option('age'));
         $limit = max(1, (int) $this->option('limit'));
@@ -59,8 +59,8 @@ class CheckPendingPayments extends Command
 
         $this->info("Checking {$payments->count()} pending payment(s) older than {$age} minute(s)...");
 
-        $this->withProgressBar($payments, function (MoneyFusionPayment $payment) use ($moneyFusion, $orderPayments, $expireAfter, $pause) {
-            $this->check($payment, $moneyFusion, $orderPayments, $expireAfter);
+        $this->withProgressBar($payments, function (MoneyFusionPayment $payment) use ($verifier, $orderPayments, $expireAfter, $pause) {
+            $this->check($payment, $verifier, $orderPayments, $expireAfter);
 
             if ($pause > 0) {
                 usleep($pause * 1000);
@@ -75,48 +75,19 @@ class CheckPendingPayments extends Command
         return self::SUCCESS;
     }
 
-    private function check(MoneyFusionPayment $payment, MoneyFusionService $moneyFusion, OrderPayments $orderPayments, int $expireAfter): void
+    private function check(MoneyFusionPayment $payment, PaymentVerifier $verifier, OrderPayments $orderPayments, int $expireAfter): void
     {
         $this->report['checked']++;
 
-        try {
-            $answer = $moneyFusion->checkPaymentStatus($payment->token_pay);
-        } catch (\Throwable $e) {
-            $this->report['errors']++;
-            Log::warning('MoneyFusion check-pending: check failed', ['token' => $payment->token_pay, 'error' => $e->getMessage()]);
-
-            return;
-        }
-
         // Without a real answer from the API the local record is all there is, and it proves nothing.
-        if (! ($answer['verified'] ?? false)) {
-            $this->report['unverified']++;
-
-            return;
-        }
-
-        $payment->refresh();
-        $order = $payment->order_id ? Order::find($payment->order_id) : null;
-
-        switch ($payment->statut) {
-            case 'paid':
-                $this->report['paid']++;
-                $order && $orderPayments->markPaid($order);
-                break;
-
-            case 'failed':
-                $this->report['failed']++;
-                $order && $orderPayments->markFailed($order);
-                break;
-
-            case 'cancelled':
-                $this->report['cancelled']++;
-                $order && $orderPayments->markCancelled($order);
-                break;
-
-            default:
-                $this->expireIfAbandoned($payment, $order, $orderPayments, $expireAfter);
-        }
+        match ($outcome = $verifier->verify($payment)) {
+            PaymentVerifier::PAID => $this->report['paid']++,
+            PaymentVerifier::FAILED => $this->report['failed']++,
+            PaymentVerifier::CANCELLED => $this->report['cancelled']++,
+            PaymentVerifier::UNVERIFIED => $this->report['unverified']++,
+            PaymentVerifier::ERROR => $this->report['errors']++,
+            default => $this->expireIfAbandoned($payment, $payment->order_id ? Order::find($payment->order_id) : null, $orderPayments, $expireAfter),
+        };
     }
 
     /**

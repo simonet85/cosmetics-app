@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderStatusUpdated;
 use App\Models\Order;
+use App\Services\PaymentVerifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -117,5 +118,24 @@ class AdminOrderController extends Controller
         $order->update(['payment_status' => $request->payment_status]);
 
         return back()->with('success', 'Statut de paiement mis à jour avec succès.');
+    }
+
+    /**
+     * Ask MoneyFusion for the real status of this order's payment and apply it.
+     */
+    public function checkPayment(Order $order, PaymentVerifier $verifier)
+    {
+        $outcome = $order->payment_method === 'moneyfusion' ? $verifier->verifyOrder($order) : null;
+
+        $order->refresh();
+
+        return match ($outcome) {
+            null => back()->with('error', 'Aucun paiement MoneyFusion à vérifier pour cette commande.'),
+            PaymentVerifier::PAID => back()->with('success', 'Paiement confirmé par MoneyFusion : la commande est marquée payée.'),
+            PaymentVerifier::FAILED => back()->with('success', 'MoneyFusion indique que le paiement a échoué : la commande est annulée et son stock remis en vente.'),
+            PaymentVerifier::CANCELLED => back()->with('success', 'MoneyFusion indique que le paiement a été annulé : la commande est annulée et son stock remis en vente.'),
+            PaymentVerifier::PENDING => back()->with('success', 'Le paiement est toujours en attente chez MoneyFusion. Aucun changement.'),
+            default => back()->with('error', 'Impossible de joindre MoneyFusion pour le moment. Réessayez dans quelques instants.'),
+        };
     }
 }
