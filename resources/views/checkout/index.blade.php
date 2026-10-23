@@ -344,7 +344,7 @@
                             <div class="flex-1">
                                 <h4 class="text-sm font-semibold text-gray-900">{{ $item['product']->name }}</h4>
                                 @if($item['variant'])
-                                <p class="text-xs text-gray-600">{{ $item['variant']->variant_type }}: {{ $item['variant']->variant_value }}</p>
+                                <p class="text-xs text-gray-600">{{ $item['variant']->label }}</p>
                                 @endif
                                 <p class="text-sm text-gray-600 mt-1">Qté: {{ $item['quantity'] }}</p>
                             </div>

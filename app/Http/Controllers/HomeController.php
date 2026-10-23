@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Banner;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\Testimonial;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {

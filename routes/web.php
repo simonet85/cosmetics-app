@@ -1,28 +1,28 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ShopController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\AdminProductController;
-use App\Http\Controllers\Admin\AdminCategoryController;
-use App\Http\Controllers\Admin\AdminOrderController;
-use App\Http\Controllers\Admin\AdminCustomerController;
-use App\Http\Controllers\Admin\AdminReviewController;
-use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Admin\AdminBannerController;
+use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminCouponController;
+use App\Http\Controllers\Admin\AdminCustomerController;
+use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\AdminSettingController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\SocialAuthController;
-use App\Http\Controllers\MoneyFusion\WebhookController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MoneyFusion\PaymentCallbackController;
+use App\Http\Controllers\MoneyFusion\WebhookController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\WishlistController;
+use Illuminate\Support\Facades\Route;
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -127,7 +127,7 @@ Route::prefix('payment')->name('payment.')->group(function () {
 
 // MoneyFusion Webhook (POST endpoint - CSRF excluded in bootstrap/app.php)
 // Note: Package also registers a webhook route, but we use our custom controller
-Route::post('/api/moneyfusion/webhook', [WebhookController::class, 'handle']);
+Route::post('/api/moneyfusion/webhook', [WebhookController::class, 'handle'])->middleware('throttle:120,1');
 
 // Account Routes (Auth required)
 Route::middleware(['auth'])->prefix('account')->name('account.')->group(function () {
@@ -145,7 +145,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // Products Management
-    Route::resource('products', AdminProductController::class);
+    Route::resource('products', AdminProductController::class)->except(['show']);
     Route::post('products/{product}/images', [AdminProductController::class, 'uploadImages'])->name('products.images.upload');
 
     // Categories Management

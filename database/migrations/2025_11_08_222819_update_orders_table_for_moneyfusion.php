@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         // Check if shipping_cost column already exists
-        if (!Schema::hasColumn('orders', 'shipping_cost')) {
+        if (! Schema::hasColumn('orders', 'shipping_cost')) {
             Schema::table('orders', function (Blueprint $table) {
                 $table->decimal('shipping_cost', 10, 2)->default(0)->after('tax');
             });

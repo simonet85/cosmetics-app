@@ -2,6 +2,13 @@
 
 @section('content')
 
+@if(!empty($isPreview))
+<div class="bg-yellow-100 border-b border-yellow-300 text-yellow-900 text-sm text-center py-2">
+    <i class="fas fa-eye-slash mr-1"></i>
+    Aperçu administrateur : ce produit est {{ $product->status === 'archived' ? 'archivé' : 'inactif' }} et n'est pas visible par les clients.
+</div>
+@endif
+
 {{-- Breadcrumb --}}
 <div class="bg-gray-50 py-4 mb-12">
     <div class="container-custom">
@@ -91,9 +98,9 @@
 
             {{-- Price --}}
             <div class="flex items-center gap-4 mb-6">
-                <span class="text-4xl font-bold text-gray-900">{{ number_format($product->price, 0) }} FCFA</span>
-                @if($product->compare_price && $product->compare_price > $product->price)
-                <span class="text-2xl text-gray-400 line-through">{{ number_format($product->compare_price, 0) }} FCFA</span>
+                <span id="product-price" class="text-4xl font-bold text-gray-900">{{ number_format($product->final_price, 0) }} FCFA</span>
+                @if($product->final_price < $product->price)
+                <span id="product-list-price" class="text-2xl text-gray-400 line-through">{{ number_format($product->price, 0) }} FCFA</span>
                 @endif
             </div>
 
@@ -105,31 +112,25 @@
             {{-- Product Variants --}}
             @if($product->variants->count() > 0)
             <div class="mb-8">
-                @php
-                    $variantTypes = $product->variants->groupBy('variant_type');
-                @endphp
-
-                @foreach($variantTypes as $type => $variants)
                 <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-900 mb-3">{{ ucfirst($type) }}</label>
+                    <label class="block text-sm font-semibold text-gray-900 mb-3">Options</label>
                     <div class="flex flex-wrap gap-2">
-                        @foreach($variants as $variant)
+                        @foreach($product->variants->where('is_active', true) as $variant)
                         <button
                             type="button"
                             class="px-4 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-900 transition variant-btn"
                             data-variant-id="{{ $variant->id }}"
-                            data-price="{{ $variant->price }}"
+                            data-price="{{ $product->final_price + $variant->price_modifier }}"
                             onclick="selectVariant(this)"
                         >
-                            {{ $variant->variant_value }}
-                            @if($variant->price != $product->price)
-                            <span class="text-sm text-gray-600">(+{{ number_format($variant->price - $product->price, 0) }} FCFA)</span>
+                            {{ collect([$variant->size, $variant->color_name ?? $variant->color])->filter()->implode(' / ') ?: $variant->sku }}
+                            @if($variant->price_modifier != 0)
+                            <span class="text-sm opacity-70">({{ $variant->price_modifier > 0 ? '+' : '-' }}{{ number_format(abs($variant->price_modifier), 0) }} FCFA)</span>
                             @endif
                         </button>
                         @endforeach
                     </div>
                 </div>
-                @endforeach
             </div>
             @endif
 
@@ -413,7 +414,8 @@ function decreaseQuantity() {
 
 // Variant selection
 let selectedVariantId = null;
-let selectedPrice = {{ $product->price }};
+let selectedPrice = {{ $product->final_price }};
+const formatPrice = value => Math.round(value).toLocaleString('fr-FR') + ' FCFA';
 
 function selectVariant(btn) {
     // Remove active state from all variant buttons
@@ -428,6 +430,13 @@ function selectVariant(btn) {
 
     selectedVariantId = btn.dataset.variantId;
     selectedPrice = parseFloat(btn.dataset.price);
+
+    // Show the selected variant's price; the struck-through list price no longer applies
+    document.getElementById('product-price').textContent = formatPrice(selectedPrice);
+    const listPrice = document.getElementById('product-list-price');
+    if (listPrice) {
+        listPrice.classList.add('hidden');
+    }
 }
 
 // Add to cart

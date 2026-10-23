@@ -13,7 +13,7 @@ class ForceHttps
         // Forcer HTTPS si APP_FORCE_HTTPS=true
         if (config('app.force_https', false)) {
             URL::forceScheme('https');
-            
+
             // Définir les headers pour proxy
             $request->server->set('HTTPS', 'on');
             $request->server->set('SERVER_PORT', 443);

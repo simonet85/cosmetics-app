@@ -54,7 +54,7 @@ class AdminReviewController extends Controller
 
     public function approve(Review $review)
     {
-        $review->update(['is_approved' => !$review->is_approved]);
+        $review->update(['is_approved' => ! $review->is_approved]);
 
         $message = $review->is_approved
             ? 'Avis approuvé avec succès.'

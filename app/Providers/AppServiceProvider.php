@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('local') && config('app.force_https', false)) {
             URL::forceScheme('https');
         }
-        
+
         // Ou simplement détecter le proxy
         if (request()->header('x-forwarded-proto') === 'https') {
             URL::forceScheme('https');

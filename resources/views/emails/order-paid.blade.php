@@ -294,14 +294,7 @@
                                     @if($item->variant)
                                         <br>
                                         <small style="color: #6b7280;">
-                                            @php
-                                                $attributes = json_decode($item->variant->attributes, true);
-                                            @endphp
-                                            @if($attributes)
-                                                @foreach($attributes as $key => $value)
-                                                    {{ ucfirst($key) }}: {{ $value }}{{ !$loop->last ? ', ' : '' }}
-                                                @endforeach
-                                            @endif
+                                            {{ $item->variant->label }}
                                         </small>
                                     @endif
                                 </td>
@@ -361,7 +354,7 @@
                     <div class="address-block">
                         <h4>Adresse de facturation</h4>
                         @php
-                            $billing = json_decode($order->billing_address, true);
+                            $billing = $order->billing_address;
                         @endphp
                         @if($billing)
                             <p><strong>{{ $billing['first_name'] ?? '' }} {{ $billing['last_name'] ?? '' }}</strong></p>
@@ -374,7 +367,7 @@
                     <div class="address-block">
                         <h4>Adresse de livraison</h4>
                         @php
-                            $shipping = json_decode($order->shipping_address, true);
+                            $shipping = $order->shipping_address;
                         @endphp
                         @if($shipping)
                             <p><strong>{{ $shipping['first_name'] ?? '' }} {{ $shipping['last_name'] ?? '' }}</strong></p>

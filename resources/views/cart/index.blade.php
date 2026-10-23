@@ -59,7 +59,7 @@
 
                                         @if($item['variant'])
                                         <p class="text-sm text-gray-500">
-                                            <span class="font-medium">Variante:</span> {{ $item['variant']->variant_type }}: {{ $item['variant']->variant_value }}
+                                            <span class="font-medium">Variante:</span> {{ $item['variant']->label }}
                                         </p>
                                         @endif
 

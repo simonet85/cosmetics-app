@@ -21,6 +21,7 @@ class AdminCategoryController extends Controller
     public function create()
     {
         $categories = Category::whereNull('parent_id')->get();
+
         return view('admin.categories.create', compact('categories'));
     }
 
@@ -43,7 +44,7 @@ class AdminCategoryController extends Controller
         $originalSlug = $validated['slug'];
         $count = 1;
         while (Category::where('slug', $validated['slug'])->exists()) {
-            $validated['slug'] = $originalSlug . '-' . $count;
+            $validated['slug'] = $originalSlug.'-'.$count;
             $count++;
         }
 
@@ -82,7 +83,7 @@ class AdminCategoryController extends Controller
             $originalSlug = $validated['slug'];
             $count = 1;
             while (Category::where('slug', $validated['slug'])->where('id', '!=', $category->id)->exists()) {
-                $validated['slug'] = $originalSlug . '-' . $count;
+                $validated['slug'] = $originalSlug.'-'.$count;
                 $count++;
             }
         }

@@ -2,120 +2,66 @@
 
 namespace App\Http\Controllers\MoneyFusion;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Simonet85\LaravelMoneyFusion\Models\MoneyFusionPayment;
 use App\Models\Order;
-use App\Mail\OrderPaid;
+use App\Services\OrderPayments;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Simonet85\LaravelMoneyFusion\Http\Controllers\WebhookController as PackageWebhookController;
+use Simonet85\LaravelMoneyFusion\Models\MoneyFusionPayment;
+use Simonet85\LaravelMoneyFusion\MoneyFusionService;
 
-class WebhookController extends Controller
+/**
+ * MoneyFusion does not sign its notifications, so the request body is only a signal: the package's
+ * handle() reads the real status from MoneyFusion's API before changing anything. This subclass only
+ * says what a verified outcome means for our orders.
+ */
+class WebhookController extends PackageWebhookController
 {
-    /**
-     * Handle MoneyFusion webhook notifications
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function handle(Request $request): JsonResponse
+    public function __construct(private OrderPayments $orderPayments) {}
+
+    public function handle(Request $request, MoneyFusionService $moneyFusion): JsonResponse
     {
-        try {
-            Log::info('MoneyFusion Webhook received', ['data' => $request->all()]);
+        // Older notifications used "token" instead of "tokenPay"
+        if (! $request->filled('tokenPay') && $request->filled('token')) {
+            $request->merge(['tokenPay' => $request->input('token')]);
+        }
 
-            $data = $request->all();
+        // The package returns early for an already-paid payment. If the order update was lost the first
+        // time (e.g. a database error after the payment was recorded), repair it on the retry.
+        $payment = MoneyFusionPayment::where('token_pay', (string) $request->input('tokenPay'))->first();
 
-            // Support both 'token' and 'tokenPay' field names
-            $token = $data['token'] ?? $data['tokenPay'] ?? null;
+        if ($payment?->isPaid() && $payment->order_id) {
+            $this->postPaymentSuccess($payment, []);
+        }
 
-            // Valider les données du webhook
-            if (!$token) {
-                Log::warning('MoneyFusion Webhook: Missing token', ['data' => $data]);
-                return response()->json(['error' => 'Missing token'], 400);
-            }
-            $payment = MoneyFusionPayment::where('token_pay', $token)->first();
+        return parent::handle($request, $moneyFusion);
+    }
 
-            if (!$payment) {
-                Log::warning('MoneyFusion Webhook: Payment not found', ['token' => $token]);
-                return response()->json(['error' => 'Payment not found'], 404);
-            }
+    protected function dispatchEvents(MoneyFusionPayment $payment, string $oldStatus, array $data): void
+    {
+        parent::dispatchEvents($payment, $oldStatus, $data);
 
-            // Mettre à jour le statut du paiement
-            $updateData = [
-                'statut' => $data['statut'] ?? 'pending',
-                'numero_transaction' => $data['numeroTransaction'] ?? null,
-                'moyen' => $data['moyen'] ?? null,
-                'frais' => $data['frais'] ?? 0,
-                'raw_response' => $data,
-            ];
+        if ($oldStatus !== $payment->statut && $payment->statut === 'cancelled') {
+            $this->withOrder($payment, fn (Order $order) => $this->orderPayments->markCancelled($order));
+        }
+    }
 
-            // Si le paiement est réussi, enregistrer la date
-            if (($data['statut'] ?? '') === 'paid' && !$payment->paid_at) {
-                $updateData['paid_at'] = now();
-            }
+    protected function postPaymentSuccess(MoneyFusionPayment $payment, array $data): void
+    {
+        $this->withOrder($payment, fn (Order $order) => $this->orderPayments->markPaid($order));
+    }
 
-            $payment->update($updateData);
+    protected function postPaymentFailure(MoneyFusionPayment $payment, array $data): void
+    {
+        $this->withOrder($payment, fn (Order $order) => $this->orderPayments->markFailed($order));
+    }
 
-            // Update related order if exists
-            if ($payment->order_id) {
-                $order = Order::find($payment->order_id);
-                if ($order) {
-                    if (($data['statut'] ?? '') === 'paid') {
-                        $order->update([
-                            'payment_status' => 'paid',
-                            'status' => 'processing',
-                        ]);
+    private function withOrder(MoneyFusionPayment $payment, callable $apply): void
+    {
+        $order = $payment->order_id ? Order::find($payment->order_id) : null;
 
-                        // Send order confirmation email with invoice
-                        try {
-                            Mail::to($order->customer_email)->send(new OrderPaid($order));
-                            Log::info('Order confirmation email sent', [
-                                'order_id' => $order->id,
-                                'order_number' => $order->order_number,
-                                'email' => $order->customer_email
-                            ]);
-                        } catch (\Exception $emailError) {
-                            Log::error('Failed to send order confirmation email', [
-                                'order_id' => $order->id,
-                                'error' => $emailError->getMessage()
-                            ]);
-                        }
-                    } elseif (($data['statut'] ?? '') === 'failed') {
-                        $order->update(['payment_status' => 'failed']);
-                    } elseif (($data['statut'] ?? '') === 'cancelled') {
-                        $order->update([
-                            'payment_status' => 'cancelled',
-                            'status' => 'cancelled'
-                        ]);
-                    }
-                }
-            }
-
-            Log::info('MoneyFusion Webhook: Payment updated', [
-                'token' => $token,
-                'status' => $data['statut'] ?? 'unknown',
-                'order_id' => $payment->order_id
-            ]);
-
-            // Déclencher un événement si nécessaire
-            // event(new PaymentStatusUpdated($payment));
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Webhook processed successfully'
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('MoneyFusion Webhook Error', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'error' => 'Internal server error'
-            ], 500);
+        if ($order) {
+            $apply($order);
         }
     }
 }

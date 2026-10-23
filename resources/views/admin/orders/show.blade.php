@@ -116,7 +116,7 @@
                     <div>
                         <h3 class="font-semibold text-gray-700 mb-2">Adresse de Livraison</h3>
                         @php
-                            $shipping = json_decode($order->shipping_address, true);
+                            $shipping = $order->shipping_address;
                         @endphp
                         @if($shipping)
                             <p class="text-gray-900">{{ $shipping['first_name'] ?? '' }} {{ $shipping['last_name'] ?? '' }}</p>

@@ -16,9 +16,7 @@ class OrderStatusUpdated extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public Order $order, public string $previousStatus)
-    {
-    }
+    public function __construct(public Order $order, public string $previousStatus) {}
 
     /**
      * Get the message envelope.
@@ -36,7 +34,7 @@ class OrderStatusUpdated extends Mailable
         $subject = $statusMessages[$this->order->status] ?? 'Le statut de votre commande a été mise à jour ';
 
         return new Envelope(
-            subject: $subject . ' - Commande #' . $this->order->order_number,
+            subject: $subject.' - Commande #'.$this->order->order_number,
         );
     }
 

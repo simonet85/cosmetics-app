@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\User;
 use App\Models\Review;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -46,7 +45,7 @@ class DashboardController extends Controller
 
         // Top selling products
         $topProducts = Product::with('images')
-            ->withCount(['orderItems as total_sales' => function($query) {
+            ->withCount(['orderItems as total_sales' => function ($query) {
                 $query->select(DB::raw('SUM(quantity)'));
             }])
             ->orderBy('total_sales', 'desc')
@@ -64,7 +63,7 @@ class DashboardController extends Controller
 
             $monthlyRevenueData[] = [
                 'month' => $date->format('M Y'),
-                'revenue' => $revenue
+                'revenue' => $revenue,
             ];
         }
 

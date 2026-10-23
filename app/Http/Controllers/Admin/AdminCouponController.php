@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class AdminCouponController extends Controller
 {
@@ -84,7 +83,7 @@ class AdminCouponController extends Controller
     public function update(Request $request, Coupon $coupon)
     {
         $validated = $request->validate([
-            'code' => 'required|string|max:50|unique:coupons,code,' . $coupon->id,
+            'code' => 'required|string|max:50|unique:coupons,code,'.$coupon->id,
             'type' => 'required|in:fixed,percentage',
             'value' => 'required|numeric|min:0',
             'min_amount' => 'nullable|numeric|min:0',

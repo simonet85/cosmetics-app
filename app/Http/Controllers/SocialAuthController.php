@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -14,40 +13,40 @@ class SocialAuthController extends Controller
     /**
      * Redirect the user to the provider authentication page.
      *
-     * @param string $provider
+     * @param  string  $provider
      * @return \Illuminate\Http\Response
      */
     public function redirectToProvider($provider)
     {
         // Validate provider
-        if (!in_array($provider, ['google', 'facebook'])) {
+        if (! in_array($provider, ['google', 'facebook'])) {
             return redirect()->route('login')->with('error', 'Fournisseur non pris en charge.');
         }
 
         try {
             return Socialite::driver($provider)->redirect();
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Erreur lors de la connexion avec ' . ucfirst($provider) . '.');
+            return redirect()->route('login')->with('error', 'Erreur lors de la connexion avec '.ucfirst($provider).'.');
         }
     }
 
     /**
      * Obtain the user information from the provider.
      *
-     * @param string $provider
+     * @param  string  $provider
      * @return \Illuminate\Http\Response
      */
     public function handleProviderCallback($provider)
     {
         // Validate provider
-        if (!in_array($provider, ['google', 'facebook'])) {
+        if (! in_array($provider, ['google', 'facebook'])) {
             return redirect()->route('login')->with('error', 'Fournisseur non pris en charge.');
         }
 
         try {
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Erreur lors de la connexion avec ' . ucfirst($provider) . '. Veuillez réessayer.');
+            return redirect()->route('login')->with('error', 'Erreur lors de la connexion avec '.ucfirst($provider).'. Veuillez réessayer.');
         }
 
         // Check if user already exists with this provider
@@ -62,6 +61,7 @@ class SocialAuthController extends Controller
             }
 
             Auth::login($user, true);
+
             return redirect()->intended('/');
         }
 
@@ -77,6 +77,7 @@ class SocialAuthController extends Controller
             ]);
 
             Auth::login($existingUser, true);
+
             return redirect()->intended('/');
         }
 
@@ -107,7 +108,7 @@ class SocialAuthController extends Controller
     /**
      * Extract first and last name from full name
      *
-     * @param string $fullName
+     * @param  string  $fullName
      * @return array
      */
     private function extractNames($fullName)

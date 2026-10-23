@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 
 class AdminSettingController extends Controller
@@ -56,11 +55,11 @@ class AdminSettingController extends Controller
         // Validate logo upload
         if ($request->hasFile('site_logo')) {
             $request->validate([
-                'site_logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+                'site_logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             ], [
                 'site_logo.image' => 'Le fichier doit être une image.',
                 'site_logo.mimes' => 'Le logo doit être au format JPEG, PNG, JPG ou GIF.',
-                'site_logo.max' => 'La taille du logo ne doit pas dépasser 2 Mo.'
+                'site_logo.max' => 'La taille du logo ne doit pas dépasser 2 Mo.',
             ]);
 
             // Delete old logo if exists
@@ -77,13 +76,13 @@ class AdminSettingController extends Controller
 
             // Ensure the logo directory exists
             $logoDir = public_path('images/logo');
-            if (!file_exists($logoDir)) {
+            if (! file_exists($logoDir)) {
                 mkdir($logoDir, 0755, true);
             }
 
             // Generate unique filename
-            $filename = 'logo-' . time() . '.png';
-            $path = 'images/logo/' . $filename;
+            $filename = 'logo-'.time().'.png';
+            $path = 'images/logo/'.$filename;
 
             // Save the image
             $image->save(public_path($path));
@@ -95,7 +94,7 @@ class AdminSettingController extends Controller
                     'value' => $path,
                     'type' => 'text',
                     'group' => 'general',
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]
             );
         }
@@ -129,7 +128,7 @@ class AdminSettingController extends Controller
             'payment_credit_card_enabled',
             'payment_paypal_enabled',
             'payment_bank_transfer_enabled',
-            'payment_cash_on_delivery_enabled'
+            'payment_cash_on_delivery_enabled',
         ];
 
         foreach ($paymentSettings as $setting) {
@@ -151,7 +150,7 @@ class AdminSettingController extends Controller
                 'value' => $value,
                 'type' => $type,
                 'group' => $group,
-                'updated_at' => now()
+                'updated_at' => now(),
             ]
         );
     }

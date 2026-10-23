@@ -33,7 +33,7 @@
                 <a href="{{ route('home') }}" class="inline-block bg-gray-900 text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition">
                     Retour à l'accueil
                 </a>
-                <a href="{{ route('checkout.success', $order->id) }}" class="inline-block bg-white text-gray-900 px-8 py-3 rounded-lg border-2 border-gray-900 hover:bg-gray-50 transition">
+                <a href="{{ $order->successUrl() }}" class="inline-block bg-white text-gray-900 px-8 py-3 rounded-lg border-2 border-gray-900 hover:bg-gray-50 transition">
                     Voir ma commande
                 </a>
             </div>

@@ -86,21 +86,21 @@ class ProductController extends Controller
             'slug' => $product->slug,
             'sku' => $product->sku,
             'price' => $product->price,
-            'compare_price' => $product->compare_price,
+            'final_price' => $product->final_price,
             'discount_percentage' => $product->discount_percentage,
             'short_description' => $product->short_description,
             'stock' => $product->stock,
-            'images' => $product->images->map(function($image) {
+            'images' => $product->images->map(function ($image) {
                 return [
                     'path' => asset($image->path),
-                    'is_primary' => $image->is_primary
+                    'is_primary' => $image->is_primary,
                 ];
             }),
             'primary_image' => $product->primaryImage ? asset($product->primaryImage->path) : asset('images/placeholder.jpg'),
-            'categories' => $product->categories->map(function($category) {
+            'categories' => $product->categories->map(function ($category) {
                 return [
                     'name' => $category->name,
-                    'slug' => $category->slug
+                    'slug' => $category->slug,
                 ];
             }),
             'reviews_count' => $product->reviews_count,
@@ -109,7 +109,7 @@ class ProductController extends Controller
             'settings' => [
                 'estimated_delivery_days' => getSetting('estimated_delivery_days', '3-5'),
                 'free_shipping_threshold' => floatval(getSetting('free_shipping_threshold', '50000')),
-            ]
+            ],
         ]);
     }
 }

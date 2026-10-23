@@ -17,9 +17,7 @@ class OrderPaid extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public Order $order)
-    {
-    }
+    public function __construct(public Order $order) {}
 
     /**
      * Get the message envelope.
@@ -27,7 +25,7 @@ class OrderPaid extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Order Confirmation #' . $this->order->order_number . ' - Glowing Cosmetics',
+            subject: 'Order Confirmation #'.$this->order->order_number.' - Glowing Cosmetics',
         );
     }
 
@@ -52,7 +50,7 @@ class OrderPaid extends Mailable
         $pdf = Pdf::loadView('emails.invoice', ['order' => $this->order]);
 
         return [
-            \Illuminate\Mail\Mailables\Attachment::fromData(fn () => $pdf->output(), 'invoice-' . $this->order->order_number . '.pdf')
+            \Illuminate\Mail\Mailables\Attachment::fromData(fn () => $pdf->output(), 'invoice-'.$this->order->order_number.'.pdf')
                 ->withMime('application/pdf'),
         ];
     }

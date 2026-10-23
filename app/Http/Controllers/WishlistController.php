@@ -29,7 +29,7 @@ class WishlistController extends Controller
     public function add(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id'
+            'product_id' => 'required|exists:products,id',
         ]);
 
         $wishlist = session()->get('wishlist', []);
@@ -38,7 +38,7 @@ class WishlistController extends Controller
         if (in_array($request->product_id, $wishlist)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Ce produit est déjà dans votre liste de souhaits.'
+                'message' => 'Ce produit est déjà dans votre liste de souhaits.',
             ], 400);
         }
 
@@ -48,14 +48,14 @@ class WishlistController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Produit ajouté à votre liste de souhaits!',
-            'wishlist_count' => count($wishlist)
+            'wishlist_count' => count($wishlist),
         ]);
     }
 
     public function remove(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id'
+            'product_id' => 'required|exists:products,id',
         ]);
 
         $wishlist = session()->get('wishlist', []);
@@ -69,13 +69,13 @@ class WishlistController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Produit retiré de votre liste de souhaits!',
-                'wishlist_count' => count($wishlist)
+                'wishlist_count' => count($wishlist),
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Produit non trouvé dans votre liste de souhaits.'
+            'message' => 'Produit non trouvé dans votre liste de souhaits.',
         ], 404);
     }
 
@@ -86,7 +86,7 @@ class WishlistController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Liste de souhaits vidée avec succès!',
-            'wishlist_count' => 0
+            'wishlist_count' => 0,
         ]);
     }
 
@@ -95,14 +95,14 @@ class WishlistController extends Controller
         $wishlist = session()->get('wishlist', []);
 
         return response()->json([
-            'count' => count($wishlist)
+            'count' => count($wishlist),
         ]);
     }
 
     public function toggle(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id'
+            'product_id' => 'required|exists:products,id',
         ]);
 
         $wishlist = session()->get('wishlist', []);
@@ -119,7 +119,7 @@ class WishlistController extends Controller
                 'success' => true,
                 'action' => 'removed',
                 'message' => 'Produit retiré de votre liste de souhaits!',
-                'wishlist_count' => count($wishlist)
+                'wishlist_count' => count($wishlist),
             ]);
         } else {
             // Add to wishlist
@@ -130,7 +130,7 @@ class WishlistController extends Controller
                 'success' => true,
                 'action' => 'added',
                 'message' => 'Produit ajouté à votre liste de souhaits!',
-                'wishlist_count' => count($wishlist)
+                'wishlist_count' => count($wishlist),
             ]);
         }
     }

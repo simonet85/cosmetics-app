@@ -41,9 +41,9 @@ class ShopController extends Controller
         // Search by keyword
         if ($request->has('search') && $request->search != '') {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('short_description', 'like', '%' . $request->search . '%')
-                    ->orWhere('full_description', 'like', '%' . $request->search . '%');
+                $q->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('short_description', 'like', '%'.$request->search.'%')
+                    ->orWhere('full_description', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -98,8 +98,11 @@ class ShopController extends Controller
             ->withCount('reviews')
             ->withAvg('reviews', 'rating')
             ->where('slug', $slug)
-            ->active()
+            // Admins can preview unpublished (inactive / archived) products from the admin list
+            ->when(! (auth()->check() && auth()->user()->isAdmin()), fn ($query) => $query->active())
             ->firstOrFail();
+
+        $isPreview = $product->status !== 'active';
 
         // Get related products from same categories
         $categoryIds = $product->categories->pluck('id');
@@ -115,7 +118,7 @@ class ShopController extends Controller
             ->limit(4)
             ->get();
 
-        return view('shop.show', compact('product', 'relatedProducts'));
+        return view('shop.show', compact('product', 'relatedProducts', 'isPreview'));
     }
 
     /**

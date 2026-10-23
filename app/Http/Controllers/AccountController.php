@@ -45,6 +45,7 @@ class AccountController extends Controller
     public function profile()
     {
         $user = auth()->user();
+
         return view('account.profile', compact('user'));
     }
 
@@ -55,7 +56,7 @@ class AccountController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
@@ -89,7 +90,7 @@ class AccountController extends Controller
             }
 
             // Validate extension
-            if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
+            if (! in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
                 return redirect()->back()
                     ->withInput()
                     ->with('error', 'Format d\'image non supporté. Utilisez JPG, JPEG ou PNG.');
@@ -106,18 +107,18 @@ class AccountController extends Controller
 
                 // Ensure directory exists
                 $avatarDir = public_path('storage/images/avatars');
-                if (!file_exists($avatarDir)) {
+                if (! file_exists($avatarDir)) {
                     mkdir($avatarDir, 0755, true);
                 }
 
                 // Generate unique filename
-                $filename = time() . '-' . uniqid() . '.' . $extension;
+                $filename = time().'-'.uniqid().'.'.$extension;
 
                 // Move uploaded file using Symfony's move method
                 $avatar->move($avatarDir, $filename);
 
                 // Set the avatar path
-                $validated['avatar'] = 'storage/images/avatars/' . $filename;
+                $validated['avatar'] = 'storage/images/avatars/'.$filename;
 
             } catch (\Exception $e) {
                 \Log::error('Avatar upload error', [
@@ -125,7 +126,7 @@ class AccountController extends Controller
                     'file' => $avatar->getClientOriginalName() ?? 'unknown',
                     'size' => $avatar->getSize() ?? 0,
                     'extension' => $extension ?? 'unknown',
-                    'trace' => $e->getTraceAsString()
+                    'trace' => $e->getTraceAsString(),
                 ]);
 
                 return redirect()->back()
@@ -154,14 +155,14 @@ class AccountController extends Controller
 
         // Update password if provided
         if ($request->filled('current_password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
+            if (! Hash::check($request->current_password, $user->password)) {
                 return redirect()->back()
                     ->withErrors(['current_password' => 'Le mot de passe actuel est incorrect.'])
                     ->withInput();
             }
 
             $user->update([
-                'password' => Hash::make($request->new_password)
+                'password' => Hash::make($request->new_password),
             ]);
         }
 
@@ -204,15 +205,10 @@ class AccountController extends Controller
 
         // Update order status
         $order->update([
-            'status' => 'cancelled'
+            'status' => 'cancelled',
         ]);
 
-        // Restore product stock
-        foreach ($order->items as $item) {
-            if ($item->product) {
-                $item->product->increment('stock', $item->quantity);
-            }
-        }
+        $order->releaseStock();
 
         return redirect()->route('account.orders')->with('success', 'Commande annulée avec succès. Le stock des produits a été restauré.');
     }

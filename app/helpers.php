@@ -2,19 +2,19 @@
 
 use Illuminate\Support\Facades\DB;
 
-if (!function_exists('getSetting')) {
+if (! function_exists('getSetting')) {
     /**
      * Get a setting value from the database
      *
-     * @param string $key The setting key
-     * @param mixed $default The default value if setting doesn't exist
+     * @param  string  $key  The setting key
+     * @param  mixed  $default  The default value if setting doesn't exist
      * @return mixed
      */
     function getSetting(string $key, $default = null)
     {
         $setting = DB::table('settings')->where('key', $key)->first();
 
-        if (!$setting) {
+        if (! $setting) {
             return $default;
         }
 
@@ -28,11 +28,11 @@ if (!function_exists('getSetting')) {
     }
 }
 
-if (!function_exists('getPaymentMethodLabel')) {
+if (! function_exists('getPaymentMethodLabel')) {
     /**
      * Get the French label for a payment method
      *
-     * @param string $method The payment method code
+     * @param  string  $method  The payment method code
      * @return string The French label
      */
     function getPaymentMethodLabel(string $method): string

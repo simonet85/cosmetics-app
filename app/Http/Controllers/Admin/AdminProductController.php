@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use App\Models\Category;
-use App\Models\Tag;
+use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class AdminProductController extends Controller
@@ -22,28 +23,35 @@ class AdminProductController extends Controller
 
         // Search
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('sku', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('sku', 'like', '%'.$request->search.'%')
+                    ->orWhere('full_description', 'like', '%'.$request->search.'%');
             });
         }
 
         // Filter by category
         if ($request->filled('category')) {
-            $query->whereHas('categories', function($q) use ($request) {
+            $query->whereHas('categories', function ($q) use ($request) {
                 $q->where('categories.id', $request->category);
             });
         }
 
         // Filter by status
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            match ($request->status) {
+                'active' => $query->where('is_active', true)->where('is_archived', false),
+                'inactive' => $query->where('is_active', false)->where('is_archived', false),
+                'archived' => $query->where('is_archived', true),
+                default => null,
+            };
         }
 
         // Sort
-        $sortBy = $request->get('sort_by', 'created_at');
-        $sortOrder = $request->get('sort_order', 'desc');
+        $sortBy = in_array($request->get('sort_by'), ['name', 'sku', 'price', 'stock', 'created_at'], true)
+            ? $request->get('sort_by')
+            : 'created_at';
+        $sortOrder = $request->get('sort_order') === 'asc' ? 'asc' : 'desc';
         $query->orderBy($sortBy, $sortOrder);
 
         $products = $query->paginate(20);
@@ -68,18 +76,11 @@ class AdminProductController extends Controller
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:500',
             'price' => 'required|numeric|min:0',
-            'compare_price' => 'nullable|numeric|min:0',
-            'cost_price' => 'nullable|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0|lt:price',
             'discount_percentage' => 'nullable|integer|min:0|max:100',
             'stock' => 'required|integer|min:0',
-            'weight' => 'nullable|numeric|min:0',
-            'dimensions' => 'nullable|string|max:100',
-            'status' => 'required|in:active,inactive,draft',
+            'status' => 'required|in:active,inactive,archived',
             'is_featured' => 'boolean',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
-            'meta_keywords' => 'nullable|string|max:255',
             'categories' => 'nullable|array',
             'categories.*' => 'exists:categories,id',
             'tags' => 'nullable|array',
@@ -98,11 +99,11 @@ class AdminProductController extends Controller
             $originalSlug = $validated['slug'];
             $count = 1;
             while (Product::where('slug', $validated['slug'])->exists()) {
-                $validated['slug'] = $originalSlug . '-' . $count;
+                $validated['slug'] = $originalSlug.'-'.$count;
                 $count++;
             }
 
-            $product = Product::create($validated);
+            $product = Product::create($this->productData($validated, $request));
 
             // Attach categories
             if ($request->has('categories')) {
@@ -118,33 +119,7 @@ class AdminProductController extends Controller
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $index => $image) {
                     if ($image->isValid()) {
-                        // Get extension
-                        $extension = $image->getClientOriginalExtension();
-                        if (empty($extension)) {
-                            $extension = $image->guessExtension() ?? 'jpg';
-                        }
-
-                        // Ensure directory exists
-                        $imageDir = public_path('storage/products');
-                        if (!file_exists($imageDir)) {
-                            mkdir($imageDir, 0755, true);
-                        }
-
-                        // Generate unique filename
-                        $filename = time() . '-' . uniqid() . '.' . $extension;
-
-                        // Move uploaded file
-                        $image->move($imageDir, $filename);
-
-                        // Store relative path
-                        $path = 'storage/products/' . $filename;
-
-                        ProductImage::create([
-                            'product_id' => $product->id,
-                            'path' => $path,
-                            'is_primary' => $index === 0,
-                            'order' => $index,
-                        ]);
+                        $this->storeImage($image, $product, $index === 0, $index);
                     }
                 }
             }
@@ -156,16 +131,10 @@ class AdminProductController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()->withInput()
-                ->with('error', 'Erreur lors de la création du produit: ' . $e->getMessage());
+                ->with('error', 'Erreur lors de la création du produit: '.$e->getMessage());
         }
-    }
-
-    public function show(Product $product)
-    {
-        $product->load(['categories', 'tags', 'images', 'reviews.user']);
-
-        return view('admin.products.show', compact('product'));
     }
 
     public function edit(Product $product)
@@ -181,22 +150,15 @@ class AdminProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sku' => 'required|string|max:100|unique:products,sku,' . $product->id,
+            'sku' => 'required|string|max:100|unique:products,sku,'.$product->id,
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:500',
             'price' => 'required|numeric|min:0',
-            'compare_price' => 'nullable|numeric|min:0',
-            'cost_price' => 'nullable|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0|lt:price',
             'discount_percentage' => 'nullable|integer|min:0|max:100',
             'stock' => 'required|integer|min:0',
-            'weight' => 'nullable|numeric|min:0',
-            'dimensions' => 'nullable|string|max:100',
-            'status' => 'required|in:active,inactive,draft',
+            'status' => 'required|in:active,inactive,archived',
             'is_featured' => 'boolean',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
-            'meta_keywords' => 'nullable|string|max:255',
             'categories' => 'nullable|array',
             'categories.*' => 'exists:categories,id',
             'tags' => 'nullable|array',
@@ -216,12 +178,12 @@ class AdminProductController extends Controller
                 $originalSlug = $validated['slug'];
                 $count = 1;
                 while (Product::where('slug', $validated['slug'])->where('id', '!=', $product->id)->exists()) {
-                    $validated['slug'] = $originalSlug . '-' . $count;
+                    $validated['slug'] = $originalSlug.'-'.$count;
                     $count++;
                 }
             }
 
-            $product->update($validated);
+            $product->update($this->productData($validated, $request));
 
             // Sync categories
             if ($request->has('categories')) {
@@ -243,33 +205,7 @@ class AdminProductController extends Controller
 
                 foreach ($request->file('images') as $index => $image) {
                     if ($image->isValid()) {
-                        // Get extension
-                        $extension = $image->getClientOriginalExtension();
-                        if (empty($extension)) {
-                            $extension = $image->guessExtension() ?? 'jpg';
-                        }
-
-                        // Ensure directory exists
-                        $imageDir = public_path('storage/products');
-                        if (!file_exists($imageDir)) {
-                            mkdir($imageDir, 0755, true);
-                        }
-
-                        // Generate unique filename
-                        $filename = time() . '-' . uniqid() . '.' . $extension;
-
-                        // Move uploaded file
-                        $image->move($imageDir, $filename);
-
-                        // Store relative path
-                        $path = 'storage/products/' . $filename;
-
-                        ProductImage::create([
-                            'product_id' => $product->id,
-                            'path' => $path,
-                            'is_primary' => $currentImagesCount === 0 && $index === 0,
-                            'order' => $currentImagesCount + $index,
-                        ]);
+                        $this->storeImage($image, $product, $currentImagesCount === 0 && $index === 0, $currentImagesCount + $index);
                     }
                 }
             }
@@ -281,8 +217,9 @@ class AdminProductController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()->withInput()
-                ->with('error', 'Erreur lors de la mise à jour du produit: ' . $e->getMessage());
+                ->with('error', 'Erreur lors de la mise à jour du produit: '.$e->getMessage());
         }
     }
 
@@ -293,9 +230,7 @@ class AdminProductController extends Controller
 
             // Delete images from storage
             foreach ($product->images as $image) {
-                if ($image->image_path) {
-                    Storage::disk('public')->delete($image->image_path);
-                }
+                File::delete(public_path($image->path));
             }
 
             // Delete product (cascading will handle images, reviews, etc.)
@@ -308,8 +243,9 @@ class AdminProductController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()
-                ->with('error', 'Erreur lors de la suppression du produit: ' . $e->getMessage());
+                ->with('error', 'Erreur lors de la suppression du produit: '.$e->getMessage());
         }
     }
 
@@ -325,29 +261,60 @@ class AdminProductController extends Controller
             $currentImagesCount = $product->images()->count();
 
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
-
-                $productImage = ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_path' => $path,
-                    'is_primary' => $currentImagesCount === 0 && $index === 0,
-                    'sort_order' => $currentImagesCount + $index,
-                ]);
-
-                $uploaded[] = $productImage;
+                $uploaded[] = $this->storeImage($image, $product, $currentImagesCount === 0 && $index === 0, $currentImagesCount + $index);
             }
 
             return response()->json([
                 'success' => true,
-                'message' => count($uploaded) . ' image(s) téléchargée(s) avec succès!',
-                'images' => $uploaded
+                'message' => count($uploaded).' image(s) téléchargée(s) avec succès!',
+                'images' => $uploaded,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors du téléchargement: ' . $e->getMessage()
+                'message' => 'Erreur lors du téléchargement: '.$e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Map the admin form fields onto the real products columns.
+     */
+    private function productData(array $validated, Request $request): array
+    {
+        $status = $validated['status'];
+
+        $validated['full_description'] = $validated['description'];
+        $validated['is_active'] = $status === 'active';
+        $validated['is_archived'] = $status === 'archived';
+        $validated['is_featured'] = $request->boolean('is_featured');
+
+        unset($validated['description'], $validated['status'], $validated['categories'], $validated['tags'], $validated['images']);
+
+        return $validated;
+    }
+
+    /**
+     * Move an uploaded image into public/storage/products and record it.
+     */
+    private function storeImage(UploadedFile $image, Product $product, bool $isPrimary, int $order): ProductImage
+    {
+        $extension = $image->getClientOriginalExtension() ?: ($image->guessExtension() ?? 'jpg');
+        $imageDir = public_path('storage/products');
+
+        if (! file_exists($imageDir)) {
+            mkdir($imageDir, 0755, true);
+        }
+
+        $filename = time().'-'.uniqid().'.'.$extension;
+        $image->move($imageDir, $filename);
+
+        return ProductImage::create([
+            'product_id' => $product->id,
+            'path' => 'storage/products/'.$filename,
+            'is_primary' => $isPrimary,
+            'order' => $order,
+        ]);
     }
 }

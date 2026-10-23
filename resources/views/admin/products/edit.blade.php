@@ -77,7 +77,7 @@
                             rows="8"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('description') border-red-500 @enderror"
                             required
-                        >{{ old('description', $product->description) }}</textarea>
+                        >{{ old('description', $product->full_description) }}</textarea>
                         @error('description')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -110,41 +110,7 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">Prix comparé</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">FCFA</span>
-                            <input
-                                type="number"
-                                name="compare_price"
-                                value="{{ old('compare_price', $product->compare_price) }}"
-                                step="0.01"
-                                min="0"
-                                class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('compare_price') border-red-500 @enderror"
-                            >
-                        </div>
-                        @error('compare_price')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
 
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">Prix coûtant</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">FCFA</span>
-                            <input
-                                type="number"
-                                name="cost_price"
-                                value="{{ old('cost_price', $product->cost_price) }}"
-                                step="0.01"
-                                min="0"
-                                class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('cost_price') border-red-500 @enderror"
-                            >
-                        </div>
-                        @error('cost_price')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
                 </div>
 
                 {{-- Promotion Section --}}
@@ -242,72 +208,9 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">Poids (kg)</label>
-                        <input
-                            type="number"
-                            name="weight"
-                            value="{{ old('weight', $product->weight) }}"
-                            step="0.01"
-                            min="0"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('weight') border-red-500 @enderror"
-                        >
-                        @error('weight')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">Dimensions</label>
-                        <input
-                            type="text"
-                            name="dimensions"
-                            value="{{ old('dimensions', $product->dimensions) }}"
-                            placeholder="10 x 5 x 3 cm"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('dimensions') border-red-500 @enderror"
-                        >
-                        @error('dimensions')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
                 </div>
             </div>
 
-            {{-- SEO --}}
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">SEO</h2>
-
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">Meta titre</label>
-                        <input
-                            type="text"
-                            name="meta_title"
-                            value="{{ old('meta_title', $product->meta_title) }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f]"
-                        >
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">Meta description</label>
-                        <textarea
-                            name="meta_description"
-                            rows="3"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f]"
-                        >{{ old('meta_description', $product->meta_description) }}</textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">Meta mots-clés</label>
-                        <input
-                            type="text"
-                            name="meta_keywords"
-                            value="{{ old('meta_keywords', $product->meta_keywords) }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f]"
-                        >
-                    </div>
-                </div>
-            </div>
         </div>
 
         {{-- Sidebar --}}
@@ -326,7 +229,7 @@
                         >
                             <option value="active" {{ old('status', $product->status) === 'active' ? 'selected' : '' }}>Actif</option>
                             <option value="inactive" {{ old('status', $product->status) === 'inactive' ? 'selected' : '' }}>Inactif</option>
-                            <option value="draft" {{ old('status', $product->status) === 'draft' ? 'selected' : '' }}>Brouillon</option>
+                            <option value="archived" {{ old('status', $product->status) === 'archived' ? 'selected' : '' }}>Archivé</option>
                         </select>
                     </div>
 

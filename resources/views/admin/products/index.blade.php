@@ -48,7 +48,7 @@
                 <option value="">Tous les statuts</option>
                 <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Actif</option>
                 <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactif</option>
-                <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Brouillon</option>
+                <option value="archived" {{ request('status') === 'archived' ? 'selected' : '' }}>Archivé</option>
             </select>
         </div>
 
@@ -115,9 +115,9 @@
                         {{ $product->sku }}
                     </td>
                     <td class="px-6 py-4">
-                        <div class="text-sm font-semibold text-gray-900">{{ number_format($product->price, 0) }} FCFA</div>
-                        @if($product->compare_price)
-                        <div class="text-xs text-gray-500 line-through">{{ number_format($product->compare_price, 0) }} FCFA</div>
+                        <div class="text-sm font-semibold text-gray-900">{{ number_format($product->final_price, 0) }} FCFA</div>
+                        @if($product->final_price < $product->price)
+                        <div class="text-xs text-gray-500 line-through">{{ number_format($product->price, 0) }} FCFA</div>
                         @endif
                     </td>
                     <td class="px-6 py-4">
@@ -132,10 +132,10 @@
                     <td class="px-6 py-4">
                         <span class="px-3 py-1 rounded-full text-xs font-semibold
                             @if($product->status === 'active') bg-green-100 text-green-800
-                            @elseif($product->status === 'draft') bg-gray-100 text-gray-800
+                            @elseif($product->status === 'inactive') bg-gray-100 text-gray-800
                             @else bg-red-100 text-red-800
                             @endif">
-                            {{ ucfirst($product->status) }}
+                            {{ ['active' => 'Actif', 'inactive' => 'Inactif', 'archived' => 'Archivé'][$product->status] }}
                         </span>
                     </td>
                     <td class="px-6 py-4">

@@ -102,7 +102,7 @@
                             <div class="flex-1">
                                 <h4 class="font-semibold text-gray-900">{{ $item->product_name }}</h4>
                                 @if($item->variant)
-                                <p class="text-sm text-gray-600 mt-1">{{ $item->variant->variant_type }}: {{ $item->variant->variant_value }}</p>
+                                <p class="text-sm text-gray-600 mt-1">{{ $item->variant->label }}</p>
                                 @endif
                                 <p class="text-sm text-gray-600 mt-1">SKU: {{ $item->sku }}</p>
                                 <p class="text-sm text-gray-600">Quantité: {{ $item->quantity }}</p>
@@ -157,7 +157,7 @@
                         Adresse de livraison
                     </h3>
                     @php
-                        $shipping = json_decode($order->shipping_address, true);
+                        $shipping = $order->shipping_address;
                     @endphp
                     <div class="text-sm text-gray-700 space-y-1">
                         <p class="font-semibold text-gray-900">{{ $shipping['first_name'] }} {{ $shipping['last_name'] }}</p>

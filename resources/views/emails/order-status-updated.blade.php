@@ -403,16 +403,7 @@
                         <li>
                             {{ $item->quantity }}x {{ $item->product_name }}
                             @if($item->variant)
-                                @php
-                                    $attributes = json_decode($item->variant->attributes, true);
-                                @endphp
-                                @if($attributes)
-                                    (
-                                    @foreach($attributes as $key => $value)
-                                        {{ ucfirst($key) }}: {{ $value }}{{ !$loop->last ? ', ' : '' }}
-                                    @endforeach
-                                    )
-                                @endif
+                                ({{ $item->variant->label }})
                             @endif
                             - {{ number_format($item->total, 2) }} FCFA
                         </li>

@@ -83,18 +83,18 @@ class AdminBannerController extends Controller
 
             // Ensure directory exists
             $imageDir = public_path('storage/images/banners');
-            if (!file_exists($imageDir)) {
+            if (! file_exists($imageDir)) {
                 mkdir($imageDir, 0755, true);
             }
 
             // Generate unique filename
-            $filename = time() . '-' . uniqid() . '.' . $extension;
+            $filename = time().'-'.uniqid().'.'.$extension;
 
             // Move uploaded file
             $image->move($imageDir, $filename);
 
             // Store relative path
-            $validated['image_path'] = 'storage/images/banners/' . $filename;
+            $validated['image_path'] = 'storage/images/banners/'.$filename;
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -155,18 +155,18 @@ class AdminBannerController extends Controller
 
             // Ensure directory exists
             $imageDir = public_path('storage/images/banners');
-            if (!file_exists($imageDir)) {
+            if (! file_exists($imageDir)) {
                 mkdir($imageDir, 0755, true);
             }
 
             // Generate unique filename
-            $filename = time() . '-' . uniqid() . '.' . $extension;
+            $filename = time().'-'.uniqid().'.'.$extension;
 
             // Move uploaded file
             $image->move($imageDir, $filename);
 
             // Store relative path
-            $validated['image_path'] = 'storage/images/banners/' . $filename;
+            $validated['image_path'] = 'storage/images/banners/'.$filename;
         }
 
         $validated['is_active'] = $request->has('is_active');

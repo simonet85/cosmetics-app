@@ -6,64 +6,26 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Simonet85\LaravelMoneyFusion\MoneyFusionService;
 
 class CheckoutController extends Controller
 {
-    protected MoneyFusionService $moneyFusion;
+    public function __construct(private CartService $cart) {}
 
-    public function __construct(MoneyFusionService $moneyFusion)
-    {
-        $this->moneyFusion = $moneyFusion;
-    }
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $cartItems = array_values($this->cart->lines());
 
-        if (empty($cart)) {
+        if (empty($cartItems)) {
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
 
-        $cartItems = [];
-        $subtotal = 0;
+        ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals();
 
-        foreach ($cart as $id => $item) {
-            $product = Product::with('images')->find($item['product_id']);
-            if ($product) {
-                $cartItem = [
-                    'id' => $id,
-                    'product' => $product,
-                    'variant' => isset($item['variant_id']) ? ProductVariant::find($item['variant_id']) : null,
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'subtotal' => $item['price'] * $item['quantity']
-                ];
-                $cartItems[] = $cartItem;
-                $subtotal += $cartItem['subtotal'];
-            }
-        }
-
-        // Get tax rate from settings (convert percentage to decimal)
-        $taxRate = floatval(getSetting('tax_rate', '15')) / 100;
-        $tax = $subtotal * $taxRate;
-
-        // Get shipping settings
-        $standardShippingCost = floatval(getSetting('standard_shipping_cost', '0'));
-        $freeShippingThreshold = floatval(getSetting('free_shipping_threshold', '50000'));
-        $shipping = $subtotal >= $freeShippingThreshold ? 0 : $standardShippingCost;
-
-        $total = $subtotal + $tax + $shipping;
-
-        // Get enabled payment methods from settings
-        $enabledPaymentMethods = [
-            'credit_card' => getSetting('payment_credit_card_enabled', '1') === '1',
-            'paypal' => getSetting('payment_paypal_enabled', '1') === '1',
-            'bank_transfer' => getSetting('payment_bank_transfer_enabled', '1') === '1',
-            'cash_on_delivery' => getSetting('payment_cash_on_delivery_enabled', '1') === '1',
-            'moneyfusion' => getSetting('payment_moneyfusion_enabled', '1') === '1',
-        ];
+        $enabledPaymentMethods = $this->enabledPaymentMethods();
 
         return view('checkout.index', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total', 'enabledPaymentMethods'));
     }
@@ -102,31 +64,24 @@ class CheckoutController extends Controller
             'billing_quartier.required_without' => 'Le quartier de facturation est obligatoire.',
         ]);
 
-        $cart = session()->get('cart', []);
+        // The admin can switch payment methods off in the settings: enforce it here, not just in the form.
+        if (! ($this->enabledPaymentMethods()[$request->payment_method] ?? false)) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['payment_method' => 'Ce mode de paiement n\'est pas disponible.']);
+        }
 
-        if (empty($cart)) {
+        // Priced from the database right now, not from what the session remembered at "add to cart"
+        $lines = $this->cart->lines();
+
+        if (empty($lines)) {
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
 
         try {
             DB::beginTransaction();
 
-            // Calculate totals
-            $subtotal = 0;
-            foreach ($cart as $item) {
-                $subtotal += $item['price'] * $item['quantity'];
-            }
-
-            // Get tax rate from settings (convert percentage to decimal)
-            $taxRate = floatval(getSetting('tax_rate', '15')) / 100;
-            $tax = $subtotal * $taxRate;
-
-            // Get shipping settings
-            $standardShippingCost = floatval(getSetting('standard_shipping_cost', '0'));
-            $freeShippingThreshold = floatval(getSetting('free_shipping_threshold', '50000'));
-            $shipping = $subtotal >= $freeShippingThreshold ? 0 : $standardShippingCost;
-
-            $total = $subtotal + $tax + $shipping;
+            ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals($lines);
 
             // Prepare shipping address
             $shippingAddress = [
@@ -150,7 +105,7 @@ class CheckoutController extends Controller
             // Create order
             $order = Order::create([
                 'user_id' => auth()->check() ? auth()->id() : null,
-                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'order_number' => 'ORD-'.strtoupper(uniqid()),
                 'status' => 'pending',
                 'payment_status' => 'pending',
                 'payment_method' => $request->payment_method,
@@ -160,25 +115,41 @@ class CheckoutController extends Controller
                 'total' => $total,
                 'customer_email' => $request->email,
                 'customer_phone' => $request->phone,
-                'shipping_address' => json_encode($shippingAddress),
-                'billing_address' => json_encode($billingAddress),
+                'shipping_address' => $shippingAddress,
+                'billing_address' => $billingAddress,
                 'notes' => $request->notes,
             ]);
 
-            // Create order items and update stock
-            foreach ($cart as $item) {
-                $product = Product::findOrFail($item['product_id']);
+            // Create order items and update stock. Rows are locked so two simultaneous
+            // orders cannot both take the last unit.
+            foreach ($lines as $line) {
+                $item = ['product_id' => $line['product']->id, 'variant_id' => $line['variant']?->id, 'quantity' => $line['quantity'], 'price' => $line['price']];
+                $product = Product::whereKey($item['product_id'])->lockForUpdate()->firstOrFail();
 
-                // Check stock availability
                 if ($product->stock < $item['quantity']) {
                     throw new \Exception("Stock insuffisant pour {$product->name}");
                 }
 
-                // Create order item
+                $variant = null;
+                if (! empty($item['variant_id'])) {
+                    $variant = ProductVariant::whereKey($item['variant_id'])
+                        ->where('product_id', $product->id)
+                        ->lockForUpdate()
+                        ->first();
+
+                    if (! $variant || ! $variant->is_active) {
+                        throw new \Exception("Variante indisponible pour {$product->name}");
+                    }
+
+                    if ($variant->stock < $item['quantity']) {
+                        throw new \Exception("Stock insuffisant pour {$product->name} ({$variant->label})");
+                    }
+                }
+
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
-                    'variant_id' => $item['variant_id'] ?? null,
+                    'variant_id' => $variant?->id,
                     'product_name' => $product->name,
                     'sku' => $product->sku,
                     'quantity' => $item['quantity'],
@@ -186,8 +157,8 @@ class CheckoutController extends Controller
                     'total' => $item['price'] * $item['quantity'],
                 ]);
 
-                // Update product stock
                 $product->decrement('stock', $item['quantity']);
+                $variant?->decrement('stock', $item['quantity']);
             }
 
             // Handle MoneyFusion payment
@@ -195,23 +166,27 @@ class CheckoutController extends Controller
                 try {
                     // Prepare articles for MoneyFusion
                     $articles = [];
-                    foreach ($cart as $item) {
-                        $product = Product::find($item['product_id']);
+                    foreach ($lines as $line) {
                         $articles[] = [
-                            'name' => $product->name,
-                            'price' => (int) $item['price'],
-                            'quantity' => $item['quantity'],
+                            'name' => $line['product']->name,
+                            'price' => (int) $line['price'],
+                            'quantity' => $line['quantity'],
                         ];
                     }
 
                     // Create MoneyFusion payment
-                    $paymentResult = $this->moneyFusion->createPayment([
+                    // Resolved here, not injected in the constructor: the gateway throws when it is not
+                    // configured, which would otherwise break every other payment method too.
+                    $paymentResult = app(MoneyFusionService::class)->createPayment([
                         'total_price' => (float) $total,
                         'articles' => $articles,
-                        'nom_client' => $request->first_name . ' ' . $request->last_name,
+                        'nom_client' => $request->first_name.' '.$request->last_name,
                         'numero_send' => $request->phone,
                         'user_id' => auth()->id(),
                         'order_id' => $order->id,
+                        // Name the order in the return URL: the payer is not guaranteed to come back with the token.
+                        // The callback never trusts it anyway, it asks MoneyFusion for the real status.
+                        'return_url' => route('payment.callback', ['order' => $order->id]),
                     ]);
 
                     // Update order with MoneyFusion information
@@ -227,9 +202,10 @@ class CheckoutController extends Controller
 
                 } catch (\Exception $e) {
                     DB::rollBack();
+
                     return redirect()->back()
                         ->withInput()
-                        ->with('error', 'Erreur lors de l\'initialisation du paiement MoneyFusion: ' . $e->getMessage());
+                        ->with('error', 'Erreur lors de l\'initialisation du paiement MoneyFusion: '.$e->getMessage());
                 }
             }
 
@@ -238,27 +214,45 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            return redirect()->route('checkout.success', $order->id)
+            return redirect($order->successUrl())
                 ->with('success', 'Votre commande a été passée avec succès!');
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Une erreur s\'est produite lors du traitement de votre commande: ' . $e->getMessage());
+                ->with('error', 'Une erreur s\'est produite lors du traitement de votre commande: '.$e->getMessage());
         }
     }
 
-    public function success($orderId)
+    public function success(Request $request, $orderId)
     {
         $order = Order::with(['items.product.images', 'items.variant'])
             ->findOrFail($orderId);
 
-        // Check if user owns this order (if authenticated)
-        if (auth()->check() && $order->user_id !== auth()->id()) {
+        // Order ids are sequential, so the page is only for the owner or someone holding the signed link
+        // (guests are redirected to it right after ordering).
+        $isOwner = auth()->check() && $order->user_id === auth()->id();
+
+        if (! $isOwner && ! $request->hasValidSignature()) {
             abort(403);
         }
 
         return view('checkout.success', compact('order'));
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    private function enabledPaymentMethods(): array
+    {
+        return [
+            'credit_card' => getSetting('payment_credit_card_enabled', '1') === '1',
+            'paypal' => getSetting('payment_paypal_enabled', '1') === '1',
+            'bank_transfer' => getSetting('payment_bank_transfer_enabled', '1') === '1',
+            'cash_on_delivery' => getSetting('payment_cash_on_delivery_enabled', '1') === '1',
+            'moneyfusion' => getSetting('payment_moneyfusion_enabled', '1') === '1',
+        ];
     }
 }

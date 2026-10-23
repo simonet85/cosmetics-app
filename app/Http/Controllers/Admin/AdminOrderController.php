@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderStatusUpdated;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
-use App\Mail\OrderStatusUpdated;
+use Illuminate\Support\Facades\Mail;
 
 class AdminOrderController extends Controller
 {
@@ -78,22 +78,11 @@ class AdminOrderController extends Controller
 
         $order->update($updateData);
 
-        // If order is cancelled, restore stock
+        // Cancelling gives the stock back; reopening a cancelled order takes it again
         if ($request->status === 'cancelled' && $oldStatus !== 'cancelled') {
-            foreach ($order->items as $item) {
-                if ($item->product) {
-                    $item->product->increment('stock', $item->quantity);
-                }
-            }
-        }
-
-        // If order was cancelled but now is not, reduce stock again
-        if ($oldStatus === 'cancelled' && $request->status !== 'cancelled') {
-            foreach ($order->items as $item) {
-                if ($item->product) {
-                    $item->product->decrement('stock', $item->quantity);
-                }
-            }
+            $order->releaseStock();
+        } elseif ($oldStatus === 'cancelled' && $request->status !== 'cancelled') {
+            $order->reserveStock();
         }
 
         // Send email notification if status changed
@@ -105,12 +94,12 @@ class AdminOrderController extends Controller
                     'order_number' => $order->order_number,
                     'old_status' => $oldStatus,
                     'new_status' => $request->status,
-                    'email' => $order->customer_email
+                    'email' => $order->customer_email,
                 ]);
             } catch (\Exception $emailError) {
                 Log::error('Failed to send order status update email', [
                     'order_id' => $order->id,
-                    'error' => $emailError->getMessage()
+                    'error' => $emailError->getMessage(),
                 ]);
                 // Don't fail the status update if email fails
             }

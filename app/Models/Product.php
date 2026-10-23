@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +11,53 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    /**
+     * sku and slug carry database-level unique indexes that still apply to soft-deleted rows.
+     * Soft-deleting a product renames both so the values can be reused, and restoring undoes it.
+     */
+    public static function deletedSuffix(int $id): string
+    {
+        return '-deleted-'.$id;
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Product $product) {
+            if ($product->isForceDeleting()) {
+                return;
+            }
+
+            $suffix = static::deletedSuffix($product->id);
+
+            foreach (['sku', 'slug'] as $column) {
+                if (! str_ends_with($product->$column, $suffix)) {
+                    $product->$column .= $suffix;
+                }
+            }
+
+            $product->saveQuietly();
+        });
+
+        static::restoring(function (Product $product) {
+            $suffix = static::deletedSuffix($product->id);
+
+            foreach (['sku', 'slug'] as $column) {
+                if (! str_ends_with($product->$column, $suffix)) {
+                    continue;
+                }
+
+                $original = substr($product->$column, 0, -strlen($suffix));
+                $taken = static::withTrashed()->where($column, $original)->where('id', '!=', $product->id)->exists();
+
+                // Keep the suffixed value if someone has taken the original in the meantime.
+                if (! $taken) {
+                    $product->$column = $original;
+                }
+            }
+        });
+    }
 
     protected $fillable = [
         'name',
@@ -96,9 +143,21 @@ class Product extends Model
         return $this->reviews()->count();
     }
 
+    /**
+     * Admin-facing status derived from the is_active / is_archived flags.
+     */
+    public function getStatusAttribute(): string
+    {
+        if ($this->is_archived) {
+            return 'archived';
+        }
+
+        return $this->is_active ? 'active' : 'inactive';
+    }
+
     public function getFinalPriceAttribute()
     {
-        return $this->discount_price ?? $this->price;
+        return $this->discount_price > 0 ? $this->discount_price : $this->price;
     }
 
     // Scopes
