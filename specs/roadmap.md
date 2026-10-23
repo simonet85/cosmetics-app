@@ -78,7 +78,7 @@ Packagist shows `laravel/framework` v13.x (requires PHP ^8.3) and `simonet85/lar
 
 ## Phase 8 — Deploy automation
 
-- [ ] 8.1 Deploy script (pull, install, build, migrate, cache) replacing the manual SSH steps.
+- [~] 8.1 Deploy script `scripts/deploy.sh` (dry-run mode, local asset build because the server has no Node, maintenance mode, database dump, fast-forward pull, migrations, caches, smoke tests, rollback hints) written and linted; **not run yet**. `scripts/set-remote-db-password.sh` fixes the stale DB password in the production .env (to be run by the owner).
 - [ ] 8.2 CI deploy job triggered from `main` once tests pass.
 
 ## Deferred
