@@ -98,7 +98,9 @@ set -euo pipefail
 mkdir -p "$HOME/backups"; chmod 700 "$HOME/backups"
 val() { grep -E "^$1=" .env | head -1 | cut -d= -f2- | sed -E 's/^"(.*)"$/\1/; s/^'"'"'(.*)'"'"'$/\1/'; }
 out="$HOME/backups/cosmetics-$(date +%Y%m%d-%H%M%S).sql.gz"
-MYSQL_PWD="$(val DB_PASSWORD)" mysqldump --single-transaction --no-tablespaces -h "$(val DB_HOST)" -P "$(val DB_PORT)" -u "$(val DB_USERNAME)" "$(val DB_DATABASE)" | gzip > "$out"
+# Like the application (PDO), use the local socket when DB_HOST is "localhost"; mysqldump would otherwise go over TCP (::1), which the account may not be granted.
+if [ "$(val DB_HOST)" = "localhost" ]; then conn=(--protocol=socket); else conn=(-h "$(val DB_HOST)" -P "$(val DB_PORT)"); fi
+MYSQL_PWD="$(val DB_PASSWORD)" mysqldump --single-transaction --no-tablespaces "${conn[@]}" -u "$(val DB_USERNAME)" "$(val DB_DATABASE)" | gzip > "$out"
 chmod 600 "$out"
 [ "$(stat -c %s "$out")" -gt 1000 ] || { echo "backup looks empty" >&2; exit 1; }
 echo "$out"
