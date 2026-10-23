@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Mail\OrderPaid;
+use App\Mail\PaymentFailed;
+use App\Mail\PaymentPending;
 use App\Models\Order;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -47,23 +49,17 @@ class OrderPayments
 
         $order->refresh();
 
-        try {
-            Mail::to($order->customer_email)->send(new OrderPaid($order));
-
-            Log::info('Order confirmation email sent', ['order_id' => $order->id, 'order_number' => $order->order_number]);
-        } catch (\Exception $e) {
-            // The payment is recorded; a mail failure must not make the gateway retry or hide it.
-            Log::error('Failed to send order confirmation email', ['order_id' => $order->id, 'error' => $e->getMessage()]);
-        }
+        $this->send($order, new OrderPaid($order), 'Order confirmation');
     }
 
     /**
      * The payment failed. The customer's "retry" starts a new checkout (a new order), so this order is
-     * abandoned: cancel it and give its stock back. A later successful payment revives it (markPaid).
+     * abandoned: cancel it, give its stock back and tell the customer. A later successful payment revives
+     * it (markPaid).
      */
     public function markFailed(Order $order): void
     {
-        $this->cancelUnpaid($order);
+        $this->cancelUnpaid($order, 'failed');
     }
 
     /**
@@ -72,17 +68,63 @@ class OrderPayments
      */
     public function markCancelled(Order $order): void
     {
-        $this->cancelUnpaid($order);
+        $this->cancelUnpaid($order, 'cancelled');
     }
 
-    private function cancelUnpaid(Order $order): void
+    /** The payment never completed within the allowed time (scheduled check). */
+    public function markExpired(Order $order): void
+    {
+        $this->cancelUnpaid($order, 'expired');
+    }
+
+    /**
+     * "Your payment is still pending" reminder, sent once per order, only while the order really is waiting.
+     * Returns whether a reminder was sent.
+     */
+    public function remindPending(Order $order, ?int $expiresInHours = null): bool
+    {
+        $claimed = Order::whereKey($order->id)
+            ->whereNull('payment_reminder_sent_at')
+            ->where('payment_status', 'pending')
+            ->where('status', 'pending')
+            ->update(['payment_reminder_sent_at' => now()]);
+
+        if (! $claimed) {
+            return false;
+        }
+
+        $order->refresh();
+
+        $this->send($order, new PaymentPending($order, $expiresInHours), 'Pending payment reminder');
+
+        return true;
+    }
+
+    private function cancelUnpaid(Order $order, string $reason): void
     {
         $changed = Order::whereKey($order->id)
             ->where('payment_status', 'pending')
             ->update(['payment_status' => 'failed', 'status' => 'cancelled']);
 
-        if ($changed) {
-            $order->releaseStock();
+        if (! $changed) {
+            return;
+        }
+
+        $order->releaseStock();
+        $order->refresh();
+
+        $this->send($order, new PaymentFailed($order, $reason), 'Payment failed');
+    }
+
+    /** The outcome is already recorded; a mail failure must not make the gateway retry or hide it. */
+    private function send(Order $order, object $mailable, string $what): void
+    {
+        try {
+            Mail::to($order->customer_email)->send($mailable);
+
+            Log::info("{$what} email sent", ['order_id' => $order->id, 'order_number' => $order->order_number]);
+        } catch (\Exception $e) {
+            Log::error("Failed to send {$what} email", ['order_id' => $order->id, 'error' => $e->getMessage()]);
         }
     }
 }

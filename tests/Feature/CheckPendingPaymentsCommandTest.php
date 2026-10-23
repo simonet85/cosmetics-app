@@ -260,7 +260,7 @@ class CheckPendingPaymentsCommandTest extends TestCase
             ->expectsOutputToContain('Checking 3 pending payment(s)')
             ->expectsTable(['Result', 'Payments'], [
                 ['checked', 3], ['paid', 1], ['failed', 1], ['cancelled', 0],
-                ['still pending', 1], ['expired', 0], ['unverified', 0], ['errors', 0],
+                ['still pending', 1], ['reminded', 0], ['expired', 0], ['unverified', 0], ['errors', 0],
             ])
             ->assertSuccessful();
     }

@@ -56,10 +56,10 @@ Packagist shows `laravel/framework` v13.x (requires PHP ^8.3) and `simonet85/lar
 
 ## Phase 5 — Notifications (TODO phase 3)
 
-- [ ] 5.1 Payment-confirmed email (reuse `OrderPaid` and the invoice PDF).
-- [ ] 5.2 Payment-failed email with a retry link.
-- [ ] 5.3 Pending-too-long reminder email.
-- [ ] 5.4 Tests with `Mail::fake()` for all three.
+- [x] 5.1 Payment-confirmed email: `OrderPaid` with the invoice PDF attached, sent once by `OrderPayments::markPaid` (webhook, return page, command or admin check).
+- [x] 5.2 Payment-failed email (`PaymentFailed`): declined, cancelled or expired reasons, retry link, "do not pay twice" notice; sent once when the order is cancelled for its payment.
+- [x] 5.3 Pending-too-long reminder (`PaymentPending`): sent once by `moneyfusion:check-pending` (`--remind-after=60`), signed link to the pending page and the time left before automatic cancellation.
+- [x] 5.4 Tests with `Mail::fake()` for all three (`PaymentEmailsTest`).
 
 ## Phase 6 — Frontend consolidation (no jQuery)
 

@@ -22,6 +22,7 @@ class CheckPendingPayments extends Command
         {--age=30 : Only check payments created at least this many minutes ago}
         {--limit=100 : Maximum number of payments to check in one run}
         {--expire-after=1440 : Cancel the order of a payment still pending after this many minutes (0 disables)}
+        {--remind-after=60 : E-mail the customer once when the payment is still pending after this many minutes (0 disables)}
         {--pause=200 : Milliseconds to wait between two gateway calls}';
 
     protected $description = 'Check pending MoneyFusion payments with the gateway and update their orders';
@@ -33,6 +34,7 @@ class CheckPendingPayments extends Command
         'failed' => 0,
         'cancelled' => 0,
         'still pending' => 0,
+        'reminded' => 0,
         'expired' => 0,
         'unverified' => 0,
         'errors' => 0,
@@ -43,6 +45,7 @@ class CheckPendingPayments extends Command
         $age = max(0, (int) $this->option('age'));
         $limit = max(1, (int) $this->option('limit'));
         $expireAfter = max(0, (int) $this->option('expire-after'));
+        $remindAfter = max(0, (int) $this->option('remind-after'));
         $pause = max(0, (int) $this->option('pause'));
 
         $payments = MoneyFusionPayment::where('statut', 'pending')
@@ -59,8 +62,8 @@ class CheckPendingPayments extends Command
 
         $this->info("Checking {$payments->count()} pending payment(s) older than {$age} minute(s)...");
 
-        $this->withProgressBar($payments, function (MoneyFusionPayment $payment) use ($verifier, $orderPayments, $expireAfter, $pause) {
-            $this->check($payment, $verifier, $orderPayments, $expireAfter);
+        $this->withProgressBar($payments, function (MoneyFusionPayment $payment) use ($verifier, $orderPayments, $expireAfter, $remindAfter, $pause) {
+            $this->check($payment, $verifier, $orderPayments, $expireAfter, $remindAfter);
 
             if ($pause > 0) {
                 usleep($pause * 1000);
@@ -75,7 +78,7 @@ class CheckPendingPayments extends Command
         return self::SUCCESS;
     }
 
-    private function check(MoneyFusionPayment $payment, PaymentVerifier $verifier, OrderPayments $orderPayments, int $expireAfter): void
+    private function check(MoneyFusionPayment $payment, PaymentVerifier $verifier, OrderPayments $orderPayments, int $expireAfter, int $remindAfter): void
     {
         $this->report['checked']++;
 
@@ -86,24 +89,35 @@ class CheckPendingPayments extends Command
             PaymentVerifier::CANCELLED => $this->report['cancelled']++,
             PaymentVerifier::UNVERIFIED => $this->report['unverified']++,
             PaymentVerifier::ERROR => $this->report['errors']++,
-            default => $this->expireIfAbandoned($payment, $payment->order_id ? Order::find($payment->order_id) : null, $orderPayments, $expireAfter),
+            default => $this->expireIfAbandoned($payment, $payment->order_id ? Order::find($payment->order_id) : null, $orderPayments, $expireAfter, $remindAfter),
         };
     }
 
     /**
      * Still pending at the gateway. After the expiry delay the session is considered abandoned: the order is
-     * cancelled and its stock released. If the payer does pay later, the webhook or the return page revives it.
+     * cancelled (and the customer told) and its stock released. If the payer does pay later, the webhook or the
+     * return page revives it. Before that, the customer gets one reminder.
      */
-    private function expireIfAbandoned(MoneyFusionPayment $payment, ?Order $order, OrderPayments $orderPayments, int $expireAfter): void
+    private function expireIfAbandoned(MoneyFusionPayment $payment, ?Order $order, OrderPayments $orderPayments, int $expireAfter, int $remindAfter): void
     {
-        if ($expireAfter === 0 || $payment->created_at->gt(now()->subMinutes($expireAfter))) {
-            $this->report['still pending']++;
+        $ageInMinutes = $payment->created_at->diffInMinutes(now());
+
+        if ($expireAfter > 0 && $ageInMinutes >= $expireAfter) {
+            $payment->update(['statut' => 'cancelled']);
+            $order && $orderPayments->markExpired($order);
+            $this->report['expired']++;
 
             return;
         }
 
-        $payment->update(['statut' => 'cancelled']);
-        $order && $orderPayments->markCancelled($order);
-        $this->report['expired']++;
+        if ($order && $remindAfter > 0 && $ageInMinutes >= $remindAfter) {
+            $hoursLeft = $expireAfter > 0 ? max(1, (int) ceil(($expireAfter - $ageInMinutes) / 60)) : null;
+
+            if ($orderPayments->remindPending($order, $hoursLeft)) {
+                $this->report['reminded']++;
+            }
+        }
+
+        $this->report['still pending']++;
     }
 }

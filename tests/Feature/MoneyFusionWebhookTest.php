@@ -433,7 +433,9 @@ class MoneyFusionWebhookTest extends TestCase
         $this->assertSame('processing', $order->status);
         $this->assertNull($order->stock_released_at);
         $this->assertSame(3, $product->fresh()->stock);
-        Mail::assertSentCount(1);
+        // One e-mail for the failure, then one confirmation when the payment finally succeeds
+        Mail::assertSent(\App\Mail\PaymentFailed::class, 1);
+        Mail::assertSent(OrderPaid::class, 1);
     }
 
     public function test_reviving_an_order_never_drives_the_stock_below_zero(): void
