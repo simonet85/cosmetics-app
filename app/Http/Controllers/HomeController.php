@@ -66,7 +66,7 @@ class HomeController extends Controller
             ->orderBy('order')
             ->get();
 
-        return view('home.index', compact(
+        return view('storefront.home', compact(
             'heroBanners',
             'banners',
             'featuredProducts',
