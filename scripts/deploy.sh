@@ -127,6 +127,11 @@ remote 'rm -rf public/build.prev; [ -d public/build ] && mv public/build public/
 tar -C public -czf - build | ssh -p "$SSH_PORT" -o BatchMode=yes "$SSH_TARGET" "cd \"\$HOME/$REMOTE_APP/public\" && tar -xzf -"
 remote 'test -f public/build/manifest.json' || die "assets were not uploaded correctly"
 
+# On this host the web root is a separate folder (../public_html) holding its own copy of the public files:
+# Laravel reads the manifest from laravel/public/build but the browser fetches the files from public_html/build.
+say "5c. Publish the assets in the web root"
+remote 'if [ -d ../public_html ]; then rm -rf ../public_html/build.prev; [ -d ../public_html/build ] && mv ../public_html/build ../public_html/build.prev; cp -a public/build ../public_html/build; diff -rq public/build ../public_html/build && echo "   web root build identical"; else echo "   no ../public_html here: nothing to copy"; fi' || die "the assets could not be copied to the web root"
+
 # ------------------------------------------------------------------ 6. migrate, caches, back up
 say "6. Migrations and caches"
 remote 'php artisan migrate --force'
@@ -140,6 +145,12 @@ fail=0
 for path in / /shop /login; do
   code="$(curl -s -o /dev/null -m 30 -w '%{http_code}' "$SITE_URL$path")"
   note "$SITE_URL$path -> HTTP $code"
+  [ "$code" = "200" ] || fail=1
+done
+# The page must be able to load its own stylesheet and script (a 200 page with a 404 stylesheet is a broken site)
+for asset in $(curl -s -m 30 "$SITE_URL/" | grep -oE "https?://[^\"']+/build/assets/[^\"']+\.(css|js)" | sort -u); do
+  code="$(curl -s -o /dev/null -m 30 -w '%{http_code}' "$asset")"
+  note "$asset -> HTTP $code"
   [ "$code" = "200" ] || fail=1
 done
 remote 'php artisan schedule:list 2>&1 | grep -c "moneyfusion:check-pending" | sed "s/^/   scheduled MoneyFusion checks: /"'
