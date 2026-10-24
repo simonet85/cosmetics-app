@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\CheckoutException;
+use App\Mail\OrderReceived;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -14,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Simonet85\LaravelMoneyFusion\MoneyFusionService;
 use Throwable;
 
@@ -105,6 +107,23 @@ class CheckoutController extends Controller
         }
 
         return $response;
+    }
+
+    /**
+     * Cash orders are not paid yet, so nothing else tells the customer the order exists: send the receipt.
+     * The order is already saved; a mail problem is logged and never turns into a failed checkout.
+     */
+    private function sendReceived(Order $order): void
+    {
+        if (getSetting('send_order_confirmation', '1') !== '1' || ! $order->customer_email) {
+            return;
+        }
+
+        try {
+            Mail::to($order->customer_email)->send(new OrderReceived($order->loadMissing('items.variant')));
+        } catch (Throwable $e) {
+            report($e);
+        }
     }
 
     private function existingOrder(string $key): ?Order
@@ -276,6 +295,8 @@ class CheckoutController extends Controller
 
             DB::commit();
             Cache::put($key.':order', $order->id, now()->addDay());
+
+            $this->sendReceived($order);
 
             return redirect($order->successUrl())
                 ->with('success', 'Votre commande a été passée avec succès!');

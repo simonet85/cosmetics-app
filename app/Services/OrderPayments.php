@@ -49,7 +49,10 @@ class OrderPayments
 
         $order->refresh();
 
-        $this->send($order, new OrderPaid($order), 'Order confirmation');
+        // The shop can switch order confirmations off in the settings
+        if (getSetting('send_order_confirmation', '1') === '1') {
+            $this->send($order, new OrderPaid($order), 'Order confirmation');
+        }
     }
 
     /**

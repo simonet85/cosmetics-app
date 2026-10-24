@@ -10,7 +10,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Catégories</h1>
         <p class="text-gray-600 mt-2">Gérez les catégories de produits</p>
     </div>
-    <a href="{{ route('admin.categories.create') }}" class="bg-[#5a7c6f] hover:bg-[#4a6c5f] text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center gap-2">
+    <a href="{{ route('admin.categories.create') }}" class="bg-green hover:bg-green-deep text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center gap-2">
         <i class="fas fa-plus"></i>
         Ajouter une catégorie
     </a>
@@ -36,7 +36,7 @@
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-3">
                             @if($category->icon)
-                            <i class="{{ $category->icon }} text-[#5a7c6f] text-xl"></i>
+                            <i class="{{ $category->icon }} text-green text-xl"></i>
                             @else
                             <div class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
                                 <i class="fas fa-folder text-gray-400"></i>

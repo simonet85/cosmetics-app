@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Gestion des Coupons</h1>
-        <a href="{{ route('admin.coupons.create') }}" class="bg-[#5a7c6f] text-white px-4 py-2 rounded-lg hover:bg-[#4a6c5f] transition">
+        <a href="{{ route('admin.coupons.create') }}" class="bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
             <i class="fas fa-plus mr-2"></i>Nouveau Coupon
         </a>
     </div>
@@ -24,12 +24,12 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
                 <input type="text" name="search" value="{{ request('search') }}"
                        placeholder="Code du coupon..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                <select name="type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Tous les types</option>
                     <option value="fixed" {{ request('type') === 'fixed' ? 'selected' : '' }}>Fixe</option>
                     <option value="percentage" {{ request('type') === 'percentage' ? 'selected' : '' }}>Pourcentage</option>
@@ -38,7 +38,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
-                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Tous les statuts</option>
                     <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Actif</option>
                     <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactif</option>
@@ -46,7 +46,7 @@
             </div>
 
             <div class="flex items-end gap-2">
-                <button type="submit" class="flex-1 bg-[#5a7c6f] text-white px-4 py-2 rounded-lg hover:bg-[#4a6c5f] transition">
+                <button type="submit" class="flex-1 bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
                     <i class="fas fa-search mr-2"></i>Filtrer
                 </button>
                 <a href="{{ route('admin.coupons.index') }}" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
@@ -129,7 +129,7 @@
                                 </div>
                                 @if($coupon->usage_limit)
                                     <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                                        <div class="bg-[#5a7c6f] h-1.5 rounded-full" style="width: {{ min(($coupon->used_count / $coupon->usage_limit) * 100, 100) }}%"></div>
+                                        <div class="bg-green h-1.5 rounded-full" style="width: {{ min(($coupon->used_count / $coupon->usage_limit) * 100, 100) }}%"></div>
                                     </div>
                                 @endif
                             </td>
@@ -168,7 +168,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a href="{{ route('admin.coupons.edit', $coupon->id) }}"
-                                   class="text-[#5a7c6f] hover:text-[#4a6c5f] mr-3"
+                                   class="text-green hover:text-green-deep mr-3"
                                    title="Modifier">
                                     <i class="fas fa-edit"></i>
                                 </a>

@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="mb-6">
-        <a href="{{ route('admin.orders.index') }}" class="text-[#5a7c6f] hover:text-[#4a6c5f] mb-4 inline-block">
+        <a href="{{ route('admin.orders.index') }}" class="text-green hover:text-green-deep mb-4 inline-block">
             <i class="fas fa-arrow-left mr-2"></i>Retour aux commandes
         </a>
         <h1 class="text-3xl font-bold">Commande #{{ $order->order_number }}</h1>
@@ -32,14 +32,14 @@
                         <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST" class="flex gap-2">
                             @csrf
                             @method('PUT')
-                            <select name="status" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                            <select name="status" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                                 <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>En attente</option>
                                 <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>En traitement</option>
                                 <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Expédiée</option>
                                 <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>Livrée</option>
                                 <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Annulée</option>
                             </select>
-                            <button type="submit" class="bg-[#5a7c6f] text-white px-4 py-2 rounded-lg hover:bg-[#4a6c5f] transition">
+                            <button type="submit" class="bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
                                 <i class="fas fa-save"></i>
                             </button>
                         </form>
@@ -51,13 +51,13 @@
                         <form action="{{ route('admin.orders.update-payment-status', $order->id) }}" method="POST" class="flex gap-2">
                             @csrf
                             @method('PUT')
-                            <select name="payment_status" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                            <select name="payment_status" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                                 <option value="pending" {{ $order->payment_status === 'pending' ? 'selected' : '' }}>En attente</option>
                                 <option value="paid" {{ $order->payment_status === 'paid' ? 'selected' : '' }}>Payé</option>
                                 <option value="failed" {{ $order->payment_status === 'failed' ? 'selected' : '' }}>Échoué</option>
                                 <option value="refunded" {{ $order->payment_status === 'refunded' ? 'selected' : '' }}>Remboursé</option>
                             </select>
-                            <button type="submit" class="bg-[#5a7c6f] text-white px-4 py-2 rounded-lg hover:bg-[#4a6c5f] transition">
+                            <button type="submit" class="bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
                                 <i class="fas fa-save"></i>
                             </button>
                         </form>
@@ -155,7 +155,7 @@
 
                     <div class="flex justify-between text-gray-600">
                         <span>Livraison</span>
-                        <span>{{ format_fcfa($order->shipping) }}</span>
+                        <span>{{ format_fcfa($order->shipping_cost) }}</span>
                     </div>
 
                     <div class="flex justify-between text-gray-600">
@@ -238,7 +238,7 @@
                         @if($order->payment_status !== 'paid')
                         <form action="{{ route('admin.orders.check-payment', $order) }}" method="POST" class="pt-3">
                             @csrf
-                            <button type="submit" class="w-full px-4 py-2 bg-[#5a7c6f] text-white rounded-lg hover:bg-[#4a6c5f] transition-colors">
+                            <button type="submit" class="w-full px-4 py-2 bg-green text-white rounded-lg hover:bg-green-deep transition-colors">
                                 <i class="fas fa-sync-alt mr-2"></i>Vérifier le paiement
                             </button>
                             <p class="text-xs text-gray-500 mt-1">Interroge MoneyFusion et met la commande à jour.</p>

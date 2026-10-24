@@ -25,7 +25,7 @@ class OrderPaid extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Order Confirmation #'.$this->order->order_number.' - Glowing Cosmetics',
+            subject: 'Confirmation de votre commande '.$this->order->order_number.' - Glowing Cosmetics',
         );
     }
 

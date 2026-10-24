@@ -32,7 +32,7 @@
                             type="text"
                             name="name"
                             value="{{ old('name', $category->name) }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('name') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('name') border-red-500 @enderror"
                             required
                         >
                         @error('name')
@@ -58,7 +58,7 @@
                         <textarea
                             name="description"
                             rows="4"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('description') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('description') border-red-500 @enderror"
                         >{{ old('description', $category->description) }}</textarea>
                         @error('description')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -73,7 +73,7 @@
                             name="icon"
                             value="{{ old('icon', $category->icon) }}"
                             placeholder="fas fa-leaf"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('icon') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('icon') border-red-500 @enderror"
                         >
                         @error('icon')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -109,7 +109,7 @@
                     <label class="block text-sm font-semibold text-gray-900 mb-2">Catégorie parente</label>
                     <select
                         name="parent_id"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('parent_id') border-red-500 @enderror"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('parent_id') border-red-500 @enderror"
                     >
                         <option value="">Aucune (Catégorie principale)</option>
                         @foreach($categories as $cat)
@@ -135,7 +135,7 @@
                         id="is_active"
                         value="1"
                         {{ old('is_active', $category->is_active) ? 'checked' : '' }}
-                        class="w-5 h-5 text-[#5a7c6f] border-gray-300 rounded focus:ring-[#5a7c6f]"
+                        class="w-5 h-5 text-green border-gray-300 rounded focus:ring-green"
                     >
                     <label for="is_active" class="text-sm font-semibold text-gray-900">Catégorie active</label>
                 </div>
@@ -144,7 +144,7 @@
             {{-- Actions --}}
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="space-y-3">
-                    <button type="submit" class="w-full bg-[#5a7c6f] hover:bg-[#4a6c5f] text-white font-semibold py-3 rounded-lg transition-colors">
+                    <button type="submit" class="w-full bg-green hover:bg-green-deep text-white font-semibold py-3 rounded-lg transition-colors">
                         <i class="fas fa-save mr-2"></i>Enregistrer les modifications
                     </button>
                     <a href="{{ route('admin.categories.index') }}" class="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 rounded-lg transition-colors">

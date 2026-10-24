@@ -10,7 +10,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Produits</h1>
         <p class="text-gray-600 mt-2">Gérez vos produits et inventaire</p>
     </div>
-    <a href="{{ route('admin.products.create') }}" class="bg-[#5a7c6f] hover:bg-[#4a6c5f] text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center gap-2">
+    <a href="{{ route('admin.products.create') }}" class="bg-green hover:bg-green-deep text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center gap-2">
         <i class="fas fa-plus"></i>
         Ajouter un produit
     </a>
@@ -26,13 +26,13 @@
                 name="search"
                 value="{{ request('search') }}"
                 placeholder="Rechercher..."
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f]"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green"
             >
         </div>
 
         {{-- Category Filter --}}
         <div>
-            <select name="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f]">
+            <select name="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green">
                 <option value="">Toutes les catégories</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
@@ -44,7 +44,7 @@
 
         {{-- Status Filter --}}
         <div>
-            <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f]">
+            <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green">
                 <option value="">Tous les statuts</option>
                 <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Actif</option>
                 <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactif</option>
@@ -54,7 +54,7 @@
 
         {{-- Actions --}}
         <div class="flex gap-2">
-            <button type="submit" class="flex-1 bg-[#5a7c6f] hover:bg-[#4a6c5f] text-white font-semibold px-4 py-2 rounded-lg transition-colors">
+            <button type="submit" class="flex-1 bg-green hover:bg-green-deep text-white font-semibold px-4 py-2 rounded-lg transition-colors">
                 <i class="fas fa-search mr-2"></i>Filtrer
             </button>
             @if(request()->hasAny(['search', 'category', 'status']))
@@ -96,7 +96,7 @@
                     </td>
                     <td class="px-6 py-4">
                         <div>
-                            <a href="{{ route('admin.products.edit', $product) }}" class="font-semibold text-gray-900 hover:text-[#5a7c6f]">
+                            <a href="{{ route('admin.products.edit', $product) }}" class="font-semibold text-gray-900 hover:text-green">
                                 {{ $product->name }}
                             </a>
                             @if($product->categories->count() > 0)
@@ -173,7 +173,7 @@
                         <i class="fas fa-box-open text-4xl mb-4"></i>
                         <p class="text-lg">Aucun produit trouvé</p>
                         @if(request()->hasAny(['search', 'category', 'status']))
-                        <a href="{{ route('admin.products.index') }}" class="text-[#5a7c6f] hover:text-[#4a6c5f] mt-2 inline-block">
+                        <a href="{{ route('admin.products.index') }}" class="text-green hover:text-green-deep mt-2 inline-block">
                             Réinitialiser les filtres
                         </a>
                         @endif

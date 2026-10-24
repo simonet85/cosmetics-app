@@ -27,12 +27,12 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
                 <input type="text" name="search" value="{{ request('search') }}"
                        placeholder="Nom ou email..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
-                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Tous les statuts</option>
                     <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Actif</option>
                     <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactif</option>
@@ -41,7 +41,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Rôle</label>
-                <select name="role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Tous les rôles</option>
                     <option value="customer" {{ request('role') === 'customer' ? 'selected' : '' }}>Client</option>
                     <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
@@ -50,7 +50,7 @@
             </div>
 
             <div class="flex items-end gap-2">
-                <button type="submit" class="flex-1 bg-[#5a7c6f] text-white px-4 py-2 rounded-lg hover:bg-[#4a6c5f] transition">
+                <button type="submit" class="flex-1 bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
                     <i class="fas fa-search mr-2"></i>Filtrer
                 </button>
                 <a href="{{ route('admin.customers.index') }}" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
@@ -98,7 +98,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-[#5a7c6f] flex items-center justify-center text-white font-semibold">
+                                        <div class="h-10 w-10 rounded-full bg-green flex items-center justify-center text-white font-semibold">
                                             {{ strtoupper(substr($customer->first_name, 0, 1)) }}{{ strtoupper(substr($customer->last_name, 0, 1)) }}
                                         </div>
                                     </div>
@@ -145,7 +145,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a href="{{ route('admin.customers.show', $customer->id) }}"
-                                   class="text-[#5a7c6f] hover:text-[#4a6c5f] mr-3"
+                                   class="text-green hover:text-green-deep mr-3"
                                    title="Voir">
                                     <i class="fas fa-eye"></i>
                                 </a>

@@ -33,7 +33,7 @@
                             type="text"
                             name="name"
                             value="{{ old('name', $product->name) }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('name') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('name') border-red-500 @enderror"
                             required
                         >
                         @error('name')
@@ -48,7 +48,7 @@
                             type="text"
                             name="sku"
                             value="{{ old('sku', $product->sku) }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('sku') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('sku') border-red-500 @enderror"
                             required
                         >
                         @error('sku')
@@ -62,7 +62,7 @@
                         <textarea
                             name="short_description"
                             rows="3"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('short_description') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('short_description') border-red-500 @enderror"
                         >{{ old('short_description', $product->short_description) }}</textarea>
                         @error('short_description')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -75,7 +75,7 @@
                         <textarea
                             name="description"
                             rows="8"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('description') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('description') border-red-500 @enderror"
                             required
                         >{{ old('description', $product->full_description) }}</textarea>
                         @error('description')
@@ -100,7 +100,7 @@
                                 value="{{ old('price', $product->price) }}"
                                 step="0.01"
                                 min="0"
-                                class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('price') border-red-500 @enderror"
+                                class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('price') border-red-500 @enderror"
                                 required
                                 id="price-input-edit"
                             >
@@ -129,7 +129,7 @@
                                     value="{{ old('discount_price', $product->discount_price) }}"
                                     step="0.01"
                                     min="0"
-                                    class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('discount_price') border-red-500 @enderror"
+                                    class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('discount_price') border-red-500 @enderror"
                                     id="discount-price-input-edit"
                                 >
                             </div>
@@ -150,7 +150,7 @@
                                     value="{{ old('discount_percentage', $product->discount_percentage) }}"
                                     min="0"
                                     max="100"
-                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('discount_percentage') border-red-500 @enderror"
+                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green @error('discount_percentage') border-red-500 @enderror"
                                     id="discount-percentage-input-edit"
                                     readonly
                                 >
@@ -200,7 +200,7 @@
                             name="stock"
                             value="{{ old('stock', $product->stock) }}"
                             min="0"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f] @error('stock') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error('stock') border-red-500 @enderror"
                             required
                         >
                         @error('stock')
@@ -224,7 +224,7 @@
                         <label class="block text-sm font-semibold text-gray-900 mb-2">Statut *</label>
                         <select
                             name="status"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f]"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green"
                             required
                         >
                             <option value="active" {{ old('status', $product->status) === 'active' ? 'selected' : '' }}>Actif</option>
@@ -240,7 +240,7 @@
                             id="is_featured"
                             value="1"
                             {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}
-                            class="w-5 h-5 text-[#5a7c6f] border-gray-300 rounded focus:ring-[#5a7c6f]"
+                            class="w-5 h-5 text-green border-gray-300 rounded focus:ring-green"
                         >
                         <label for="is_featured" class="text-sm font-semibold text-gray-900">Produit en vedette</label>
                     </div>
@@ -260,7 +260,7 @@
                             id="category-{{ $category->id }}"
                             value="{{ $category->id }}"
                             {{ in_array($category->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'checked' : '' }}
-                            class="w-4 h-4 text-[#5a7c6f] border-gray-300 rounded focus:ring-[#5a7c6f]"
+                            class="w-4 h-4 text-green border-gray-300 rounded focus:ring-green"
                         >
                         <label for="category-{{ $category->id }}" class="text-sm text-gray-900">{{ $category->name }}</label>
                     </div>
@@ -281,7 +281,7 @@
                             id="tag-{{ $tag->id }}"
                             value="{{ $tag->id }}"
                             {{ in_array($tag->id, old('tags', $product->tags->pluck('id')->toArray())) ? 'checked' : '' }}
-                            class="w-4 h-4 text-[#5a7c6f] border-gray-300 rounded focus:ring-[#5a7c6f]"
+                            class="w-4 h-4 text-green border-gray-300 rounded focus:ring-green"
                         >
                         <label for="tag-{{ $tag->id }}" class="text-sm text-gray-900">{{ $tag->name }}</label>
                     </div>
@@ -300,7 +300,7 @@
                     <div class="relative group">
                         <img src="{{ asset($image->path) }}" alt="{{ $product->name }}" class="w-full h-24 object-cover rounded">
                         @if($image->is_primary)
-                        <span class="absolute top-1 left-1 px-2 py-1 bg-[#5a7c6f] text-white text-xs rounded">Principale</span>
+                        <span class="absolute top-1 left-1 px-2 py-1 bg-green text-white text-xs rounded">Principale</span>
                         @endif
                     </div>
                     @endforeach
@@ -314,7 +314,7 @@
                         id="images"
                         multiple
                         accept="image/*"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5a7c6f]"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green"
                     >
                     <p class="text-xs text-gray-500 mt-2">Ajouter de nouvelles images. Les images existantes seront conservées.</p>
                 </div>
@@ -325,7 +325,7 @@
             {{-- Actions --}}
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="space-y-3">
-                    <button type="submit" class="w-full bg-[#5a7c6f] hover:bg-[#4a6c5f] text-white font-semibold py-3 rounded-lg transition-colors">
+                    <button type="submit" class="w-full bg-green hover:bg-green-deep text-white font-semibold py-3 rounded-lg transition-colors">
                         <i class="fas fa-save mr-2"></i>Enregistrer les modifications
                     </button>
                     <a href="{{ route('admin.products.index') }}" class="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 rounded-lg transition-colors">

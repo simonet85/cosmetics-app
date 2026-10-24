@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="mb-6">
-        <a href="{{ route('admin.banners.index') }}" class="text-[#5a7c6f] hover:text-[#4a6c5f] mb-4 inline-block">
+        <a href="{{ route('admin.banners.index') }}" class="text-green hover:text-green-deep mb-4 inline-block">
             <i class="fas fa-arrow-left mr-2"></i>Retour aux bannières
         </a>
         <h1 class="text-3xl font-bold">Créer une Bannière</h1>
@@ -21,7 +21,7 @@
                     Titre <span class="text-red-500">*</span>
                 </label>
                 <input type="text" name="title" id="title" value="{{ old('title') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                        required>
                 @error('title')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -34,7 +34,7 @@
                     Sous-titre
                 </label>
                 <input type="text" name="subtitle" id="subtitle" value="{{ old('subtitle') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                 @error('subtitle')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -46,7 +46,7 @@
                     Description
                 </label>
                 <textarea name="description" id="description" rows="3"
-                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">{{ old('description') }}</textarea>
+                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">{{ old('description') }}</textarea>
                 @error('description')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -58,7 +58,7 @@
                     Type <span class="text-red-500">*</span>
                 </label>
                 <select name="type" id="type"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                         required>
                     <option value="">Sélectionner un type</option>
                     <option value="hero" {{ old('type') === 'hero' ? 'selected' : '' }}>Hero</option>
@@ -77,7 +77,7 @@
                     Position <span class="text-red-500">*</span>
                 </label>
                 <select name="position" id="position"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                         required>
                     <option value="">Sélectionner une position</option>
                     <option value="home_slider" {{ old('position') === 'home_slider' ? 'selected' : '' }}>Slider Principal</option>
@@ -97,7 +97,7 @@
                     Image <span class="text-red-500">*</span>
                 </label>
                 <input type="file" name="image" id="image" accept="image/*"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                        onchange="previewImage(event)"
                        required>
                 @error('image')
@@ -117,7 +117,7 @@
                     URL de Redirection
                 </label>
                 <input type="url" name="link_url" id="link_url" value="{{ old('link_url') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                        placeholder="https://example.com">
                 @error('link_url')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -130,7 +130,7 @@
                     Texte du Bouton
                 </label>
                 <input type="text" name="button_text" id="button_text" value="{{ old('button_text') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                        placeholder="Ex: Découvrir">
                 @error('button_text')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -144,7 +144,7 @@
                 </label>
                 <input type="number" name="order" id="order" value="{{ old('order', 0) }}"
                        min="0"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                        required>
                 @error('order')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -158,7 +158,7 @@
                     Date de Début
                 </label>
                 <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                 @error('start_date')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -170,7 +170,7 @@
                     Date de Fin
                 </label>
                 <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                 @error('end_date')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -180,7 +180,7 @@
             <div class="md:col-span-2">
                 <label class="flex items-center">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}
-                           class="rounded border-gray-300 text-[#5a7c6f] shadow-sm focus:border-[#5a7c6f] focus:ring focus:ring-[#5a7c6f] focus:ring-opacity-50">
+                           class="rounded border-gray-300 text-green shadow-sm focus:border-green focus:ring focus:ring-green focus:ring-opacity-50">
                     <span class="ml-2 text-sm text-gray-700">Bannière active</span>
                 </label>
             </div>
@@ -192,7 +192,7 @@
                 Annuler
             </a>
             <button type="submit"
-                    class="px-6 py-2 bg-[#5a7c6f] text-white rounded-lg hover:bg-[#4a6c5f] transition">
+                    class="px-6 py-2 bg-green text-white rounded-lg hover:bg-green-deep transition">
                 <i class="fas fa-save mr-2"></i>Créer la Bannière
             </button>
         </div>

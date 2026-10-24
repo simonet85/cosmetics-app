@@ -1,72 +1,68 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/archivo/wdth.css';
 
-.btn {
-    /* Links styled as buttons were display:inline, which ignored w-full and margins */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 2.75rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    transition: all 0.3s;
+/*
+ * Administration skin. The admin pages are written with the usual Tailwind utilities (gray-*, rounded-*, shadow-*);
+ * instead of rewriting each page, the theme below gives those utilities the storefront look:
+ * green-tinted neutrals, near-square corners, no shadows, Archivo. Tokens match resources/css/storefront.css.
+ */
+@theme {
+    --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+
+    --color-green: #0b7a4b;
+    --color-green-deep: #075c37;
+    --color-mint: #e3f0e8;
+    --color-ink: #13201a;
+    --color-line: #d5ded8;
+
+    /* Neutrals (ink family) */
+    --color-gray-50: #f6f8f7;
+    --color-gray-100: #eef2f0;
+    --color-gray-200: #d5ded8;
+    --color-gray-300: #b9c6bf;
+    --color-gray-400: #7a8a81;
+    --color-gray-500: #5b6a62;
+    --color-gray-600: #4a5750;
+    --color-gray-700: #34413a;
+    --color-gray-800: #1f2c25;
+    --color-gray-900: #13201a;
+
+    /* Shelf-edge corners */
+    --radius-sm: 2px;
+    --radius-md: 3px;
+    --radius-lg: 4px;
+    --radius-xl: 4px;
+    --radius-2xl: 4px;
+
+    /* Flat: borders carry the structure */
+    --shadow-xs: 0 0 #0000;
+    --shadow-sm: 0 0 #0000;
+    --shadow-md: 0 0 #0000;
+    --shadow-lg: 0 0 #0000;
+    --shadow-xl: 0 0 #0000;
 }
 
-.btn-primary {
-    background-color: #111827;
-    color: white;
+@layer base {
+    html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--color-green) var(--color-mint); }
+    body { color: var(--color-ink); -webkit-font-smoothing: antialiased; }
+    h1, h2, h3 { text-wrap: balance; }
+    ::selection { background: var(--color-green); color: #fff; }
+
+    :focus-visible { outline: 3px solid var(--color-green-deep); outline-offset: 2px; }
+    .on-dark :focus-visible { outline-color: #fff; }
+
+    /* Forms stay readable on touch screens (no zoom on focus) and keep a visible field edge */
+    input:not([type='checkbox']):not([type='radio']):not([type='file']), select, textarea { font-size: 1rem; }
 }
 
-.btn-primary:hover {
-    background-color: #1f2937;
-}
-
-.btn-white {
-    background-color: white;
-    color: #111827;
-}
-
-.btn-white:hover {
-    background-color: #f3f4f6;
-}
-
-.container-custom {
-    max-width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
-
-@media (min-width: 640px) {
-    .container-custom {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
+@layer components {
+    .skip-link {
+        position: absolute; left: 1rem; top: -4rem; z-index: 100;
+        background: var(--color-ink); color: #fff; padding: 0.75rem 1rem; font-weight: 600;
     }
+    .skip-link:focus { top: 1rem; }
 }
 
-@media (min-width: 1024px) {
-    .container-custom {
-        padding-left: 2rem;
-        padding-right: 2rem;
-    }
-}
-
-/* Header icon controls: 44px touch targets on phones */
-header button:has(> i.fas),
-header a:has(> i.fas),
-#mobile-menu button:has(> i.fas) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2.75rem;
-    min-height: 2.75rem;
-}
-
-/* Breadcrumb links on the pages not redesigned yet: 44px tall touch targets */
-nav.flex.text-sm > a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 2.75rem;
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
 }

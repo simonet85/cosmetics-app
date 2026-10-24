@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmation</title>
+    <title>Confirmation de commande</title>
     <style>
         body {
             margin: 0;
@@ -259,12 +259,12 @@
                         </tr>
                         <tr>
                             <td class="label">Date de commande :</td>
-                            <td class="value">{{ $order->created_at->format('F d, Y H:i') }}</td>
+                            <td class="value">{{ $order->created_at->translatedFormat('j F Y à H:i') }}</td>
                         </tr>
                         <tr>
                             <td class="label">Statut du paiement :</td>
                             <td class="value" style="color: #10b981; font-weight: bold; text-transform: uppercase;">
-                                {{ $order->payment_status }}
+                                {{ \App\Support\OrderLabels::payment($order->payment_status) }}
                             </td>
                         </tr>
                         <tr>
@@ -313,10 +313,10 @@
                             <td class="label">Sous-total :</td>
                             <td class="amount">{{ format_fcfa($order->subtotal) }}</td>
                         </tr>
-                        @if($order->shipping > 0)
+                        @if($order->shipping_cost > 0)
                             <tr>
                                 <td class="label">Frais de port :</td>
-                                <td class="amount">{{ format_fcfa($order->shipping) }}</td>
+                                <td class="amount">{{ format_fcfa($order->shipping_cost) }}</td>
                             </tr>
                         @endif
                         @if($order->tax > 0)
@@ -327,12 +327,12 @@
                         @endif
                         @if($order->discount > 0)
                             <tr>
-                                <td class="label">Discount:</td>
+                                <td class="label">Remise :</td>
                                 <td class="amount">-{{ format_fcfa($order->discount) }}</td>
                             </tr>
                         @endif
                         <tr class="grand-total">
-                            <td class="label">Total:</td>
+                            <td class="label">Total :</td>
                             <td class="amount">{{ format_fcfa($order->total) }}</td>
                         </tr>
                     </table>

@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="mb-6">
-        <a href="{{ route('admin.customers.index') }}" class="text-[#5a7c6f] hover:text-[#4a6c5f] mb-4 inline-block">
+        <a href="{{ route('admin.customers.index') }}" class="text-green hover:text-green-deep mb-4 inline-block">
             <i class="fas fa-arrow-left mr-2"></i>Retour aux clients
         </a>
         <h1 class="text-3xl font-bold">{{ $customer->first_name }} {{ $customer->last_name }}</h1>
@@ -67,7 +67,7 @@
                             <div class="flex items-center justify-between pb-4 border-b last:border-b-0">
                                 <div class="flex-1">
                                     <a href="{{ route('admin.orders.show', $order->id) }}"
-                                       class="text-[#5a7c6f] hover:text-[#4a6c5f] font-medium">
+                                       class="text-green hover:text-green-deep font-medium">
                                         #{{ $order->order_number }}
                                     </a>
                                     <p class="text-sm text-gray-600">{{ $order->created_at->format('d/m/Y à H:i') }}</p>
@@ -104,7 +104,7 @@
                     @if($customer->orders->count() > 5)
                         <div class="mt-4 text-center">
                             <a href="{{ route('admin.orders.index', ['search' => $customer->email]) }}"
-                               class="text-[#5a7c6f] hover:text-[#4a6c5f]">
+                               class="text-green hover:text-green-deep">
                                 Voir toutes les commandes <i class="fas fa-arrow-right ml-1"></i>
                             </a>
                         </div>
@@ -125,7 +125,7 @@
                                 <div class="flex items-start justify-between mb-2">
                                     <div>
                                         <a href="{{ route('products.show', $review->product->slug) }}"
-                                           class="text-[#5a7c6f] hover:text-[#4a6c5f] font-medium">
+                                           class="text-green hover:text-green-deep font-medium">
                                             {{ $review->product->name }}
                                         </a>
                                         <div class="flex items-center mt-1">
@@ -150,7 +150,7 @@
                     @if($customer->reviews->count() > 5)
                         <div class="mt-4 text-center">
                             <a href="{{ route('admin.reviews.index', ['customer' => $customer->id]) }}"
-                               class="text-[#5a7c6f] hover:text-[#4a6c5f]">
+                               class="text-green hover:text-green-deep">
                                 Voir tous les avis <i class="fas fa-arrow-right ml-1"></i>
                             </a>
                         </div>

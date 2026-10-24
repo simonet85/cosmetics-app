@@ -13,6 +13,14 @@ class AdminScreensTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // The dashboard counts customers through their role
+        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
+    }
+
     private function admin(): User
     {
         return User::factory()->admin()->create();
@@ -100,5 +108,42 @@ class AdminScreensTest extends TestCase
         $this->assertSame('0', DB::table('settings')->where('key', 'payment_moneyfusion_enabled')->value('value'));
         $this->assertFalse(\App\Support\PaymentMethods::enabled()['moneyfusion']);
         $this->assertTrue(\App\Support\PaymentMethods::enabled()['cash_on_delivery']);
+    }
+
+    public function test_the_admin_shell_is_accessible_and_self_hosted(): void
+    {
+        $admin = User::factory()->admin()->create(['first_name' => 'Fanta']);
+
+        $html = $this->actingAs($admin)->get(route('admin.orders.index'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('class="skip-link"', $html);
+        $this->assertStringContainsString('id="content"', $html);
+        $this->assertStringContainsString('aria-label="Administration"', $html);
+        $this->assertMatchesRegularExpression('/href="[^"]*\/admin\/orders"\s+aria-current="page"/', $html);
+        $this->assertStringContainsString('aria-expanded="false"', $html);
+        $this->assertStringContainsString('>Fanta<', $html);                 // the account menu shows the first name
+        $this->assertStringContainsString('vendors/fontawesome/css/all.min.css', $html);
+        $this->assertStringNotContainsString('cdnjs.cloudflare.com', $html);
+        $this->assertStringNotContainsString('fonts.googleapis.com', $html);
+        $this->assertStringNotContainsString('5a7c6f', $html);
+    }
+
+    public function test_the_dashboard_chart_script_is_served_from_this_site(): void
+    {
+        $html = $this->actingAs(User::factory()->admin()->create())->get(route('admin.dashboard'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('vendors/chartjs/chart.min.js', $html);
+        $this->assertStringNotContainsString('cdn.jsdelivr.net', $html);
+        $this->assertFileExists(public_path('vendors/chartjs/chart.min.js'));
+        $this->assertFileExists(public_path('vendors/fontawesome/css/all.min.css'));
+    }
+
+    public function test_the_legacy_storefront_templates_are_gone(): void
+    {
+        foreach (['layouts/app', 'layouts/dashboard', 'home/index', 'shop/index', 'shop/show', 'cart/index', 'checkout/index', 'checkout/success', 'checkout/pending'] as $view) {
+            $this->assertFileDoesNotExist(resource_path("views/{$view}.blade.php"), $view);
+        }
+        $this->assertDirectoryDoesNotExist(public_path('vendors/jquery-toc'));
+        $this->assertDirectoryDoesNotExist(public_path('css'));
     }
 }

@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="mb-6">
-        <a href="{{ route('admin.coupons.index') }}" class="text-[#5a7c6f] hover:text-[#4a6c5f] mb-4 inline-block">
+        <a href="{{ route('admin.coupons.index') }}" class="text-green hover:text-green-deep mb-4 inline-block">
             <i class="fas fa-arrow-left mr-2"></i>Retour aux coupons
         </a>
         <h1 class="text-3xl font-bold">Créer un Coupon</h1>
@@ -21,7 +21,7 @@
                     Code du Coupon <span class="text-red-500">*</span>
                 </label>
                 <input type="text" name="code" id="code" value="{{ old('code') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent uppercase"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent uppercase"
                        placeholder="Ex: SUMMER2024"
                        required>
                 @error('code')
@@ -36,7 +36,7 @@
                     Type de Réduction <span class="text-red-500">*</span>
                 </label>
                 <select name="type" id="type"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                         required onchange="toggleMaxDiscount()">
                     <option value="fixed" {{ old('type') === 'fixed' ? 'selected' : '' }}>Montant Fixe</option>
                     <option value="percentage" {{ old('type') === 'percentage' ? 'selected' : '' }}>Pourcentage</option>
@@ -54,7 +54,7 @@
                 <div class="relative">
                     <input type="number" name="value" id="value" value="{{ old('value') }}"
                            step="0.01" min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                            placeholder="Ex: 10"
                            required>
                     <span id="value-unit" class="absolute right-3 top-2.5 text-gray-500">FCFA</span>
@@ -71,7 +71,7 @@
                 </label>
                 <input type="number" name="min_amount" id="min_amount" value="{{ old('min_amount') }}"
                        step="0.01" min="0"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                        placeholder="Ex: 50.00">
                 @error('min_amount')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -86,7 +86,7 @@
                 </label>
                 <input type="number" name="max_discount" id="max_discount" value="{{ old('max_discount') }}"
                        step="0.01" min="0"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                        placeholder="Ex: 100.00">
                 @error('max_discount')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -100,7 +100,7 @@
                     Date de Début
                 </label>
                 <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                 @error('start_date')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -112,7 +112,7 @@
                     Date de Fin
                 </label>
                 <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                 @error('end_date')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -125,7 +125,7 @@
                 </label>
                 <input type="number" name="usage_limit" id="usage_limit" value="{{ old('usage_limit') }}"
                        min="0"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent"
                        placeholder="Illimité">
                 @error('usage_limit')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -137,7 +137,7 @@
             <div class="md:col-span-2">
                 <label class="flex items-center">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}
-                           class="rounded border-gray-300 text-[#5a7c6f] shadow-sm focus:border-[#5a7c6f] focus:ring focus:ring-[#5a7c6f] focus:ring-opacity-50">
+                           class="rounded border-gray-300 text-green shadow-sm focus:border-green focus:ring focus:ring-green focus:ring-opacity-50">
                     <span class="ml-2 text-sm text-gray-700">Coupon actif</span>
                 </label>
             </div>
@@ -149,7 +149,7 @@
                 Annuler
             </a>
             <button type="submit"
-                    class="px-6 py-2 bg-[#5a7c6f] text-white rounded-lg hover:bg-[#4a6c5f] transition">
+                    class="px-6 py-2 bg-green text-white rounded-lg hover:bg-green-deep transition">
                 <i class="fas fa-save mr-2"></i>Créer le Coupon
             </button>
         </div>

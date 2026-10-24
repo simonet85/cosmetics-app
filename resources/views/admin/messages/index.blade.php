@@ -23,7 +23,7 @@
                 <details class="group" @if (! $message->is_read) data-unread @endif>
                     <summary class="flex flex-wrap items-center justify-between gap-3 px-6 py-4 cursor-pointer list-none hover:bg-gray-50">
                         <span class="flex items-center gap-3 min-w-0">
-                            <span class="inline-block w-2 h-2 rounded-full {{ $message->is_read ? 'bg-gray-300' : 'bg-[#5a7c6f]' }}" aria-hidden="true"></span>
+                            <span class="inline-block w-2 h-2 rounded-full {{ $message->is_read ? 'bg-gray-300' : 'bg-green' }}" aria-hidden="true"></span>
                             <span class="{{ $message->is_read ? 'text-gray-700' : 'font-bold text-gray-900' }} truncate">
                                 {{ $message->subject ?: '(sans sujet)' }}
                                 <span class="font-normal text-gray-500">— {{ $message->name }}</span>
@@ -37,7 +37,7 @@
                         <p class="text-sm text-gray-600 mb-3">De <a href="mailto:{{ $message->email }}" class="underline">{{ $message->email }}</a></p>
                         <p class="whitespace-pre-line text-gray-900 mb-4">{{ $message->message }}</p>
                         <div class="flex flex-wrap gap-3">
-                            <a href="mailto:{{ $message->email }}?subject={{ rawurlencode('Re: '.$message->subject) }}" class="bg-[#5a7c6f] text-white px-4 py-2 rounded hover:opacity-90">Répondre</a>
+                            <a href="mailto:{{ $message->email }}?subject={{ rawurlencode('Re: '.$message->subject) }}" class="bg-green text-white px-4 py-2 rounded hover:opacity-90">Répondre</a>
                             <form method="POST" action="{{ route('admin.messages.read', $message) }}">
                                 @csrf
                                 @method('PATCH')

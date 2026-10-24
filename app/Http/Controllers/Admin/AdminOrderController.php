@@ -87,7 +87,10 @@ class AdminOrderController extends Controller
         }
 
         // Send email notification if status changed
-        if ($oldStatus !== $request->status) {
+        // The shipping notification can be switched off in the settings; other status mails are unaffected
+        $notify = $request->status !== 'shipped' || getSetting('send_shipping_notification', '1') === '1';
+
+        if ($oldStatus !== $request->status && $notify) {
             try {
                 Mail::to($order->customer_email)->send(new OrderStatusUpdated($order, $oldStatus));
                 Log::info('Order status update email sent', [

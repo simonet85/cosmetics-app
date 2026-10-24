@@ -21,12 +21,12 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
                 <input type="text" name="search" value="{{ request('search') }}"
                        placeholder="N° commande ou email..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Statut de la commande</label>
-                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Tous les statuts</option>
                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>En attente</option>
                     <option value="processing" {{ request('status') === 'processing' ? 'selected' : '' }}>En traitement</option>
@@ -38,7 +38,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Statut Paiement</label>
-                <select name="payment_status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="payment_status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Tous les paiements</option>
                     <option value="pending" {{ request('payment_status') === 'pending' ? 'selected' : '' }}>En attente</option>
                     <option value="paid" {{ request('payment_status') === 'paid' ? 'selected' : '' }}>Payé</option>
@@ -48,7 +48,7 @@
             </div>
 
             <div class="flex items-end gap-2">
-                <button type="submit" class="flex-1 bg-[#5a7c6f] text-white px-4 py-2 rounded-lg hover:bg-[#4a6c5f] transition">
+                <button type="submit" class="flex-1 bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
                     <i class="fas fa-search mr-2"></i>Filtrer
                 </button>
                 <a href="{{ route('admin.orders.index') }}" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
@@ -158,7 +158,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a href="{{ route('admin.orders.show', $order->id) }}"
-                                   class="text-[#5a7c6f] hover:text-[#4a6c5f] mr-3">
+                                   class="text-green hover:text-green-deep mr-3">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </td>

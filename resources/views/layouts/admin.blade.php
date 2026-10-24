@@ -1,204 +1,170 @@
+@php
+    $user = auth()->user();
+    $unreadMessages = \App\Models\ContactMessage::unread()->count();
+
+    // [label, route, icon, active pattern, indent]
+    $menu = [
+        ['Tableau de bord', 'admin.dashboard', 'fa-home', 'admin.dashboard', false],
+        ['Produits', 'admin.products.index', 'fa-box', 'admin.products.*', false],
+        ['Catégories', 'admin.categories.index', 'fa-tag', 'admin.categories.*', true],
+        ['Commandes', 'admin.orders.index', 'fa-shopping-cart', 'admin.orders.*', false],
+        ['Clients', 'admin.customers.index', 'fa-users', 'admin.customers.*', false],
+        ['Avis', 'admin.reviews.index', 'fa-star', 'admin.reviews.*', false],
+        ['Coupons', 'admin.coupons.index', 'fa-ticket-alt', 'admin.coupons.*', false],
+        ['Bannières', 'admin.banners.index', 'fa-image', 'admin.banners.*', false],
+        ['Newsletter', 'admin.newsletter.index', 'fa-envelope', 'admin.newsletter.*', false],
+        ['Messages', 'admin.messages.index', 'fa-comments', 'admin.messages.*', false],
+    ];
+@endphp
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard') - Admin GLOWING</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="robots" content="noindex,nofollow">
+    <title>@yield('title', 'Tableau de bord') - Admin {{ config('app.name') }}</title>
 
-    {{-- Fonts --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {{-- Icons are served from this site (no third-party font or icon host) --}}
+    <link rel="stylesheet" href="{{ asset('vendors/fontawesome/css/all.min.css') }}">
 
-    {{-- Font Awesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    {{-- Vite Assets --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="min-h-dvh bg-gray-100 font-sans text-gray-900">
+    <a href="#content" class="skip-link">Aller au contenu</a>
 
-    {{-- Top Navigation Bar --}}
-    <nav class="bg-white border-b border-gray-200 fixed w-full top-0 z-50">
-        <div class="px-4 py-3">
-            <div class="flex items-center justify-between">
-                {{-- Left: Logo & Menu Toggle --}}
-                <div class="flex items-center gap-4">
-                    <button id="sidebarToggle" class="text-gray-600 hover:text-gray-900 lg:hidden">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
-                        <span class="text-2xl font-bold text-gray-900">GLOWING</span>
-                        <span class="px-2 py-1 bg-[#5a7c6f] text-white text-xs rounded">Admin</span>
-                    </a>
-                </div>
+    {{-- Top bar --}}
+    <header class="fixed top-0 z-50 w-full border-b border-gray-200 bg-white">
+        <div class="flex h-16 items-center justify-between gap-4 px-4">
+            <div class="flex items-center gap-3">
+                <button type="button" id="sidebarToggle" aria-controls="sidebar" aria-expanded="false"
+                        class="inline-flex size-11 cursor-pointer items-center justify-center text-gray-700 hover:text-green-deep lg:hidden">
+                    <i class="fas fa-bars text-xl" aria-hidden="true"></i>
+                    <span class="sr-only">Ouvrir le menu</span>
+                </button>
+                <a href="{{ route('admin.dashboard') }}" class="flex min-h-11 items-center gap-2">
+                    <span class="text-2xl font-bold" style="font-stretch: 75%">GLOWING</span>
+                    <span class="bg-green px-2 py-1 text-xs font-semibold text-white">Admin</span>
+                </a>
+            </div>
 
-                {{-- Right: User Menu --}}
-                <div class="flex items-center gap-4">
-                    {{-- View Site --}}
-                    <a href="{{ route('home') }}" target="_blank" class="text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-external-link-alt"></i>
-                        <span class="ml-2 hidden md:inline">Voir le site</span>
-                    </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('home') }}" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 px-2 text-gray-700 hover:text-green-deep">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    <span class="hidden md:inline">Voir le site</span>
+                    <span class="sr-only md:hidden">Voir le site</span><span class="sr-only"> (nouvel onglet)</span>
+                </a>
 
-                    {{-- User Dropdown --}}
-                    <div class="relative group">
-                        <button class="flex items-center gap-2 text-gray-700 hover:text-gray-900">
-                            <i class="fas fa-user-circle text-2xl"></i>
-                            <span class="hidden md:block">{{ auth()->user()->name }}</span>
-                            <i class="fas fa-chevron-down text-xs"></i>
-                        </button>
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                            <a href="{{ route('account.profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">
-                                <i class="fas fa-user mr-2"></i>Mon profil
-                            </a>
-                            <a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">
-                                <i class="fas fa-cog mr-2"></i>Paramètres
-                            </a>
-                            <hr class="my-1">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-50">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
-                                </button>
-                            </form>
-                        </div>
+                {{-- Account menu: a native disclosure, usable with the keyboard --}}
+                <details class="relative" id="accountMenu">
+                    <summary class="flex min-h-11 cursor-pointer list-none items-center gap-2 px-2 text-gray-700 hover:text-green-deep">
+                        <i class="fas fa-user-circle text-2xl" aria-hidden="true"></i>
+                        <span class="hidden md:block">{{ $user->first_name }}</span>
+                        <i class="fas fa-chevron-down text-xs" aria-hidden="true"></i>
+                        <span class="sr-only md:hidden">Mon compte</span>
+                    </summary>
+                    <div class="absolute right-0 mt-1 w-52 border border-gray-300 bg-white">
+                        <a href="{{ route('account.profile') }}" class="flex min-h-11 items-center gap-2 px-4 text-gray-700 hover:bg-gray-50"><i class="fas fa-user w-4" aria-hidden="true"></i>Mon profil</a>
+                        <a href="{{ route('admin.settings.index') }}" class="flex min-h-11 items-center gap-2 px-4 text-gray-700 hover:bg-gray-50"><i class="fas fa-cog w-4" aria-hidden="true"></i>Paramètres</a>
+                        <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-200">
+                            @csrf
+                            <button type="submit" class="flex min-h-11 w-full cursor-pointer items-center gap-2 px-4 text-left text-red-700 hover:bg-gray-50"><i class="fas fa-sign-out-alt w-4" aria-hidden="true"></i>Déconnexion</button>
+                        </form>
                     </div>
-                </div>
+                </details>
             </div>
         </div>
-    </nav>
+    </header>
 
     {{-- Sidebar --}}
-    <aside id="sidebar" class="fixed left-0 top-0 w-64 h-full bg-gray-900 text-white pt-16 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-40">
-        <div class="px-4 py-6 overflow-y-auto h-full">
-            {{-- Navigation Menu --}}
-            <nav class="space-y-2">
-                {{-- Dashboard --}}
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-800' : '' }}">
-                    <i class="fas fa-home w-5"></i>
-                    <span>Tableau de Bord</span>
-                </a>
-
-                {{-- Products --}}
-                <div class="space-y-1">
-                    <a href="{{ route('admin.products.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.products.*') ? 'bg-gray-800' : '' }}">
-                        <i class="fas fa-box w-5"></i>
-                        <span>Produits</span>
+    <aside id="sidebar" class="on-dark fixed left-0 top-0 z-40 h-full w-64 -translate-x-full bg-gray-900 pt-16 text-white transition-transform duration-300 lg:translate-x-0">
+        <nav aria-label="Administration" class="h-full overflow-y-auto px-3 py-5">
+            <ul class="space-y-1">
+                @foreach ($menu as [$label, $route, $icon, $pattern, $indent])
+                    @php $active = request()->routeIs($pattern); @endphp
+                    <li>
+                        <a href="{{ route($route) }}" @if ($active) aria-current="page" @endif
+                           class="flex min-h-11 items-center gap-3 px-4 {{ $indent ? 'pl-10 text-sm' : '' }} hover:bg-gray-800 {{ $active ? 'bg-gray-800 font-semibold' : '' }}">
+                            <i class="fas {{ $icon }} w-5" aria-hidden="true"></i>
+                            <span>{{ $label }}</span>
+                            @if ($route === 'admin.messages.index' && $unreadMessages > 0)
+                                <span class="ml-auto bg-green px-2 py-0.5 text-xs font-semibold text-white">{{ $unreadMessages }}<span class="sr-only"> non lus</span></span>
+                            @endif
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+            <hr class="my-4 border-gray-700">
+            <ul>
+                <li>
+                    <a href="{{ route('admin.settings.index') }}" @if (request()->routeIs('admin.settings.*')) aria-current="page" @endif
+                       class="flex min-h-11 items-center gap-3 px-4 hover:bg-gray-800 {{ request()->routeIs('admin.settings.*') ? 'bg-gray-800 font-semibold' : '' }}">
+                        <i class="fas fa-cog w-5" aria-hidden="true"></i>
+                        <span>Paramètres</span>
                     </a>
-                    <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 pl-12 text-sm rounded hover:bg-gray-800 {{ request()->routeIs('admin.categories.*') ? 'bg-gray-800' : '' }}">
-                        <i class="fas fa-tag w-5"></i>
-                        <span>Catégories</span>
-                    </a>
-                </div>
-
-                {{-- Orders --}}
-                <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.orders.*') ? 'bg-gray-800' : '' }}">
-                    <i class="fas fa-shopping-cart w-5"></i>
-                    <span>Commandes</span>
-                </a>
-
-                {{-- Customers --}}
-                <a href="{{ route('admin.customers.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.customers.*') ? 'bg-gray-800' : '' }}">
-                    <i class="fas fa-users w-5"></i>
-                    <span>Clients</span>
-                </a>
-
-                {{-- Reviews --}}
-                <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.reviews.*') ? 'bg-gray-800' : '' }}">
-                    <i class="fas fa-star w-5"></i>
-                    <span>Avis</span>
-                </a>
-
-                {{-- Coupons --}}
-                <a href="{{ route('admin.coupons.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.coupons.*') ? 'bg-gray-800' : '' }}">
-                    <i class="fas fa-ticket-alt w-5"></i>
-                    <span>Coupons</span>
-                </a>
-
-                {{-- Banners --}}
-                <a href="{{ route('admin.banners.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.banners.*') ? 'bg-gray-800' : '' }}">
-                    <i class="fas fa-image w-5"></i>
-                    <span>Bannières</span>
-                </a>
-
-                {{-- Newsletter --}}
-                <a href="{{ route('admin.newsletter.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.newsletter.*') ? 'bg-gray-800' : '' }}">
-                    <i class="fas fa-envelope w-5"></i>
-                    <span>Newsletter</span>
-                </a>
-
-                {{-- Contact form messages --}}
-                @php $unreadMessages = \App\Models\ContactMessage::unread()->count(); @endphp
-                <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.messages.*') ? 'bg-gray-800' : '' }}">
-                    <i class="fas fa-comments w-5"></i>
-                    <span>Messages</span>
-                    @if ($unreadMessages > 0)<span class="ml-auto bg-[#5a7c6f] text-white text-xs font-semibold px-2 py-0.5 rounded-full">{{ $unreadMessages }}<span class="sr-only"> non lus</span></span>@endif
-                </a>
-
-                <hr class="my-4 border-gray-700">
-
-                {{-- Settings --}}
-                <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.settings.*') ? 'bg-gray-800' : '' }}">
-                    <i class="fas fa-cog w-5"></i>
-                    <span>Paramètres</span>
-                </a>
-            </nav>
-        </div>
+                </li>
+            </ul>
+        </nav>
     </aside>
 
-    {{-- Main Content --}}
-    <main class="lg:ml-64 pt-16">
-        <div class="p-6">
-            {{-- Flash Messages --}}
-            @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg mb-6 flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    <span>{{ session('success') }}</span>
+    {{-- Page --}}
+    <main id="content" tabindex="-1" class="pt-16 lg:ml-64">
+        <div class="p-4 sm:p-6">
+            @if (session('success'))
+                <div role="status" class="mb-6 flex items-start justify-between gap-3 border border-green-700 bg-green-50 px-4 py-3 text-green-900">
+                    <p class="flex items-start gap-2"><i class="fas fa-check-circle mt-1" aria-hidden="true"></i><span>{{ session('success') }}</span></p>
+                    <button type="button" data-dismiss class="inline-flex size-8 shrink-0 cursor-pointer items-center justify-center hover:bg-green-100"><i class="fas fa-times" aria-hidden="true"></i><span class="sr-only">Fermer ce message</span></button>
                 </div>
-                <button onclick="this.parentElement.remove()" class="text-green-700 hover:text-green-900">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
             @endif
 
-            @if(session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg mb-6 flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    <span>{{ session('error') }}</span>
+            @if (session('error'))
+                <div role="alert" class="mb-6 flex items-start justify-between gap-3 border border-red-700 bg-red-50 px-4 py-3 text-red-900">
+                    <p class="flex items-start gap-2"><i class="fas fa-exclamation-circle mt-1" aria-hidden="true"></i><span>{{ session('error') }}</span></p>
+                    <button type="button" data-dismiss class="inline-flex size-8 shrink-0 cursor-pointer items-center justify-center hover:bg-red-100"><i class="fas fa-times" aria-hidden="true"></i><span class="sr-only">Fermer ce message</span></button>
                 </div>
-                <button onclick="this.parentElement.remove()" class="text-red-700 hover:text-red-900">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
             @endif
 
             @yield('content')
         </div>
     </main>
 
-    {{-- Sidebar Overlay (Mobile) --}}
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+    {{-- Sidebar overlay (small screens) --}}
+    <div id="sidebarOverlay" class="fixed inset-0 z-30 hidden bg-black/50 lg:hidden"></div>
 
     @stack('scripts')
 
     <script>
-        // Sidebar toggle for mobile
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        (function () {
+            const toggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
 
-        function toggleSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
-            sidebarOverlay.classList.toggle('hidden');
-        }
+            function setOpen(open) {
+                sidebar.classList.toggle('-translate-x-full', !open);
+                overlay.classList.toggle('hidden', !open);
+                toggle?.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
 
-        sidebarToggle?.addEventListener('click', toggleSidebar);
-        sidebarOverlay?.addEventListener('click', toggleSidebar);
+            toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+            overlay?.addEventListener('click', () => setOpen(false));
+            document.addEventListener('keydown', (event) => {
+                if (event.key !== 'Escape') return;
+                setOpen(false);
+                document.getElementById('accountMenu')?.removeAttribute('open');
+            });
+
+            // The account menu closes when the click lands elsewhere
+            document.addEventListener('click', (event) => {
+                const menu = document.getElementById('accountMenu');
+                if (menu && !menu.contains(event.target)) menu.removeAttribute('open');
+            });
+
+            document.querySelectorAll('[data-dismiss]').forEach((button) => {
+                button.addEventListener('click', () => button.parentElement.remove());
+            });
+        })();
     </script>
 </body>
 </html>

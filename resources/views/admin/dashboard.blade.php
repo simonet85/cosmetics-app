@@ -30,8 +30,8 @@
     {{-- Total Orders --}}
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg">
-                <i class="fas fa-shopping-cart text-blue-600 text-xl"></i>
+            <div class="flex items-center justify-center w-12 h-12 bg-mint rounded-lg">
+                <i class="fas fa-shopping-cart text-green-deep text-xl"></i>
             </div>
             @if($pendingOrders > 0)
             <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">{{ $pendingOrders }} en attente</span>
@@ -47,8 +47,8 @@
     {{-- Total Products --}}
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg">
-                <i class="fas fa-box text-purple-600 text-xl"></i>
+            <div class="flex items-center justify-center w-12 h-12 bg-mint rounded-lg">
+                <i class="fas fa-box text-green-deep text-xl"></i>
             </div>
             @if($lowStockProducts > 0)
             <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded">{{ $lowStockProducts }} stock bas</span>
@@ -64,8 +64,8 @@
     {{-- Total Customers --}}
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-lg">
-                <i class="fas fa-users text-orange-600 text-xl"></i>
+            <div class="flex items-center justify-center w-12 h-12 bg-mint rounded-lg">
+                <i class="fas fa-users text-green-deep text-xl"></i>
             </div>
             @if($newCustomersThisMonth > 0)
             <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">+{{ $newCustomersThisMonth }} ce mois</span>
@@ -94,7 +94,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-xl font-bold text-gray-900 mb-6">Actions rapides</h2>
         <div class="space-y-3">
-            <a href="{{ route('admin.products.create') }}" class="flex items-center gap-3 px-4 py-3 bg-[#5a7c6f] text-white rounded-lg hover:bg-[#4a6c5f] transition-colors">
+            <a href="{{ route('admin.products.create') }}" class="flex items-center gap-3 px-4 py-3 bg-green text-white rounded-lg hover:bg-green-deep transition-colors">
                 <i class="fas fa-plus-circle"></i>
                 <span>Ajouter un produit</span>
             </a>
@@ -127,7 +127,7 @@
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <h2 class="text-xl font-bold text-gray-900">Commandes récentes</h2>
-                <a href="{{ route('admin.orders.index') }}" class="text-[#5a7c6f] hover:text-[#4a6c5f] text-sm font-semibold">
+                <a href="{{ route('admin.orders.index') }}" class="text-green hover:text-green-deep text-sm font-semibold">
                     Voir tout <i class="fas fa-arrow-right ml-1"></i>
                 </a>
             </div>
@@ -136,12 +136,12 @@
             @forelse($recentOrders as $order)
             <div class="p-6 hover:bg-gray-50 transition-colors">
                 <div class="flex items-center justify-between mb-2">
-                    <a href="{{ route('admin.orders.show', $order->id) }}" class="font-semibold text-gray-900 hover:text-[#5a7c6f]">
+                    <a href="{{ route('admin.orders.show', $order->id) }}" class="font-semibold text-gray-900 hover:text-green">
                         {{ $order->order_number }}
                     </a>
                     <span class="px-3 py-1 rounded-full text-xs font-semibold
                         @if($order->status === 'pending') bg-yellow-100 text-yellow-800
-                        @elseif($order->status === 'processing') bg-blue-100 text-blue-800
+                        @elseif($order->status === 'processing') bg-mint text-blue-800
                         @elseif($order->status === 'shipped') bg-indigo-100 text-indigo-800
                         @elseif($order->status === 'delivered') bg-green-100 text-green-800
                         @elseif($order->status === 'cancelled') bg-red-100 text-red-800
@@ -174,7 +174,7 @@
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <h2 class="text-xl font-bold text-gray-900">Produits les plus vendus</h2>
-                <a href="{{ route('admin.products.index') }}" class="text-[#5a7c6f] hover:text-[#4a6c5f] text-sm font-semibold">
+                <a href="{{ route('admin.products.index') }}" class="text-green hover:text-green-deep text-sm font-semibold">
                     Voir tout <i class="fas fa-arrow-right ml-1"></i>
                 </a>
             </div>
@@ -191,7 +191,7 @@
                     </div>
                     @endif
                     <div class="flex-1">
-                        <a href="{{ route('admin.products.edit', $product->id) }}" class="font-semibold text-gray-900 hover:text-[#5a7c6f] block">
+                        <a href="{{ route('admin.products.edit', $product->id) }}" class="font-semibold text-gray-900 hover:text-green block">
                             {{ $product->name }}
                         </a>
                         <div class="flex items-center gap-4 mt-2 text-sm text-gray-600">
@@ -217,7 +217,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ asset('vendors/chartjs/chart.min.js') }}"></script>
 <script>
     // Revenue Chart
     const ctx = document.getElementById('revenueChart').getContext('2d');
@@ -230,13 +230,13 @@
             datasets: [{
                 label: 'Revenus (FCFA)',
                 data: revenueData.map(item => item.revenue),
-                borderColor: '#5a7c6f',
-                backgroundColor: 'rgba(90, 124, 111, 0.1)',
+                borderColor: '#0b7a4b',
+                backgroundColor: 'rgba(11, 122, 75, 0.1)',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
                 pointRadius: 4,
-                pointBackgroundColor: '#5a7c6f',
+                pointBackgroundColor: '#0b7a4b',
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
                 pointHoverRadius: 6

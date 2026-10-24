@@ -181,14 +181,14 @@
                     <td class="label">Numéro de reçu :</td>
                     <td>{{ $order->order_number }}</td>
                     <td class="label">Date du reçu :</td>
-                    <td>{{ $order->created_at->format('F d, Y') }}</td>
+                    <td>{{ $order->created_at->translatedFormat('j F Y') }}</td>
                 </tr>
                 <tr>
                     <td class="label">Date de la commande :</td>
-                    <td>{{ $order->created_at->format('F d, Y H:i') }}</td>
+                    <td>{{ $order->created_at->translatedFormat('j F Y à H:i') }}</td>
                     <td class="label">Statut du paiement :</td>
                     <td style="text-transform: uppercase; color: {{ $order->payment_status === 'paid' ? '#10b981' : '#ef4444' }}; font-weight: bold;">
-                        {{ $order->payment_status }}
+                        {{ \App\Support\OrderLabels::payment($order->payment_status) }}
                     </td>
                 </tr>
             </table>
@@ -276,10 +276,10 @@
                     <td class="label">Sous-total :</td>
                     <td class="amount">{{ format_fcfa($order->subtotal) }}</td>
                 </tr>
-                @if($order->shipping > 0)
+                @if($order->shipping_cost > 0)
                     <tr>
                         <td class="label">Frais de transport :</td>
-                        <td class="amount">{{ format_fcfa($order->shipping) }}</td>
+                        <td class="amount">{{ format_fcfa($order->shipping_cost) }}</td>
                     </tr>
                 @endif
                 @if($order->tax > 0)
@@ -311,7 +311,7 @@
                 </tr>
                 <tr>
                     <td class="label">Statut du paiement :</td>
-                    <td style="text-transform: uppercase; font-weight: bold;">{{ $order->payment_status }}</td>
+                    <td style="text-transform: uppercase; font-weight: bold;">{{ \App\Support\OrderLabels::payment($order->payment_status) }}</td>
                 </tr>
                 @if($order->moneyFusionPayment)
                     <tr>
@@ -321,7 +321,7 @@
                     @if($order->moneyFusionPayment->paid_at)
                         <tr>
                             <td class="label">Date de paiement :</td>
-                            <td>{{ \Carbon\Carbon::parse($order->moneyFusionPayment->paid_at)->format('F d, Y H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($order->moneyFusionPayment->paid_at)->translatedFormat('j F Y à H:i') }}</td>
                         </tr>
                     @endif
                 @endif

@@ -21,7 +21,7 @@
             <div class="bg-white rounded-lg shadow-md p-4">
                 <h2 class="font-semibold mb-4">Catégories</h2>
                 <nav class="space-y-2">
-                    <a href="#general" class="block px-4 py-2 rounded hover:bg-gray-100 text-[#5a7c6f]">
+                    <a href="#general" class="block px-4 py-2 rounded hover:bg-gray-100 text-green">
                         <i class="fas fa-cog mr-2"></i>Général
                     </a>
                     <a href="#store" class="block px-4 py-2 rounded hover:bg-gray-100">
@@ -71,8 +71,8 @@
                                         file:mr-4 file:py-2 file:px-4
                                         file:rounded-lg file:border-0
                                         file:text-sm file:font-semibold
-                                        file:bg-[#5a7c6f] file:text-white
-                                        hover:file:bg-[#4a6c5f]
+                                        file:bg-green file:text-white
+                                        hover:file:bg-green-deep
                                         file:cursor-pointer cursor-pointer"
                                         onchange="previewLogo(event)">
                                     <p class="mt-2 text-xs text-gray-500">Recommandé: 200x60px (ratio 10:3), PNG ou JPG, max 2MB</p>
@@ -86,7 +86,7 @@
                                 Nom du Site
                             </label>
                             <input type="text" name="site_name" value="{{ getSetting('site_name', 'Glowing Cosmetics') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
 
                         <div>
@@ -94,7 +94,7 @@
                                 Description du Site
                             </label>
                             <textarea name="site_description" rows="3"
-                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">{{ getSetting('site_description', 'Produits cosmétiques naturels et biologiques') }}</textarea>
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">{{ getSetting('site_description', 'Produits cosmétiques naturels et biologiques') }}</textarea>
                         </div>
 
                         <div>
@@ -102,7 +102,7 @@
                                 Email de Contact
                             </label>
                             <input type="email" name="contact_email" value="{{ getSetting('contact_email', 'contact@glowing-cosmetics.com') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
 
                         <div>
@@ -110,7 +110,7 @@
                                 Téléphone
                             </label>
                             <input type="text" name="phone" value="{{ getSetting('phone', '+33 1 23 45 67 89') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
                     </div>
                 </div>
@@ -124,12 +124,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Devise
                             </label>
-                            <select name="currency"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
-                                <option value="FCFA" {{ getSetting('currency', 'FCFA') == 'FCFA' ? 'selected' : '' }}>FCFA</option>
-                                <option value="EUR" {{ getSetting('currency', 'FCFA') == 'EUR' ? 'selected' : '' }}>EUR</option>
-                                <option value="USD" {{ getSetting('currency', 'FCFA') == 'USD' ? 'selected' : '' }}>USD</option>
-                            </select>
+                            <p class="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-700">Franc CFA (FCFA)</p>
+                            <p class="mt-1 text-xs text-gray-500">Tous les prix de la boutique sont en francs CFA, sans décimales.</p>
                         </div>
 
                         <div>
@@ -137,7 +133,7 @@
                                 TVA (%)
                             </label>
                             <input type="number" name="tax_rate" value="{{ getSetting('tax_rate', '15') }}" step="0.01"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
 
                         <div>
@@ -145,13 +141,13 @@
                                 Stock Minimum d'Alerte
                             </label>
                             <input type="number" name="low_stock_threshold" value="{{ getSetting('low_stock_threshold', '10') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
 
                         <div>
                             <label class="flex items-center">
                                 <input type="checkbox" name="enable_reviews" value="1" {{ getSetting('enable_reviews', '1') == '1' ? 'checked' : '' }}
-                                       class="rounded border-gray-300 text-[#5a7c6f] shadow-sm focus:border-[#5a7c6f] focus:ring focus:ring-[#5a7c6f] focus:ring-opacity-50">
+                                       class="rounded border-gray-300 text-green shadow-sm focus:border-green focus:ring focus:ring-green focus:ring-opacity-50">
                                 <span class="ml-2 text-sm text-gray-700">Activer les avis clients</span>
                             </label>
                         </div>
@@ -159,7 +155,7 @@
                         <div>
                             <label class="flex items-center">
                                 <input type="checkbox" name="enable_wishlist" value="1" {{ getSetting('enable_wishlist', '1') == '1' ? 'checked' : '' }}
-                                       class="rounded border-gray-300 text-[#5a7c6f] shadow-sm focus:border-[#5a7c6f] focus:ring focus:ring-[#5a7c6f] focus:ring-opacity-50">
+                                       class="rounded border-gray-300 text-green shadow-sm focus:border-green focus:ring focus:ring-green focus:ring-opacity-50">
                                 <span class="ml-2 text-sm text-gray-700">Activer la liste de souhaits</span>
                             </label>
                         </div>
@@ -176,7 +172,7 @@
                                 Email d'Expédition
                             </label>
                             <input type="email" name="from_email" value="{{ getSetting('from_email', 'noreply@glowing-cosmetics.com') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
 
                         <div>
@@ -184,13 +180,13 @@
                                 Nom d'Expédition
                             </label>
                             <input type="text" name="from_name" value="{{ getSetting('from_name', 'Glowing Cosmetics') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
 
                         <div>
                             <label class="flex items-center">
                                 <input type="checkbox" name="send_order_confirmation" value="1" {{ getSetting('send_order_confirmation', '1') == '1' ? 'checked' : '' }}
-                                       class="rounded border-gray-300 text-[#5a7c6f] shadow-sm focus:border-[#5a7c6f] focus:ring focus:ring-[#5a7c6f] focus:ring-opacity-50">
+                                       class="rounded border-gray-300 text-green shadow-sm focus:border-green focus:ring focus:ring-green focus:ring-opacity-50">
                                 <span class="ml-2 text-sm text-gray-700">Envoyer email de confirmation de commande</span>
                             </label>
                         </div>
@@ -198,7 +194,7 @@
                         <div>
                             <label class="flex items-center">
                                 <input type="checkbox" name="send_shipping_notification" value="1" {{ getSetting('send_shipping_notification', '1') == '1' ? 'checked' : '' }}
-                                       class="rounded border-gray-300 text-[#5a7c6f] shadow-sm focus:border-[#5a7c6f] focus:ring focus:ring-[#5a7c6f] focus:ring-opacity-50">
+                                       class="rounded border-gray-300 text-green shadow-sm focus:border-green focus:ring focus:ring-green focus:ring-opacity-50">
                                 <span class="ml-2 text-sm text-gray-700">Envoyer notification d'expédition</span>
                             </label>
                         </div>
@@ -223,7 +219,7 @@
                                 <input type="checkbox" name="payment_moneyfusion_enabled" value="1"
                                        {{ getSetting('payment_moneyfusion_enabled', '1') == '1' ? 'checked' : '' }}
                                        class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#5a7c6f]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5a7c6f]"></div>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green"></div>
                             </label>
                         </div>
 
@@ -239,7 +235,7 @@
                                 <input type="checkbox" name="payment_credit_card_enabled" value="1"
                                        {{ getSetting('payment_credit_card_enabled', '1') == '1' ? 'checked' : '' }}
                                        class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#5a7c6f]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5a7c6f]"></div>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green"></div>
                             </label>
                         </div>
 
@@ -255,7 +251,7 @@
                                 <input type="checkbox" name="payment_paypal_enabled" value="1"
                                        {{ getSetting('payment_paypal_enabled', '1') == '1' ? 'checked' : '' }}
                                        class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#5a7c6f]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5a7c6f]"></div>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green"></div>
                             </label>
                         </div>
 
@@ -271,7 +267,7 @@
                                 <input type="checkbox" name="payment_bank_transfer_enabled" value="1"
                                        {{ getSetting('payment_bank_transfer_enabled', '1') == '1' ? 'checked' : '' }}
                                        class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#5a7c6f]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5a7c6f]"></div>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green"></div>
                             </label>
                         </div>
 
@@ -287,7 +283,7 @@
                                 <input type="checkbox" name="payment_cash_on_delivery_enabled" value="1"
                                        {{ getSetting('payment_cash_on_delivery_enabled', '1') == '1' ? 'checked' : '' }}
                                        class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#5a7c6f]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5a7c6f]"></div>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green"></div>
                             </label>
                         </div>
                     </div>
@@ -303,7 +299,7 @@
                                 Frais de Livraison Standard
                             </label>
                             <input type="number" name="standard_shipping_cost" value="{{ getSetting('standard_shipping_cost', '0') }}" step="0.01"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
 
                         <div>
@@ -311,7 +307,7 @@
                                 Livraison Gratuite à partir de
                             </label>
                             <input type="number" name="free_shipping_threshold" value="{{ getSetting('free_shipping_threshold', '50000') }}" step="0.01"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
 
                         <div>
@@ -319,7 +315,7 @@
                                 Délai de Livraison Estimé (jours)
                             </label>
                             <input type="text" name="estimated_delivery_days" value="{{ getSetting('estimated_delivery_days', '3-5') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                         </div>
                     </div>
                 </div>
@@ -327,7 +323,7 @@
                 <!-- Save Button -->
                 <div class="flex justify-end">
                     <button type="submit"
-                            class="px-6 py-3 bg-[#5a7c6f] text-white rounded-lg hover:bg-[#4a6c5f] transition">
+                            class="px-6 py-3 bg-green text-white rounded-lg hover:bg-green-deep transition">
                         <i class="fas fa-save mr-2"></i>Enregistrer les Paramètres
                     </button>
                 </div>

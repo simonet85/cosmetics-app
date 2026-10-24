@@ -21,12 +21,12 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
                 <input type="text" name="search" value="{{ request('search') }}"
                        placeholder="Titre ou commentaire..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
-                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Tous les statuts</option>
                     <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approuvé</option>
                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>En attente</option>
@@ -35,7 +35,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Note</label>
-                <select name="rating" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="rating" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Toutes les notes</option>
                     <option value="5" {{ request('rating') === '5' ? 'selected' : '' }}>5 étoiles</option>
                     <option value="4" {{ request('rating') === '4' ? 'selected' : '' }}>4 étoiles</option>
@@ -46,7 +46,7 @@
             </div>
 
             <div class="flex items-end gap-2">
-                <button type="submit" class="flex-1 bg-[#5a7c6f] text-white px-4 py-2 rounded-lg hover:bg-[#4a6c5f] transition">
+                <button type="submit" class="flex-1 bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
                     <i class="fas fa-search mr-2"></i>Filtrer
                 </button>
                 <a href="{{ route('admin.reviews.index') }}" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
@@ -86,7 +86,7 @@
                         <div class="mb-2">
                             <a href="{{ route('products.show', $review->product->slug) }}"
                                target="_blank"
-                               class="text-[#5a7c6f] hover:text-[#4a6c5f] font-medium">
+                               class="text-green hover:text-green-deep font-medium">
                                 <i class="fas fa-box mr-1"></i>{{ $review->product->name }}
                             </a>
                         </div>
@@ -95,7 +95,7 @@
                         <div class="text-sm text-gray-600 mb-2">
                             Par
                             <a href="{{ route('admin.customers.show', $review->user->id) }}"
-                               class="text-[#5a7c6f] hover:text-[#4a6c5f]">
+                               class="text-green hover:text-green-deep">
                                 {{ $review->user->first_name }} {{ $review->user->last_name }}
                             </a>
                             le {{ $review->created_at->format('d/m/Y à H:i') }}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Status Update</title>
+    <title>Mise à jour de votre commande</title>
     <style>
         body {
             margin: 0;
@@ -270,7 +270,7 @@
         <div class="content">
             <!-- Status Badge -->
             <div style="text-align: center;">
-                <span class="status-badge {{ $order->status }}">{{ strtoupper($order->status) }}</span>
+                <span class="status-badge {{ $order->status }}">{{ mb_strtoupper(\App\Support\OrderLabels::status($order->status)) }}</span>
             </div>
 
             <!-- Status-specific Message -->
@@ -339,7 +339,7 @@
                     <div class="timeline-icon completed"></div>
                     <div class="timeline-content">
                         <h4>Commande Passée</h4>
-                        <p>{{ $order->created_at->format('F d, Y H:i') }}</p>
+                        <p>{{ $order->created_at->translatedFormat('j F Y à H:i') }}</p>
                     </div>
                 </div>
 
@@ -364,7 +364,7 @@
                         <div class="timeline-icon {{ $order->status === 'delivered' ? 'completed' : ($order->status === 'shipped' ? 'active' : 'pending') }}"></div>
                         <div class="timeline-content">
                             <h4>Livraison</h4>
-                            <p>{{ $order->status === 'delivered' ? $order->updated_at->format('F d, Y H:i') : 'Estimation : 3-5 jours ouvrables' }}</p>
+                            <p>{{ $order->status === 'delivered' ? $order->updated_at->translatedFormat('j F Y à H:i') : 'Estimation : 3-5 jours ouvrables' }}</p>
                         </div>
                     </div>
                 @endif
@@ -380,7 +380,7 @@
                     </tr>
                     <tr>
                         <td class="label">Date de Commande :</td>
-                        <td class="value">{{ $order->created_at->format('F d, Y') }}</td>
+                        <td class="value">{{ $order->created_at->translatedFormat('j F Y') }}</td>
                     </tr>
                     <tr>
                         <td class="label">Total de la Commande :</td>
@@ -389,7 +389,7 @@
                     <tr>
                         <td class="label">Statut :</td>
                         <td class="value" style="text-transform: uppercase; font-weight: bold;">
-                            {{ $order->status }}
+                            {{ \App\Support\OrderLabels::status($order->status) }}
                         </td>
                     </tr>
                 </table>

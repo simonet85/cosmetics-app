@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Gestion des Bannières</h1>
-        <a href="{{ route('admin.banners.create') }}" class="bg-[#5a7c6f] text-white px-4 py-2 rounded-lg hover:bg-[#4a6c5f] transition">
+        <a href="{{ route('admin.banners.create') }}" class="bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
             <i class="fas fa-plus mr-2"></i>Nouvelle Bannière
         </a>
     </div>
@@ -22,7 +22,7 @@
         <form method="GET" action="{{ route('admin.banners.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                <select name="type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Tous les types</option>
                     <option value="hero" {{ request('type') === 'hero' ? 'selected' : '' }}>Hero</option>
                     <option value="promotional" {{ request('type') === 'promotional' ? 'selected' : '' }}>Promotionnel</option>
@@ -33,7 +33,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Position</label>
-                <select name="position" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="position" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Toutes les positions</option>
                     <option value="home_slider" {{ request('position') === 'home_slider' ? 'selected' : '' }}>Slider Principal</option>
                     <option value="home_top" {{ request('position') === 'home_top' ? 'selected' : '' }}>Haut de Page</option>
@@ -45,7 +45,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
-                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a7c6f] focus:border-transparent">
+                <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
                     <option value="">Tous les statuts</option>
                     <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Actif</option>
                     <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactif</option>
@@ -53,7 +53,7 @@
             </div>
 
             <div class="flex items-end gap-2">
-                <button type="submit" class="flex-1 bg-[#5a7c6f] text-white px-4 py-2 rounded-lg hover:bg-[#4a6c5f] transition">
+                <button type="submit" class="flex-1 bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
                     <i class="fas fa-search mr-2"></i>Filtrer
                 </button>
                 <a href="{{ route('admin.banners.index') }}" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
@@ -133,7 +133,7 @@
 
                     <div class="flex gap-2">
                         <a href="{{ route('admin.banners.edit', $banner->id) }}"
-                           class="flex-1 text-center px-3 py-2 bg-[#5a7c6f] text-white rounded-lg hover:bg-[#4a6c5f] transition text-sm">
+                           class="flex-1 text-center px-3 py-2 bg-green text-white rounded-lg hover:bg-green-deep transition text-sm">
                             <i class="fas fa-edit mr-1"></i>Modifier
                         </a>
                         <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST" class="flex-1">
@@ -152,7 +152,7 @@
             <div class="col-span-full bg-white rounded-lg shadow-md p-8 text-center text-gray-500">
                 <i class="fas fa-image text-4xl mb-2"></i>
                 <p>Aucune bannière trouvée</p>
-                <a href="{{ route('admin.banners.create') }}" class="inline-block mt-4 text-[#5a7c6f] hover:text-[#4a6c5f]">
+                <a href="{{ route('admin.banners.create') }}" class="inline-block mt-4 text-green hover:text-green-deep">
                     <i class="fas fa-plus mr-2"></i>Créer une bannière
                 </a>
             </div>

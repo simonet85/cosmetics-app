@@ -106,7 +106,7 @@ class AdminSettingController extends Controller
         $this->updateSetting('phone', $request->input('phone'), 'text', 'general');
 
         // Store settings
-        $this->updateSetting('currency', $request->input('currency'), 'text', 'store');
+        // The currency is not a setting: every price is in CFA francs (format_fcfa), so there is nothing to save
         $this->updateSetting('tax_rate', $request->input('tax_rate'), 'number', 'store');
         $this->updateSetting('low_stock_threshold', $request->input('low_stock_threshold'), 'number', 'store');
         $this->updateSetting('enable_reviews', $request->input('enable_reviews') ? '1' : '0', 'boolean', 'store');
