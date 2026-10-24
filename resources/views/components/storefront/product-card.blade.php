@@ -12,7 +12,7 @@
 @endphp
 
 <article class="relative flex h-full flex-col border-b border-r border-line bg-white">
-    <a href="{{ route('products.show', $product->slug) }}" class="relative block bg-mint" tabindex="-1" aria-hidden="true">
+    <a href="{{ route('products.show', $product->slug) }}" class="relative block bg-photo" tabindex="-1" aria-hidden="true">
         <x-storefront.product-image :product="$product" sizes="(min-width: 1024px) 28vw, 50vw" class="aspect-[3/4] object-contain" />
         @if ($discount > 0 || $lowStock)
             <span class="absolute left-2 top-2 flex flex-col items-start gap-1">

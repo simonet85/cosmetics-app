@@ -10,7 +10,7 @@ Idée : chaque produit se lit comme l'étiquette d'un flacon de pharmacie, nom, 
 
 - Jetons et styles de base : `resources/css/storefront.css` (point d'entrée Vite séparé, scanné uniquement sur `resources/views/components`, `resources/views/storefront` et `resources/js/storefront.js`). Les anciennes pages gardent `resources/css/app.css`.
 - Mise en page : `<x-layouts.storefront title="" description="">` ; en-tête et pied de page : `<x-storefront.header />`, `<x-storefront.footer />` (données lues en base par `App\View\Composers\StorefrontComposer`).
-- Composants : `<x-ui.button>`, `<x-ui.price>`, `<x-ui.badge>`, `<x-ui.field>`, `<x-ui.icon>`, `<x-ui.section-heading>`, `<x-ui.empty-state>`.
+- Composants : `<x-ui.button>`, `<x-ui.price>`, `<x-ui.badge>`, `<x-ui.field>`, `<x-ui.icon>`, `<x-ui.section-heading>`, `<x-ui.empty-state>`, `<x-storefront.product-card>`, `<x-storefront.product-label>`, `<x-storefront.add-to-cart>`, `<x-storefront.product-image>`.
 - Comportement : `resources/js/storefront.js` (JavaScript natif) : tiroirs `<dialog>`, ajout au panier sans rechargement, compteurs, apparition au défilement, notifications.
 - Format de prix : `format_fcfa()` (francs entiers, espaces insécables). Moyens de paiement affichés : `App\Support\PaymentMethods` (réglages du site).
 
@@ -22,6 +22,7 @@ Les composants n'utilisent **jamais** une valeur hexadécimale brute. Stratégie
 |---|---|---|---|
 | `ground` | `#FFFFFF` | fond de page, rayonnage | |
 | `mint` | `#E3F0E8` | bandeaux, fonds d'étiquette | ink 14,3:1 |
+| `photo` | `#F8F8F8` | fond des photos produit (mesuré sur les images) : le cadre autour disparaît | |
 | `ink` | `#13201A` | texte, pied de page | 16,8:1 sur blanc |
 | `ink-muted` | `#4A5750` | légendes, aides | 7,6:1 sur blanc |
 | `green` | `#0B7A4B` | aplats, bouton principal, bandeau d'annonce | 5,4:1 avec texte blanc |

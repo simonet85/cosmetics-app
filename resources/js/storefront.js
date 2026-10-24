@@ -147,10 +147,74 @@ function setupFilters() {
     });
 }
 
+// Product page: photo gallery, quantity stepper, variant price and stock, favourites
+const formatFcfa = (amount) => `${Math.round(amount).toLocaleString('fr-FR').replace(/\s/g, '\u00A0')}\u00A0FCFA`;
+
+function setupProduct() {
+    const form = document.querySelector('[data-product-form]');
+
+    const main = document.getElementById('product-main-image');
+    document.querySelectorAll('[data-gallery-thumb]').forEach((thumb) => {
+        thumb.addEventListener('click', () => {
+            if (main) main.src = thumb.dataset.galleryThumb;
+            document.querySelectorAll('[data-gallery-thumb]').forEach((other) => other.removeAttribute('aria-current'));
+            thumb.setAttribute('aria-current', 'true');
+        });
+    });
+
+    if (form) {
+        const qty = form.querySelector('[data-qty]');
+        const clamp = () => {
+            if (!qty) return;
+            const max = parseInt(qty.max, 10) || 1;
+            qty.value = Math.min(max, Math.max(1, parseInt(qty.value, 10) || 1));
+        };
+        form.querySelectorAll('[data-qty-step]').forEach((button) => {
+            button.addEventListener('click', () => {
+                qty.value = (parseInt(qty.value, 10) || 1) + parseInt(button.dataset.qtyStep, 10);
+                clamp();
+            });
+        });
+        qty?.addEventListener('change', clamp);
+
+        // The price shown follows the chosen option; the server recomputes it anyway when adding to the cart
+        form.querySelectorAll('input[name="variant_id"]').forEach((radio) => {
+            radio.addEventListener('change', () => {
+                const price = document.getElementById('product-price');
+                const list = document.getElementById('product-list-price');
+                if (price) price.textContent = formatFcfa(radio.dataset.price);
+                if (list) list.textContent = formatFcfa(radio.dataset.listPrice);
+                if (qty) { qty.max = radio.dataset.stock; clamp(); }
+            });
+        });
+    }
+
+    document.querySelectorAll('[data-wishlist-toggle]').forEach((button) => {
+        button.addEventListener('click', async () => {
+            try {
+                const response = await fetch(document.body.dataset.wishlistUrl || '/wishlist/toggle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': csrfToken() },
+                    body: JSON.stringify({ product_id: Number(button.dataset.wishlistToggle) }),
+                    credentials: 'same-origin',
+                });
+                const data = await response.json();
+                if (!response.ok || !data.success) throw new Error(data.message);
+                button.setAttribute('aria-pressed', data.action === 'added' ? 'true' : 'false');
+                setCount('wishlist', data.wishlist_count);
+                toast(data.message);
+            } catch {
+                toast('Impossible de mettre à jour vos favoris pour le moment.', { type: 'error' });
+            }
+        });
+    });
+}
+
 setupDialogs();
 setupAddToCart();
 setupReveal();
 setupFilters();
+setupProduct();
 
 // Coming back with the browser's back button restores a cached page: resync the counters
 window.addEventListener('pageshow', (event) => { if (event.persisted) refreshCounts(); });

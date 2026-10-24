@@ -83,7 +83,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
 Route::prefix('products')->name('products.')->group(function () {
     Route::get('/{product:slug}', [ProductController::class, 'show'])->name('show');
     Route::get('/{product:slug}/quick-view', [ProductController::class, 'quickView'])->name('quickView');
-    Route::post('/{product}/reviews', [ProductController::class, 'storeReview'])->name('reviews.store');
+    Route::post('/{product}/reviews', [ProductController::class, 'storeReview'])->middleware('auth')->name('reviews.store');
 });
 
 // Cart Routes

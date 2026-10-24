@@ -115,9 +115,7 @@ class ShopController extends Controller
 
     public function show($slug)
     {
-        $product = Product::with(['images', 'categories', 'tags', 'variants', 'reviews.user'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating')
+        $product = Product::with(['images', 'categories', 'tags', 'variants' => fn ($q) => $q->where('is_active', true)->orderBy('id')])
             ->where('slug', $slug)
             // Admins can preview unpublished (inactive / archived) products from the admin list
             ->when(! (auth()->check() && auth()->user()->isAdmin()), fn ($query) => $query->active())
@@ -125,11 +123,12 @@ class ShopController extends Controller
 
         $isPreview = $product->status !== 'active';
 
+        // Only moderated reviews are shown and counted
+        $reviews = $product->reviews()->approved()->with('user')->latest()->get();
+
         // Get related products from same categories
         $categoryIds = $product->categories->pluck('id');
         $relatedProducts = Product::with(['images', 'categories'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating')
             ->whereHas('categories', function ($q) use ($categoryIds) {
                 $q->whereIn('category_id', $categoryIds);
             })
@@ -139,6 +138,14 @@ class ShopController extends Controller
             ->limit(4)
             ->get();
 
-        return view('shop.show', compact('product', 'relatedProducts', 'isPreview'));
+        return view('storefront.product', [
+            'product' => $product,
+            'isPreview' => $isPreview,
+            'reviews' => $reviews,
+            'reviewCount' => $reviews->count(),
+            'reviewAverage' => $reviews->count() ? round($reviews->avg('rating'), 1) : null,
+            'relatedProducts' => $relatedProducts,
+            'inWishlist' => in_array($product->id, session('wishlist', [])),
+        ]);
     }
 }

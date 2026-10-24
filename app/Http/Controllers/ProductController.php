@@ -8,32 +8,11 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     /**
-     * Display the specified product.
+     * Display the specified product (same page as /shop/{slug}).
      */
     public function show($slug)
     {
-        $product = Product::with(['images', 'categories', 'tags', 'variants', 'reviews.user'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating')
-            ->where('slug', $slug)
-            ->active()
-            ->firstOrFail();
-
-        // Get related products from same categories
-        $categoryIds = $product->categories->pluck('id');
-        $relatedProducts = Product::with(['images', 'categories'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating')
-            ->whereHas('categories', function ($q) use ($categoryIds) {
-                $q->whereIn('category_id', $categoryIds);
-            })
-            ->where('id', '!=', $product->id)
-            ->active()
-            ->inStock()
-            ->limit(4)
-            ->get();
-
-        return view('shop.show', compact('product', 'relatedProducts'));
+        return app(ShopController::class)->show($slug);
     }
 
     /**

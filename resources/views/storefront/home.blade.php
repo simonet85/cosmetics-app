@@ -48,7 +48,7 @@
             <ul class="mt-6 divide-y divide-line border-y border-ink">
                 @foreach ($shelf as $product)
                     <li class="grid grid-cols-[5rem_1fr] items-center gap-x-4 gap-y-3 py-4 sm:grid-cols-[6rem_1fr_auto_auto] sm:gap-x-6" data-reveal style="--reveal-index: {{ $loop->index }}">
-                        <a href="{{ route('products.show', $product->slug) }}" tabindex="-1" aria-hidden="true" class="bg-mint">
+                        <a href="{{ route('products.show', $product->slug) }}" tabindex="-1" aria-hidden="true" class="bg-photo">
                             <x-storefront.product-image :product="$product" sizes="96px" class="aspect-[3/4]" />
                         </a>
                         <div>

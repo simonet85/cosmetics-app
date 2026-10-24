@@ -12,7 +12,7 @@
 @endphp
 
 <article class="grid gap-0 border border-ink bg-white lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]" aria-labelledby="lead-name">
-    <a href="{{ route('products.show', $product->slug) }}" class="block bg-mint" tabindex="-1" aria-hidden="true">
+    <a href="{{ route('products.show', $product->slug) }}" class="block bg-photo" tabindex="-1" aria-hidden="true">
         <x-storefront.product-image :product="$product" :eager="true" class="aspect-[4/3] object-contain lg:aspect-auto lg:h-[26rem]" />
     </a>
 

@@ -22,6 +22,7 @@
     --color-sage: #5a7c6f;
     --color-line: #d5ded8;
     --color-field: #7a8a81;
+    --color-photo: #f8f8f8; /* background of the product photos, so the frame around them disappears */
     --color-ticket: #fbd38d;
     --color-amber: #9a4b06;
     --color-danger: #b42318;
