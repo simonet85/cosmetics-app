@@ -6,7 +6,7 @@
 <div class="bg-gray-50 py-12 mb-12">
     <div class="container-custom">
         <h1 class="text-4xl font-bold text-gray-900 mb-2">Boutique</h1>
-        <nav class="flex text-sm">
+        <nav aria-label="Fil d'Ariane" class="flex items-center text-sm">
             <a href="{{ route('home') }}" class="text-gray-600 hover:text-gray-900">Accueil</a>
             <span class="mx-2 text-gray-400">/</span>
             <span class="text-gray-900">Boutique</span>
