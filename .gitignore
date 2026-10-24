@@ -32,6 +32,11 @@ Thumbs.db
 /public/build
 /build
 
+# Playwright
+/playwright-report
+/test-results
+/blob-report
+
 # Storage folders
 /storage/logs/*.log
 /storage/framework/cache/*
