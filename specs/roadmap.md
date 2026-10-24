@@ -89,3 +89,14 @@ Packagist shows `laravel/framework` v13.x (requires PHP ^8.3) and `simonet85/lar
 
 - The TODO file references `app/Console/Kernel.php`; Laravel 12 and 13 have no such file, so scheduling goes in `routes/console.php`.
 - The TODO also references `MONEYFUSION-CHECK-PAYMENT.md` and `MONEYFUSION-IMPLEMENTATION.md`, which are **not in the repo**. The code samples must be rewritten when those phases start.
+
+## On hold (production follow-ups, paused on 2026-10-24)
+
+Production (klab-consulting.com) runs the code of phases 0 to 5; the database password in its `.env` was fixed and the site answers 200. To pick up later:
+
+- [ ] Real MoneyFusion test payment (250 F minimum): confirm whether the gateway's `Montant` is net or gross of fees. The package refuses a paid status when it differs from the amount sent, so a net amount would leave legitimate payments pending.
+- [ ] Set `APP_DEBUG=false` in the production `.env` (it is `true`).
+- [ ] Create the hPanel cron job: `* * * * * cd ~/domains/klab-consulting.com/laravel && php artisan schedule:run` (nothing scheduled runs until then).
+- [ ] 7 legacy MoneyFusion orders are still pending and `moneyfusion_payments` is empty: backfill payment rows from `orders.moneyfusion_token` so the scheduled check can settle or expire them.
+- [ ] Tidy the server: `public/build.prev/`, `.env.bak-20261021` (mode 755), `.env` itself (mode 755).
+- [ ] GitHub Actions is blocked by an account billing lock; re-run the CI jobs once it is lifted.
