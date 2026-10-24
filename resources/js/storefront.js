@@ -309,12 +309,40 @@ function setupCart() {
     });
 }
 
+/* ---------- Checkout: one click only, errors announced ---------- */
+function setupCheckout() {
+    const form = document.querySelector('form[data-checkout]');
+    if (!form) return;
+
+    const button = form.querySelector('[data-submit]');
+    const label = button?.querySelector('[data-label]');
+    const idle = label?.textContent;
+
+    form.addEventListener('submit', (event) => {
+        // The browser has already validated the fields. A second submit while the first one runs is dropped.
+        if (form.dataset.sending === 'true') { event.preventDefault(); return; }
+        form.dataset.sending = 'true';
+        if (button) { button.setAttribute('aria-disabled', 'true'); button.setAttribute('aria-busy', 'true'); button.classList.add('opacity-60', 'pointer-events-none'); }
+        if (label) label.textContent = 'Enregistrement en cours…';
+    });
+
+    // Coming back with the back button restores the page as it was left: make the button usable again
+    window.addEventListener('pageshow', () => {
+        form.dataset.sending = 'false';
+        if (button) { button.removeAttribute('aria-disabled'); button.removeAttribute('aria-busy'); button.classList.remove('opacity-60', 'pointer-events-none'); }
+        if (label && idle) label.textContent = idle;
+    });
+
+    document.querySelector('[data-error-summary]')?.focus();
+}
+
 setupDialogs();
 setupAddToCart();
 setupReveal();
 setupFilters();
 setupProduct();
 setupCart();
+setupCheckout();
 
 // Coming back with the browser's back button restores a cached page: resync the counters
 window.addEventListener('pageshow', (event) => { if (event.persisted) refreshCounts(); });

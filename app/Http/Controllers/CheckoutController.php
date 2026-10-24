@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CheckoutException;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Services\CartService;
+use App\Support\CheckoutToken;
 use App\Support\PaymentMethods;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Simonet85\LaravelMoneyFusion\MoneyFusionService;
+use Throwable;
 
 class CheckoutController extends Controller
 {
@@ -27,13 +32,15 @@ class CheckoutController extends Controller
         ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals();
 
         $enabledPaymentMethods = PaymentMethods::enabled();
+        $checkoutToken = CheckoutToken::make();
 
-        return view('checkout.index', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total', 'enabledPaymentMethods'));
+        return view('storefront.checkout', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total', 'enabledPaymentMethods', 'checkoutToken'));
     }
 
     public function process(Request $request)
     {
         $request->validate([
+            'checkout_token' => 'required|string',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -47,7 +54,9 @@ class CheckoutController extends Controller
             'billing_last_name' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
             'billing_city' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
             'billing_quartier' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
+            'notes' => 'nullable|string|max:1000',
         ], [
+            'checkout_token.required' => 'Cette page a expiré. Rechargez la page de paiement.',
             // Shipping address messages
             'first_name.required' => 'Le prénom est obligatoire.',
             'last_name.required' => 'Le nom est obligatoire.',
@@ -56,7 +65,7 @@ class CheckoutController extends Controller
             'phone.required' => 'Le numéro de téléphone est obligatoire.',
             'city.required' => 'La ville est obligatoire.',
             'quartier.required' => 'Le quartier est obligatoire.',
-            'payment_method.required' => 'La méthode de paiement est obligatoire.',
+            'payment_method.required' => 'Choisissez un mode de paiement.',
 
             // Billing address messages
             'billing_first_name.required_without' => 'Le prénom de facturation est obligatoire.',
@@ -65,6 +74,57 @@ class CheckoutController extends Controller
             'billing_quartier.required_without' => 'Le quartier de facturation est obligatoire.',
         ]);
 
+        $token = $request->input('checkout_token');
+
+        if (! CheckoutToken::valid($token)) {
+            return redirect()->route('checkout.index')
+                ->with('error', 'Cette page de paiement a expiré. Vérifiez votre commande et validez-la à nouveau.');
+        }
+
+        // The same form sent twice (double click, reload, second tab) leads to the order it already created
+        $key = 'checkout:'.hash('sha256', $token);
+        if ($existing = $this->existingOrder($key)) {
+            return $this->toOrder($existing);
+        }
+
+        // Two requests carrying the same token at the same moment: only one may place the order
+        $lock = Cache::lock($key.':lock', 60);
+        if (! $lock->get()) {
+            return redirect()->back()->withInput()
+                ->with('error', 'Votre commande est en cours de traitement. Patientez quelques secondes, ne la validez pas une seconde fois.');
+        }
+
+        try {
+            if ($existing = $this->existingOrder($key)) {
+                return $this->toOrder($existing);
+            }
+
+            $response = $this->place($request, $key);
+        } finally {
+            $lock->release();
+        }
+
+        return $response;
+    }
+
+    private function existingOrder(string $key): ?Order
+    {
+        $id = Cache::get($key.':order');
+
+        return $id ? Order::find($id) : null;
+    }
+
+    private function toOrder(Order $order): RedirectResponse
+    {
+        if ($order->moneyfusion_payment_url && $order->payment_status === 'pending') {
+            return redirect($order->moneyfusion_payment_url);
+        }
+
+        return redirect($order->successUrl())->with('success', 'Cette commande a déjà été enregistrée.');
+    }
+
+    private function place(Request $request, string $key): RedirectResponse
+    {
         // The admin can switch payment methods off in the settings: enforce it here, not just in the form.
         if (! (PaymentMethods::enabled()[$request->payment_method] ?? false)) {
             return redirect()->back()
@@ -128,7 +188,7 @@ class CheckoutController extends Controller
                 $product = Product::whereKey($item['product_id'])->lockForUpdate()->firstOrFail();
 
                 if ($product->stock < $item['quantity']) {
-                    throw new \Exception("Stock insuffisant pour {$product->name}");
+                    throw new CheckoutException("Il ne reste pas assez de stock pour {$product->name}. Modifiez la quantité dans votre panier.");
                 }
 
                 $variant = null;
@@ -139,11 +199,11 @@ class CheckoutController extends Controller
                         ->first();
 
                     if (! $variant || ! $variant->is_active) {
-                        throw new \Exception("Variante indisponible pour {$product->name}");
+                        throw new CheckoutException("L'option choisie pour {$product->name} n'est plus disponible. Retirez-la de votre panier.");
                     }
 
                     if ($variant->stock < $item['quantity']) {
-                        throw new \Exception("Stock insuffisant pour {$product->name} ({$variant->label})");
+                        throw new CheckoutException("Il ne reste pas assez de stock pour {$product->name} ({$variant->label}). Modifiez la quantité dans votre panier.");
                     }
                 }
 
@@ -197,33 +257,39 @@ class CheckoutController extends Controller
                     ]);
 
                     DB::commit();
+                    Cache::put($key.':order', $order->id, now()->addDay());
 
                     // Redirect to MoneyFusion payment page
                     return redirect($paymentResult['url']);
-
-                } catch (\Exception $e) {
+                } catch (Throwable $e) {
                     DB::rollBack();
+                    report($e);
 
                     return redirect()->back()
                         ->withInput()
-                        ->with('error', 'Erreur lors de l\'initialisation du paiement MoneyFusion: '.$e->getMessage());
+                        ->with('error', 'Le paiement mobile n\'a pas pu être lancé. Votre panier est conservé : réessayez ou choisissez un autre mode de paiement.');
                 }
             }
 
             // Clear cart for non-MoneyFusion payments
-            app(\App\Services\CartService::class)->clear();
+            $this->cart->clear();
 
             DB::commit();
+            Cache::put($key.':order', $order->id, now()->addDay());
 
             return redirect($order->successUrl())
                 ->with('success', 'Votre commande a été passée avec succès!');
-
-        } catch (\Exception $e) {
+        } catch (CheckoutException $e) {
             DB::rollBack();
+
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        } catch (Throwable $e) {
+            DB::rollBack();
+            report($e);
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Une erreur s\'est produite lors du traitement de votre commande: '.$e->getMessage());
+                ->with('error', 'Votre commande n\'a pas pu être enregistrée. Votre panier est conservé : réessayez dans un instant.');
         }
     }
 

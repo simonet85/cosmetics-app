@@ -8,6 +8,7 @@
     'required' => false,
     'autocomplete' => null,
     'inputmode' => null,
+    'wrapper' => null,   // classes for the outer block (grid placement)
 ])
 
 {{--
@@ -19,7 +20,7 @@
     $describedBy = trim(($help ? "{$id}-help " : '').($error ? "{$id}-error" : ''));
 @endphp
 
-<div class="grid gap-1.5">
+<div class="grid gap-1.5 {{ $wrapper }}">
     <label for="{{ $id }}" class="text-sm font-semibold text-ink">
         {{ $label }}@if ($required)<span class="text-danger" aria-hidden="true"> *</span><span class="sr-only"> (obligatoire)</span>@endif
     </label>

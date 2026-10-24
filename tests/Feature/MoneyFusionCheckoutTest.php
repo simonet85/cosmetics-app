@@ -21,6 +21,7 @@ class MoneyFusionCheckoutTest extends TestCase
     private function checkoutData(): array
     {
         return [
+            'checkout_token' => \App\Support\CheckoutToken::make(),
             'first_name' => 'Awa',
             'last_name' => 'Koné',
             'email' => 'awa@example.com',

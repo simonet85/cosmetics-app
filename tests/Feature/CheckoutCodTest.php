@@ -29,6 +29,7 @@ class CheckoutCodTest extends TestCase
     private function checkoutData(array $overrides = []): array
     {
         return array_merge([
+            'checkout_token' => \App\Support\CheckoutToken::make(),
             'first_name' => 'Awa',
             'last_name' => 'Koné',
             'email' => 'awa@example.com',
