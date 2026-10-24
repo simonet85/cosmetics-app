@@ -99,4 +99,83 @@ class StorefrontHomeTest extends TestCase
             ->assertOk()->assertJson(['success' => true, 'cart_count' => 1]);
         $this->assertNotSame($lead->id, $other->id);
     }
+
+    private function banner(array $attributes = []): \App\Models\Banner
+    {
+        return \App\Models\Banner::create(array_merge([
+            'type' => 'promotional', 'position' => 'home_top', 'title' => 'Offre de saison', 'subtitle' => 'Jusqu\'à dimanche',
+            'image_path' => 'images/hero-slider/hero-slider-15.jpg', 'link_url' => 'https://example.com/offre', 'button_text' => 'En profiter',
+            'order' => 1, 'is_active' => true,
+        ], $attributes));
+    }
+
+    public function test_a_live_banner_is_shown_in_its_slot_with_its_button(): void
+    {
+        $this->banner();
+
+        $html = $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('Offre de saison', $html);
+        $this->assertStringContainsString('Jusqu&#039;à dimanche', $html);
+        $this->assertStringContainsString('href="https://example.com/offre"', $html);
+        $this->assertStringContainsString('En profiter', $html);
+        $this->assertStringContainsString('hero-slider-15.jpg', $html);
+        $this->assertSame(1, substr_count($html, '<h1'));
+        // top banner comes before the lead product
+        $this->assertLessThan(strpos($html, 'Les rayons') ?: PHP_INT_MAX, strpos($html, 'Offre de saison'));
+    }
+
+    public function test_banners_outside_their_schedule_or_switched_off_are_not_shown(): void
+    {
+        $this->banner(['title' => 'Éteinte', 'is_active' => false]);
+        $this->banner(['title' => 'Terminée', 'start_date' => now()->subDays(9), 'end_date' => now()->subDay()]);
+        $this->banner(['title' => 'Pas encore', 'start_date' => now()->addDays(2)]);
+
+        $this->get('/')->assertOk()->assertDontSee('Éteinte')->assertDontSee('Terminée')->assertDontSee('Pas encore');
+    }
+
+    public function test_only_one_banner_per_slot_and_the_lowest_order_wins(): void
+    {
+        $this->banner(['title' => 'Seconde', 'order' => 5]);
+        $this->banner(['title' => 'Première', 'order' => 1]);
+
+        $this->get('/')->assertSee('Première')->assertDontSee('Seconde');
+    }
+
+    public function test_slots_follow_the_position_and_old_demo_positions_still_land_somewhere(): void
+    {
+        $this->banner(['title' => 'En haut', 'position' => 'home_top']);
+        $this->banner(['title' => 'Au milieu', 'position' => 'home_middle']);
+        $this->banner(['title' => 'En bas', 'position' => 'home_bottom']);
+        $this->banner(['title' => 'Barre latérale', 'position' => 'sidebar']);
+
+        $html = $this->get('/')->getContent();
+
+        $this->assertLessThan(strpos($html, 'Au milieu'), strpos($html, 'En haut'));
+        $this->assertLessThan(strpos($html, 'En bas'), strpos($html, 'Au milieu'));
+        $this->assertStringNotContainsString('Barre latérale', $html);
+
+        \App\Models\Banner::query()->delete();
+        $this->banner(['title' => 'Ancien hero', 'position' => 'hero', 'type' => 'hero']);
+        $this->banner(['title' => 'Ancienne promo', 'position' => 'promo', 'type' => 'promo']);
+        $this->get('/')->assertSee('Ancien hero')->assertSee('Ancienne promo');
+    }
+
+    public function test_a_banner_without_a_link_has_no_button_and_keeps_title_line_breaks(): void
+    {
+        $this->banner(['link_url' => null, 'button_text' => null, 'title' => 'Première ligne
+Seconde ligne']);
+
+        $html = $this->get('/')->getContent();
+
+        $this->assertStringNotContainsString('En profiter', $html);
+        $this->assertStringContainsString('whitespace-pre-line', $html);
+        $this->assertStringContainsString('Première ligne
+Seconde ligne', $html);
+    }
+
+    public function test_without_banners_the_home_page_is_unchanged(): void
+    {
+        $this->get('/')->assertOk()->assertDontSee('aria-labelledby="banner-', false);
+    }
 }

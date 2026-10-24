@@ -7,6 +7,10 @@
     <div class="wrap py-8 sm:py-12">
         <h1 class="sr-only">Glowing Cosmetics, soins cosmétiques</h1>
 
+        @isset($banners['top'])
+            <x-storefront.banner :banner="$banners['top']" :eager="true" class="mb-8" />
+        @endisset
+
         @if ($lead)
             <x-storefront.product-label :product="$lead" />
         @else
@@ -15,6 +19,10 @@
             </x-ui.empty-state>
         @endif
     </div>
+
+    @isset($banners['middle'])
+        <div class="wrap pb-12 sm:pb-16"><x-storefront.banner :banner="$banners['middle']" /></div>
+    @endisset
 
     @if ($categories->isNotEmpty())
         <section class="on-dark bg-green py-12 text-white sm:py-16" aria-labelledby="univers">
@@ -87,4 +95,8 @@
             </div>
         </section>
     @endif
+
+    @isset($banners['bottom'])
+        <div class="wrap pb-12 sm:pb-16"><x-storefront.banner :banner="$banners['bottom']" /></div>
+    @endisset
 </x-layouts.storefront>

@@ -11,17 +11,21 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Get hero banners
-        $heroBanners = Banner::where('type', 'hero')
-            ->active()
-            ->orderBy('order')
-            ->get();
-
-        // Get promotional banners
-        $banners = Banner::where('position', 'promo')
-            ->active()
-            ->orderBy('order')
-            ->get();
+        // Banners managed in the admin: only live ones (active and inside their dates), one per slot of the page.
+        // 'hero' and 'promo' are the positions the demo data used before the admin offered named slots.
+        $live = Banner::live()->orderBy('order')->orderBy('id')->get();
+        $slotOf = [
+            'home_top' => 'top', 'home_slider' => 'top', 'hero' => 'top',
+            'home_middle' => 'middle', 'promo' => 'middle',
+            'home_bottom' => 'bottom',
+        ];
+        $banners = [];
+        foreach ($live as $banner) {
+            $slot = $slotOf[$banner->position] ?? null;
+            if ($slot && ! isset($banners[$slot])) {
+                $banners[$slot] = $banner;
+            }
+        }
 
         // Get featured products with reviews count and average rating
         $featuredProducts = Product::with(['images', 'categories'])
@@ -67,7 +71,6 @@ class HomeController extends Controller
             ->get();
 
         return view('storefront.home', compact(
-            'heroBanners',
             'banners',
             'featuredProducts',
             'hotProducts',
