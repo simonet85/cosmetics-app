@@ -221,7 +221,7 @@ class CartController extends Controller
         return [
             'subtotal' => format_fcfa($totals['subtotal']),
             'tax' => format_fcfa($totals['tax']),
-            'shipping' => $totals['shipping'] > 0 ? format_fcfa($totals['shipping']) : 'Gratuite',
+            'shipping' => $totals['shipping'] > 0 ? format_fcfa($totals['shipping']) : __('Gratuite'),
             'total' => format_fcfa($totals['total']),
         ];
     }

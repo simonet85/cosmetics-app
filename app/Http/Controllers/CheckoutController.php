@@ -67,7 +67,7 @@ class CheckoutController extends Controller
             'phone.required' => __('Le numéro de téléphone est obligatoire.'),
             'city.required' => __('La ville est obligatoire.'),
             'quartier.required' => __('Le quartier est obligatoire.'),
-            'payment_method.required' => 'Choisissez un mode de paiement.',
+            'payment_method.required' => __('Choisissez un mode de paiement.'),
 
             // Billing address messages
             'billing_first_name.required_without' => __('Le prénom de facturation est obligatoire.'),

@@ -14,7 +14,7 @@ class LocaleController extends Controller
 
         // Back to the page the visitor was on, never to another site
         $previous = url()->previous();
-        $target = str_starts_with($previous, url('/')) ? $previous : route('home');
+        $target = str_starts_with($previous, url('/').'/') ? $previous : route('home');
 
         return redirect($target)->withCookie(Cookie::make(config('locales.cookie'), $locale, 60 * 24 * 365, '/', null, request()->isSecure(), true, false, 'lax'));
     }
