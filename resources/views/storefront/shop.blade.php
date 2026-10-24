@@ -124,6 +124,7 @@
                         <x-ui.button :href="route('shop.index')">{{ __('Voir toute la boutique') }}</x-ui.button>
                     </x-ui.empty-state>
                 @else
+                    <h2 class="sr-only">{{ __('Produits') }}</h2>
                     <ul class="grid grid-cols-2 border-l border-t border-line xl:grid-cols-3">
                         @foreach ($products as $product)
                             <li class="contents"><x-storefront.product-card :product="$product" /></li>
