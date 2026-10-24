@@ -28,7 +28,7 @@ class CheckoutController extends Controller
         $cartItems = array_values($this->cart->lines());
 
         if (empty($cartItems)) {
-            return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
+            return redirect()->route('cart.index')->with('error', __('Votre panier est vide.'));
         }
 
         ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals();
@@ -58,29 +58,29 @@ class CheckoutController extends Controller
             'billing_quartier' => 'required_without:billing_same_as_shipping|nullable|string|max:255',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'checkout_token.required' => 'Cette page a expiré. Rechargez la page de paiement.',
+            'checkout_token.required' => __('Cette page a expiré. Rechargez la page de paiement.'),
             // Shipping address messages
-            'first_name.required' => 'Le prénom est obligatoire.',
-            'last_name.required' => 'Le nom est obligatoire.',
-            'email.required' => 'L\'adresse email est obligatoire.',
-            'email.email' => 'L\'adresse email doit être valide.',
-            'phone.required' => 'Le numéro de téléphone est obligatoire.',
-            'city.required' => 'La ville est obligatoire.',
-            'quartier.required' => 'Le quartier est obligatoire.',
+            'first_name.required' => __('Le prénom est obligatoire.'),
+            'last_name.required' => __('Le nom est obligatoire.'),
+            'email.required' => __('L\'adresse email est obligatoire.'),
+            'email.email' => __('L\'adresse email doit être valide.'),
+            'phone.required' => __('Le numéro de téléphone est obligatoire.'),
+            'city.required' => __('La ville est obligatoire.'),
+            'quartier.required' => __('Le quartier est obligatoire.'),
             'payment_method.required' => 'Choisissez un mode de paiement.',
 
             // Billing address messages
-            'billing_first_name.required_without' => 'Le prénom de facturation est obligatoire.',
-            'billing_last_name.required_without' => 'Le nom de facturation est obligatoire.',
-            'billing_city.required_without' => 'La ville de facturation est obligatoire.',
-            'billing_quartier.required_without' => 'Le quartier de facturation est obligatoire.',
+            'billing_first_name.required_without' => __('Le prénom de facturation est obligatoire.'),
+            'billing_last_name.required_without' => __('Le nom de facturation est obligatoire.'),
+            'billing_city.required_without' => __('La ville de facturation est obligatoire.'),
+            'billing_quartier.required_without' => __('Le quartier de facturation est obligatoire.'),
         ]);
 
         $token = $request->input('checkout_token');
 
         if (! CheckoutToken::valid($token)) {
             return redirect()->route('checkout.index')
-                ->with('error', 'Cette page de paiement a expiré. Vérifiez votre commande et validez-la à nouveau.');
+                ->with('error', __('Cette page de paiement a expiré. Vérifiez votre commande et validez-la à nouveau.'));
         }
 
         // The same form sent twice (double click, reload, second tab) leads to the order it already created
@@ -93,7 +93,7 @@ class CheckoutController extends Controller
         $lock = Cache::lock($key.':lock', 60);
         if (! $lock->get()) {
             return redirect()->back()->withInput()
-                ->with('error', 'Votre commande est en cours de traitement. Patientez quelques secondes, ne la validez pas une seconde fois.');
+                ->with('error', __('Votre commande est en cours de traitement. Patientez quelques secondes, ne la validez pas une seconde fois.'));
         }
 
         try {
@@ -139,7 +139,7 @@ class CheckoutController extends Controller
             return redirect($order->moneyfusion_payment_url);
         }
 
-        return redirect($order->successUrl())->with('success', 'Cette commande a déjà été enregistrée.');
+        return redirect($order->successUrl())->with('success', __('Cette commande a déjà été enregistrée.'));
     }
 
     private function place(Request $request, string $key): RedirectResponse
@@ -148,14 +148,14 @@ class CheckoutController extends Controller
         if (! (PaymentMethods::enabled()[$request->payment_method] ?? false)) {
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['payment_method' => 'Ce mode de paiement n\'est pas disponible.']);
+                ->withErrors(['payment_method' => __('Ce mode de paiement n\'est pas disponible.')]);
         }
 
         // Priced from the database right now, not from what the session remembered at "add to cart"
         $lines = $this->cart->lines();
 
         if (empty($lines)) {
-            return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
+            return redirect()->route('cart.index')->with('error', __('Votre panier est vide.'));
         }
 
         try {
@@ -207,7 +207,7 @@ class CheckoutController extends Controller
                 $product = Product::whereKey($item['product_id'])->lockForUpdate()->firstOrFail();
 
                 if ($product->stock < $item['quantity']) {
-                    throw new CheckoutException("Il ne reste pas assez de stock pour {$product->name}. Modifiez la quantité dans votre panier.");
+                    throw new CheckoutException(__('Il ne reste pas assez de stock pour :name. Modifiez la quantité dans votre panier.', ['name' => $product->name]));
                 }
 
                 $variant = null;
@@ -218,11 +218,11 @@ class CheckoutController extends Controller
                         ->first();
 
                     if (! $variant || ! $variant->is_active) {
-                        throw new CheckoutException("L'option choisie pour {$product->name} n'est plus disponible. Retirez-la de votre panier.");
+                        throw new CheckoutException(__('L\'option choisie pour :name n\'est plus disponible. Retirez-la de votre panier.', ['name' => $product->name]));
                     }
 
                     if ($variant->stock < $item['quantity']) {
-                        throw new CheckoutException("Il ne reste pas assez de stock pour {$product->name} ({$variant->label}). Modifiez la quantité dans votre panier.");
+                        throw new CheckoutException(__('Il ne reste pas assez de stock pour :name (:option). Modifiez la quantité dans votre panier.', ['name' => $product->name, 'option' => $variant->label]));
                     }
                 }
 
@@ -286,7 +286,7 @@ class CheckoutController extends Controller
 
                     return redirect()->back()
                         ->withInput()
-                        ->with('error', 'Le paiement mobile n\'a pas pu être lancé. Votre panier est conservé : réessayez ou choisissez un autre mode de paiement.');
+                        ->with('error', __('Le paiement mobile n\'a pas pu être lancé. Votre panier est conservé : réessayez ou choisissez un autre mode de paiement.'));
                 }
             }
 
@@ -299,7 +299,7 @@ class CheckoutController extends Controller
             $this->sendReceived($order);
 
             return redirect($order->successUrl())
-                ->with('success', 'Votre commande a été passée avec succès!');
+                ->with('success', __('Votre commande a été passée avec succès!'));
         } catch (CheckoutException $e) {
             DB::rollBack();
 
@@ -310,7 +310,7 @@ class CheckoutController extends Controller
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Votre commande n\'a pas pu être enregistrée. Votre panier est conservé : réessayez dans un instant.');
+                ->with('error', __('Votre commande n\'a pas pu être enregistrée. Votre panier est conservé : réessayez dans un instant.'));
         }
     }
 

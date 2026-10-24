@@ -36,7 +36,7 @@ class WishlistController extends Controller
         if (in_array($request->product_id, $wishlist)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Ce produit est déjà dans votre liste de souhaits.',
+                'message' => __('Ce produit est déjà dans votre liste de souhaits.'),
             ], 400);
         }
 
@@ -45,7 +45,7 @@ class WishlistController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Produit ajouté à votre liste de souhaits!',
+            'message' => __('Produit ajouté à votre liste de souhaits!'),
             'wishlist_count' => count($wishlist),
         ]);
     }
@@ -66,14 +66,14 @@ class WishlistController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Produit retiré de votre liste de souhaits!',
+                'message' => __('Produit retiré de votre liste de souhaits!'),
                 'wishlist_count' => count($wishlist),
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Produit non trouvé dans votre liste de souhaits.',
+            'message' => __('Produit non trouvé dans votre liste de souhaits.'),
         ], 404);
     }
 
@@ -83,7 +83,7 @@ class WishlistController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Liste de souhaits vidée avec succès!',
+            'message' => __('Liste de souhaits vidée avec succès!'),
             'wishlist_count' => 0,
         ]);
     }
@@ -116,7 +116,7 @@ class WishlistController extends Controller
             return response()->json([
                 'success' => true,
                 'action' => 'removed',
-                'message' => 'Produit retiré de votre liste de souhaits!',
+                'message' => __('Produit retiré de votre liste de souhaits!'),
                 'wishlist_count' => count($wishlist),
             ]);
         } else {
@@ -127,7 +127,7 @@ class WishlistController extends Controller
             return response()->json([
                 'success' => true,
                 'action' => 'added',
-                'message' => 'Produit ajouté à votre liste de souhaits!',
+                'message' => __('Produit ajouté à votre liste de souhaits!'),
                 'wishlist_count' => count($wishlist),
             ]);
         }

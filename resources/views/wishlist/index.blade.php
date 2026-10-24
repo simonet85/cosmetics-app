@@ -1,16 +1,16 @@
-<x-layouts.storefront title="Mes favoris" description="Les produits que vous avez mis de côté." robots="noindex,follow">
+<x-layouts.storefront :title="__('Mes favoris')" :description="__('Les produits que vous avez mis de côté.')" robots="noindex,follow">
     <div class="wrap py-6 sm:py-10">
-        <nav aria-label="Fil d'Ariane" class="flex flex-wrap items-center text-sm text-ink-muted">
-            <a href="{{ route('home') }}" class="inline-flex min-h-11 items-center underline">Accueil</a>
+        <nav aria-label="{{ __('Fil d\'Ariane') }}" class="flex flex-wrap items-center text-sm text-ink-muted">
+            <a href="{{ route('home') }}" class="inline-flex min-h-11 items-center underline">{{ __('Accueil') }}</a>
             <span aria-hidden="true" class="mx-2">/</span>
-            <span aria-current="page" class="text-ink">Mes favoris</span>
+            <span aria-current="page" class="text-ink">{{ __('Mes favoris') }}</span>
         </nav>
 
-        <h1 class="mt-2 text-4xl uppercase sm:text-5xl">Mes favoris</h1>
+        <h1 class="mt-2 text-4xl uppercase sm:text-5xl">{{ __('Mes favoris') }}</h1>
 
         @if ($wishlistItems->isEmpty())
-            <x-ui.empty-state class="mt-8" title="Vous n'avez pas encore de favoris" text="Touchez le cœur sur une fiche produit pour le retrouver ici.">
-                <x-ui.button :href="route('shop.index')">Voir la boutique</x-ui.button>
+            <x-ui.empty-state class="mt-8" :title="__('Vous n\'avez pas encore de favoris')" :text="__('Touchez le cœur sur une fiche produit pour le retrouver ici.')">
+                <x-ui.button :href="route('shop.index')">{{ __('Voir la boutique') }}</x-ui.button>
             </x-ui.empty-state>
         @else
             <p class="mt-2 text-ink-muted">{{ $wishlistItems->count() }} {{ $wishlistItems->count() > 1 ? 'produits' : 'produit' }}</p>
@@ -26,13 +26,13 @@
                                 <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->name }}</a>
                             </h2>
                             @if ($product->categories->isNotEmpty())<p class="text-sm text-ink-muted">{{ $product->categories->first()->name }}</p>@endif
-                            @if ($product->stock <= 0)<p class="mt-1 text-sm font-semibold text-danger">Épuisé pour le moment</p>@endif
+                            @if ($product->stock <= 0)<p class="mt-1 text-sm font-semibold text-danger">{{ __('Épuisé pour le moment') }}</p>@endif
                         </div>
                         <x-ui.price :amount="$product->final_price" :original="$product->discount_price > 0 ? $product->price : null" size="lg" class="col-start-2 sm:col-start-auto" />
                         <div class="col-span-2 grid gap-2 sm:col-span-1 sm:w-56">
                             <x-storefront.add-to-cart :product="$product" />
                             <button type="button" data-wishlist-remove="{{ $product->id }}" class="inline-flex min-h-11 cursor-pointer items-center justify-center text-sm underline">
-                                Retirer<span class="sr-only"> {{ $product->name }} des favoris</span>
+                                {{ __('Retirer') }}<span class="sr-only"> {{ __(':name des favoris', ['name' => $product->name]) }}</span>
                             </button>
                         </div>
                     </li>

@@ -23,7 +23,7 @@ class PasswordResetController extends Controller
         Password::sendResetLink($request->only('email'));
 
         // Same answer whether or not the address has an account, so the form cannot be used to probe for customers
-        return back()->with('status', 'Si un compte existe pour cette adresse, un lien de réinitialisation vient d\'être envoyé.');
+        return back()->with('status', __('Si un compte existe pour cette adresse, un lien de réinitialisation vient d\'être envoyé.'));
     }
 
     public function showReset(Request $request, string $token)
@@ -52,10 +52,10 @@ class PasswordResetController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return redirect()->route('login')->with('status', 'Votre mot de passe a été modifié. Vous pouvez vous connecter.');
+            return redirect()->route('login')->with('status', __('Votre mot de passe a été modifié. Vous pouvez vous connecter.'));
         }
 
         return back()->withInput($request->only('email'))
-            ->withErrors(['email' => 'Ce lien de réinitialisation est invalide ou a expiré. Demandez-en un nouveau.']);
+            ->withErrors(['email' => __('Ce lien de réinitialisation est invalide ou a expiré. Demandez-en un nouveau.')]);
     }
 }

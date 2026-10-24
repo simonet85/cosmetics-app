@@ -1,5 +1,5 @@
 <x-layouts.storefront title="Politique de confidentialité" description="Comment Glowing Cosmetics collecte, utilise et protège vos données personnelles.">
-    <x-storefront.info-page title="Politique de confidentialité" updated="21 novembre 2025">
+    <x-storefront.info-page :french-only="true" title="Politique de confidentialité" updated="21 novembre 2025">
         <section>
             <h2>1. Introduction</h2>
             <p>

@@ -45,7 +45,7 @@ class StorefrontCartTest extends TestCase
 
         $this->assertSame(1, substr_count($html, '<h1'));
         $this->assertStringContainsString('Sérum Éclat', $html);
-        $this->assertStringContainsString("12\u{00A0}000\u{00A0}FCFA l'unité", $html);
+        $this->assertStringContainsString(e("12\u{00A0}000\u{00A0}FCFA l'unité"), $html);
         $this->assertStringContainsString("24\u{00A0}000\u{00A0}FCFA", $html);
         $this->assertStringContainsString("Plus que 26\u{00A0}000\u{00A0}FCFA pour la livraison gratuite.", $html);
         $this->assertStringContainsString('Passer la commande', $html);
@@ -65,7 +65,11 @@ class StorefrontCartTest extends TestCase
     {
         $this->add(Product::factory()->create(['price' => 1000, 'stock' => 5]));
 
-        $this->get(route('cart.index'))->assertOk()->assertDontSee('pour la livraison gratuite')->assertSee('Gratuite');
+        $html = $this->get(route('cart.index'))->assertOk()->assertSee('Gratuite')->getContent();
+
+        // The script dictionary carries that sentence on every page, so look at the page without it
+        $page = preg_replace('#<script type="application/json" id="i18n">.*?</script>#s', '', $html);
+        $this->assertStringNotContainsString('pour la livraison gratuite', $page);
     }
 
     public function test_update_and_remove_return_formatted_whole_franc_totals(): void

@@ -66,17 +66,17 @@ class AccountController extends Controller
             'current_password' => 'nullable|required_with:new_password',
             'new_password' => 'nullable|min:8|confirmed',
         ], [
-            'first_name.required' => 'Le prénom est obligatoire.',
-            'last_name.required' => 'Le nom est obligatoire.',
-            'email.required' => 'L\'adresse email est obligatoire.',
-            'email.email' => 'L\'adresse email doit être valide.',
-            'email.unique' => 'Cette adresse email est déjà utilisée.',
-            'avatar.image' => 'Le fichier doit être une image.',
-            'avatar.mimes' => 'L\'image doit être au format JPEG, JPG ou PNG.',
-            'avatar.max' => 'L\'image ne doit pas dépasser 2 Mo.',
-            'current_password.required_with' => 'Le mot de passe actuel est requis pour changer le mot de passe.',
-            'new_password.min' => 'Le nouveau mot de passe doit contenir au moins 8 caractères.',
-            'new_password.confirmed' => 'Les mots de passe ne correspondent pas.',
+            'first_name.required' => __('Le prénom est obligatoire.'),
+            'last_name.required' => __('Le nom est obligatoire.'),
+            'email.required' => __('L\'adresse email est obligatoire.'),
+            'email.email' => __('L\'adresse email doit être valide.'),
+            'email.unique' => __('Cette adresse email est déjà utilisée.'),
+            'avatar.image' => __('Le fichier doit être une image.'),
+            'avatar.mimes' => __('L\'image doit être au format JPEG, JPG ou PNG.'),
+            'avatar.max' => __('L\'image ne doit pas dépasser 2 Mo.'),
+            'current_password.required_with' => __('Le mot de passe actuel est requis pour changer le mot de passe.'),
+            'new_password.min' => __('Le nouveau mot de passe doit contenir au moins 8 caractères.'),
+            'new_password.confirmed' => __('Les mots de passe ne correspondent pas.'),
         ]);
 
         // Handle avatar upload
@@ -93,7 +93,7 @@ class AccountController extends Controller
             if (! in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
                 return redirect()->back()
                     ->withInput()
-                    ->with('error', 'Format d\'image non supporté. Utilisez JPG, JPEG ou PNG.');
+                    ->with('error', __('Format d\'image non supporté. Utilisez JPG, JPEG ou PNG.'));
             }
 
             try {
@@ -131,7 +131,7 @@ class AccountController extends Controller
 
                 return redirect()->back()
                     ->withInput()
-                    ->with('error', 'Erreur lors de l\'upload de l\'avatar. Veuillez réessayer.');
+                    ->with('error', __('Erreur lors de l\'upload de l\'avatar. Veuillez réessayer.'));
             }
         }
 
@@ -139,7 +139,7 @@ class AccountController extends Controller
         // the rest of the form half saved.
         if ($request->filled('current_password') && ! Hash::check($request->current_password, $user->password)) {
             return redirect()->back()
-                ->withErrors(['current_password' => 'Le mot de passe actuel est incorrect.'])
+                ->withErrors(['current_password' => __('Le mot de passe actuel est incorrect.')])
                 ->withInput();
         }
 
@@ -168,7 +168,7 @@ class AccountController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'Profil mis à jour avec succès!');
+        return redirect()->back()->with('success', __('Profil mis à jour avec succès!'));
     }
 
     public function orders()
@@ -202,7 +202,7 @@ class AccountController extends Controller
 
         // Only allow cancellation if order is pending
         if ($order->status !== 'pending') {
-            return redirect()->back()->with('error', 'Cette commande ne peut pas être annulée.');
+            return redirect()->back()->with('error', __('Cette commande ne peut pas être annulée.'));
         }
 
         // Update order status
@@ -212,6 +212,6 @@ class AccountController extends Controller
 
         $order->releaseStock();
 
-        return redirect()->route('account.orders')->with('success', 'Commande annulée avec succès. Le stock des produits a été restauré.');
+        return redirect()->route('account.orders')->with('success', __('Commande annulée avec succès. Le stock des produits a été restauré.'));
     }
 }

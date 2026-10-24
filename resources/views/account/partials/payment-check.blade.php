@@ -2,10 +2,10 @@
 <div id="payment-check" class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
     <p class="text-gray-700 mb-2">
         <i class="fas fa-clock text-yellow-600 mr-1"></i>
-        Votre paiement MoneyFusion n'est pas encore confirmé.
+        {{ __('Votre paiement MoneyFusion n\'est pas encore confirmé.') }}
     </p>
     <button type="button" id="payment-check-button" class="btn btn-outline w-full text-sm">
-        <i class="fas fa-sync-alt mr-2"></i>Vérifier maintenant
+        <i class="fas fa-sync-alt mr-2"></i>{{ __('Vérifier maintenant') }}
     </button>
     <p id="payment-check-message" class="mt-2 text-xs text-gray-600" aria-live="polite"></p>
 </div>

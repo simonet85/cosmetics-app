@@ -12,12 +12,12 @@ class ResetPasswordNotification extends ResetPassword
         $minutes = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
 
         return (new MailMessage)
-            ->subject('Réinitialisation de votre mot de passe')
-            ->greeting('Bonjour,')
-            ->line('Vous avez demandé à réinitialiser le mot de passe de votre compte '.config('app.name').'.')
-            ->action('Choisir un nouveau mot de passe', $url)
-            ->line("Ce lien est valable {$minutes} minutes.")
-            ->line('Si vous n\'êtes pas à l\'origine de cette demande, ignorez ce message : votre mot de passe reste inchangé.')
-            ->salutation('L\'équipe '.config('app.name'));
+            ->subject(__('Réinitialisation de votre mot de passe'))
+            ->greeting(__('Bonjour,'))
+            ->line(__('Vous avez demandé à réinitialiser le mot de passe de votre compte :app.', ['app' => config('app.name')]))
+            ->action(__('Choisir un nouveau mot de passe'), $url)
+            ->line(__('Ce lien est valable :minutes minutes.', ['minutes' => $minutes]))
+            ->line(__('Si vous n\'êtes pas à l\'origine de cette demande, ignorez ce message : votre mot de passe reste inchangé.'))
+            ->salutation(__('L\'équipe :app', ['app' => config('app.name')]));
     }
 }

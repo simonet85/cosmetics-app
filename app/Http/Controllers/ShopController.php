@@ -104,7 +104,7 @@ class ShopController extends Controller
             'products' => $products,
             'categories' => $categories,
             'tags' => $tags,
-            'sorts' => self::SORTS,
+            'sorts' => array_map(fn ($label) => __($label), self::SORTS),
             'sort' => $sort,
             'filters' => $filters,
             'activeCategory' => $activeCategory,

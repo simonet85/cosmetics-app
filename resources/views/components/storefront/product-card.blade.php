@@ -17,7 +17,7 @@
         @if ($discount > 0 || $lowStock)
             <span class="absolute left-2 top-2 flex flex-col items-start gap-1">
                 @if ($discount > 0)<x-ui.badge tone="ticket">-{{ $discount }} %</x-ui.badge>@endif
-                @if ($lowStock)<x-ui.badge tone="danger">Plus que {{ $product->stock }}</x-ui.badge>@endif
+                @if ($lowStock)<x-ui.badge tone="danger">{{ __('Plus que :stock', ['stock' => $product->stock]) }}</x-ui.badge>@endif
             </span>
         @endif
     </a>
@@ -30,6 +30,6 @@
             <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->name }}</a>
         </h3>
         <x-ui.price :amount="$final" :original="$discount > 0 ? $list : null" size="lg" class="mt-auto" />
-        <x-storefront.add-to-cart :product="$product" label="Ajouter" class="mt-2" />
+        <x-storefront.add-to-cart :product="$product" :label="__('Ajouter')" class="mt-2" />
     </div>
 </article>

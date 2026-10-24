@@ -2,13 +2,13 @@
     $user = auth()->user();
     $taxRate = rtrim(rtrim(number_format((float) getSetting('tax_rate', '15'), 2, ',', ''), '0'), ',');
     $itemCount = collect($cartItems)->sum('quantity');
-    $methods = collect(\App\Support\PaymentMethods::LABELS)->filter(fn ($label, $key) => $enabledPaymentMethods[$key] ?? false);
+    $methods = collect(\App\Support\PaymentMethods::labels())->filter(fn ($label, $key) => $enabledPaymentMethods[$key] ?? false);
     $descriptions = [
-        'moneyfusion' => 'Orange Money, MTN Money, Wave et autres, via MoneyFusion. Vous êtes redirigé pour confirmer le paiement.',
-        'cash_on_delivery' => 'Vous payez en espèces à la réception de votre commande.',
-        'bank_transfer' => 'Vous payez par virement bancaire. La commande est traitée à réception du virement.',
-        'credit_card' => 'Paiement par carte bancaire.',
-        'paypal' => 'Paiement avec votre compte PayPal.',
+        'moneyfusion' => __('Orange Money, MTN Money, Wave et autres, via MoneyFusion. Vous êtes redirigé pour confirmer le paiement.'),
+        'cash_on_delivery' => __('Vous payez en espèces à la réception de votre commande.'),
+        'bank_transfer' => __('Vous payez par virement bancaire. La commande est traitée à réception du virement.'),
+        'credit_card' => __('Paiement par carte bancaire.'),
+        'paypal' => __('Paiement avec votre compte PayPal.'),
     ];
     $chosen = old('payment_method', $methods->count() === 1 ? $methods->keys()->first() : null);
     $billingDifferent = old('_token') && ! old('billing_same_as_shipping');
@@ -17,17 +17,17 @@
     $errorList = collect($errors->getMessages())->map(fn ($messages, $field) => [$field, $messages[0]])->values();
 @endphp
 
-<x-layouts.storefront title="Paiement" description="Finalisez votre commande Glowing Cosmetics." robots="noindex,nofollow">
+<x-layouts.storefront :title="__('Paiement')" :description="__('Finalisez votre commande Glowing Cosmetics.')" robots="noindex,nofollow">
     <div class="wrap py-6 sm:py-10">
-        <nav aria-label="Fil d'Ariane" class="flex flex-wrap items-center text-sm text-ink-muted">
-            <a href="{{ route('home') }}" class="inline-flex min-h-11 items-center underline">Accueil</a>
+        <nav aria-label="{{ __('Fil d\'Ariane') }}" class="flex flex-wrap items-center text-sm text-ink-muted">
+            <a href="{{ route('home') }}" class="inline-flex min-h-11 items-center underline">{{ __('Accueil') }}</a>
             <span aria-hidden="true" class="mx-2">/</span>
-            <a href="{{ route('cart.index') }}" class="inline-flex min-h-11 items-center underline">Panier</a>
+            <a href="{{ route('cart.index') }}" class="inline-flex min-h-11 items-center underline">{{ __('Panier') }}</a>
             <span aria-hidden="true" class="mx-2">/</span>
-            <span aria-current="page" class="text-ink">Paiement</span>
+            <span aria-current="page" class="text-ink">{{ __('Paiement') }}</span>
         </nav>
 
-        <h1 class="mt-2 text-4xl uppercase sm:text-5xl">Paiement</h1>
+        <h1 class="mt-2 text-4xl uppercase sm:text-5xl">{{ __('Paiement') }}</h1>
 
         @if (session('error'))
             <div role="alert" class="mt-6 flex items-start gap-3 border border-danger bg-white p-4 font-semibold text-danger">
@@ -38,7 +38,7 @@
 
         @if ($errorList->isNotEmpty())
             <div role="alert" tabindex="-1" data-error-summary class="mt-6 border border-danger bg-white p-4">
-                <p class="flex items-center gap-2 font-semibold text-danger"><x-ui.icon name="alert" class="size-5" /> Corrigez les points suivants pour continuer :</p>
+                <p class="flex items-center gap-2 font-semibold text-danger"><x-ui.icon name="alert" class="size-5" /> {{ __('Corrigez les points suivants pour continuer :') }}</p>
                 <ul class="mt-2 list-disc pl-6">
                     @foreach ($errorList as [$field, $message])
                         <li><a href="#field-{{ $field }}" class="underline">{{ $message }}</a></li>
@@ -54,41 +54,41 @@
             <div class="grid gap-10">
                 {{-- Delivery --}}
                 <section aria-labelledby="delivery-title">
-                    <h2 id="delivery-title" class="text-3xl">Livraison</h2>
+                    <h2 id="delivery-title" class="text-3xl">{{ __('Livraison') }}</h2>
                     <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                        <x-ui.field label="Prénom" name="first_name" :value="old('first_name', $user?->first_name)" :error="$errors->first('first_name')" autocomplete="given-name" required />
-                        <x-ui.field label="Nom" name="last_name" :value="old('last_name', $user?->last_name)" :error="$errors->first('last_name')" autocomplete="family-name" required />
-                        <x-ui.field label="E-mail" name="email" type="email" :value="old('email', $user?->email)" :error="$errors->first('email')" autocomplete="email" inputmode="email" required
-                                    help="Votre confirmation de commande y est envoyée." wrapper="sm:col-span-2" />
-                        <x-ui.field label="Téléphone" name="phone" type="tel" :value="old('phone', $user?->phone)" :error="$errors->first('phone')" autocomplete="tel" inputmode="tel" required
-                                    help="Pour le livreur et pour le paiement mobile." />
-                        <x-ui.field label="Ville" name="city" :value="old('city', $user?->city)" :error="$errors->first('city')" autocomplete="address-level2" required />
-                        <x-ui.field label="Quartier" name="quartier" :value="old('quartier')" :error="$errors->first('quartier')" autocomplete="address-line1" required
-                                    help="Quartier et repère pour trouver l'adresse." wrapper="sm:col-span-2" />
+                        <x-ui.field :label="__('Prénom')" name="first_name" :value="old('first_name', $user?->first_name)" :error="$errors->first('first_name')" autocomplete="given-name" required />
+                        <x-ui.field :label="__('Nom')" name="last_name" :value="old('last_name', $user?->last_name)" :error="$errors->first('last_name')" autocomplete="family-name" required />
+                        <x-ui.field :label="__('E-mail')" name="email" type="email" :value="old('email', $user?->email)" :error="$errors->first('email')" autocomplete="email" inputmode="email" required
+                                    :help="__('Votre confirmation de commande y est envoyée.')" wrapper="sm:col-span-2" />
+                        <x-ui.field :label="__('Téléphone')" name="phone" type="tel" :value="old('phone', $user?->phone)" :error="$errors->first('phone')" autocomplete="tel" inputmode="tel" required
+                                    :help="__('Pour le livreur et pour le paiement mobile.')" />
+                        <x-ui.field :label="__('Ville')" name="city" :value="old('city', $user?->city)" :error="$errors->first('city')" autocomplete="address-level2" required />
+                        <x-ui.field :label="__('Quartier')" name="quartier" :value="old('quartier')" :error="$errors->first('quartier')" autocomplete="address-line1" required
+                                    :help="__('Quartier et repère pour trouver l\'adresse.')" wrapper="sm:col-span-2" />
                     </div>
 
                     {{-- Checkbox, label and fields are siblings so plain CSS shows the fields when it is unchecked (no script needed) --}}
                     <div class="mt-4 flex flex-wrap items-center gap-x-3">
                         <input type="checkbox" id="billing-same" name="billing_same_as_shipping" value="1" class="peer size-5 accent-green"
                                @checked(old('billing_same_as_shipping', ! $billingDifferent))>
-                        <label for="billing-same" class="flex min-h-11 cursor-pointer items-center">Adresse de facturation identique à la livraison</label>
+                        <label for="billing-same" class="flex min-h-11 cursor-pointer items-center">{{ __('Adresse de facturation identique à la livraison') }}</label>
 
                         <div class="mt-2 hidden basis-full gap-4 sm:grid-cols-2 peer-[:not(:checked)]:grid" id="billing-fields">
-                            <x-ui.field label="Prénom de facturation" name="billing_first_name" :value="old('billing_first_name')" :error="$errors->first('billing_first_name')" autocomplete="billing given-name" />
-                            <x-ui.field label="Nom de facturation" name="billing_last_name" :value="old('billing_last_name')" :error="$errors->first('billing_last_name')" autocomplete="billing family-name" />
-                            <x-ui.field label="Ville de facturation" name="billing_city" :value="old('billing_city')" :error="$errors->first('billing_city')" autocomplete="billing address-level2" />
-                            <x-ui.field label="Quartier de facturation" name="billing_quartier" :value="old('billing_quartier')" :error="$errors->first('billing_quartier')" autocomplete="billing address-line1" />
+                            <x-ui.field :label="__('Prénom de facturation')" name="billing_first_name" :value="old('billing_first_name')" :error="$errors->first('billing_first_name')" autocomplete="billing given-name" />
+                            <x-ui.field :label="__('Nom de facturation')" name="billing_last_name" :value="old('billing_last_name')" :error="$errors->first('billing_last_name')" autocomplete="billing family-name" />
+                            <x-ui.field :label="__('Ville de facturation')" name="billing_city" :value="old('billing_city')" :error="$errors->first('billing_city')" autocomplete="billing address-level2" />
+                            <x-ui.field :label="__('Quartier de facturation')" name="billing_quartier" :value="old('billing_quartier')" :error="$errors->first('billing_quartier')" autocomplete="billing address-line1" />
                         </div>
                     </div>
                 </section>
 
                 {{-- Payment --}}
                 <fieldset aria-describedby="payment-help">
-                    <legend class="text-3xl">Paiement</legend>
-                    <p id="payment-help" class="mt-1 text-ink-muted">Choisissez comment vous réglez cette commande.</p>
+                    <legend class="text-3xl">{{ __('Paiement') }}</legend>
+                    <p id="payment-help" class="mt-1 text-ink-muted">{{ __('Choisissez comment vous réglez cette commande.') }}</p>
 
                     @if ($methods->isEmpty())
-                        <p class="mt-4 border border-danger p-4 font-semibold text-danger">Aucun mode de paiement n'est disponible pour le moment. Contactez-nous pour passer commande.</p>
+                        <p class="mt-4 border border-danger p-4 font-semibold text-danger">{{ __('Aucun mode de paiement n\'est disponible pour le moment. Contactez-nous pour passer commande.') }}</p>
                     @else
                         <div class="mt-4 grid gap-2">
                             @foreach ($methods as $key => $label)
@@ -114,14 +114,14 @@
 
                 {{-- Notes --}}
                 <div class="grid gap-1.5">
-                    <label for="field-notes" class="text-sm font-semibold">Instructions pour la livraison <span class="font-normal text-ink-muted">(facultatif)</span></label>
+                    <label for="field-notes" class="text-sm font-semibold">{{ __('Instructions pour la livraison') }} <span class="font-normal text-ink-muted">{{ __('(facultatif)') }}</span></label>
                     <textarea id="field-notes" name="notes" rows="3" maxlength="1000" class="w-full rounded-sm border border-field bg-white p-3 text-base">{{ old('notes') }}</textarea>
                 </div>
             </div>
 
             {{-- Summary --}}
             <aside class="border border-ink bg-white p-5 lg:sticky lg:top-24" aria-labelledby="summary-title">
-                <h2 id="summary-title" class="text-2xl">Votre commande</h2>
+                <h2 id="summary-title" class="text-2xl">{{ __('Votre commande') }}</h2>
                 <ul class="mt-4 divide-y divide-line border-y border-line">
                     @foreach ($cartItems as $item)
                         @php $variantLabel = $item['variant'] ? (collect([$item['variant']->size, $item['variant']->color_name ?? $item['variant']->color])->filter()->implode(' / ') ?: $item['variant']->sku) : null; @endphp
@@ -130,7 +130,7 @@
                             <span class="min-w-0 flex-1">
                                 <span class="block font-semibold">{{ $item['product']->name }}</span>
                                 @if ($variantLabel)<span class="block text-sm text-ink-muted">{{ $variantLabel }}</span>@endif
-                                <span class="block text-sm text-ink-muted">Quantité : {{ $item['quantity'] }}</span>
+                                <span class="block text-sm text-ink-muted">{{ __('Quantité : :quantity', ['quantity' => $item['quantity']]) }}</span>
                             </span>
                             <span class="tnum font-semibold">{{ format_fcfa($item['subtotal']) }}</span>
                         </li>
@@ -138,18 +138,18 @@
                 </ul>
 
                 <dl class="tnum mt-4 grid gap-2">
-                    <div class="flex justify-between gap-4"><dt class="text-ink-muted">Sous-total ({{ $itemCount }} {{ $itemCount > 1 ? 'articles' : 'article' }})</dt><dd>{{ format_fcfa($subtotal) }}</dd></div>
-                    <div class="flex justify-between gap-4"><dt class="text-ink-muted">Taxes ({{ $taxRate }} %)</dt><dd>{{ format_fcfa($tax) }}</dd></div>
-                    <div class="flex justify-between gap-4"><dt class="text-ink-muted">Livraison</dt><dd>{{ $shipping > 0 ? format_fcfa($shipping) : 'Gratuite' }}</dd></div>
-                    <div class="mt-2 flex items-baseline justify-between gap-4 border-t border-ink pt-3"><dt class="text-lg font-bold">Total</dt><dd class="text-2xl font-bold" style="font-stretch: 75%">{{ format_fcfa($total) }}</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ trans_choice('Sous-total (:count article)|Sous-total (:count articles)', $itemCount) }}</dt><dd>{{ format_fcfa($subtotal) }}</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ __('Taxes (:taxrate %)', ['taxrate' => $taxRate]) }}</dt><dd>{{ format_fcfa($tax) }}</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ __('Livraison') }}</dt><dd>{{ $shipping > 0 ? format_fcfa($shipping) : 'Gratuite' }}</dd></div>
+                    <div class="mt-2 flex items-baseline justify-between gap-4 border-t border-ink pt-3"><dt class="text-lg font-bold">{{ __('Total') }}</dt><dd class="text-2xl font-bold" style="font-stretch: 75%">{{ format_fcfa($total) }}</dd></div>
                 </dl>
 
                 <x-ui.button type="submit" class="mt-5 w-full" :disabled="$methods->isEmpty()" data-submit>
                     <x-ui.icon name="check" class="size-5" />
-                    <span data-label>Confirmer et payer {{ format_fcfa($total) }}</span>
+                    <span data-label>{{ __('Confirmer et payer :total', ['total' => format_fcfa($total)]) }}</span>
                 </x-ui.button>
-                <p class="mt-3 text-sm text-ink-muted">Cliquez une seule fois : la commande est enregistrée dès la confirmation.</p>
-                <p class="mt-3"><a href="{{ route('cart.index') }}" class="inline-flex min-h-11 items-center text-sm underline">Modifier mon panier</a></p>
+                <p class="mt-3 text-sm text-ink-muted">{{ __('Cliquez une seule fois : la commande est enregistrée dès la confirmation.') }}</p>
+                <p class="mt-3"><a href="{{ route('cart.index') }}" class="inline-flex min-h-11 items-center text-sm underline">{{ __('Modifier mon panier') }}</a></p>
             </aside>
         </form>
     </div>

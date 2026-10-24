@@ -24,6 +24,6 @@ class Shipping
     {
         $threshold = self::freeThreshold();
 
-        return $threshold === null ? 'Livraison gratuite' : 'Livraison gratuite dès '.format_fcfa($threshold);
+        return $threshold === null ? __('Livraison gratuite') : __('Livraison gratuite dès :amount', ['amount' => format_fcfa($threshold)]);
     }
 }

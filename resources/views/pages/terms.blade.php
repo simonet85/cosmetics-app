@@ -1,5 +1,5 @@
 <x-layouts.storefront title="Conditions générales" description="Conditions générales d'utilisation et de vente de Glowing Cosmetics.">
-    <x-storefront.info-page title="Conditions générales" updated="21 novembre 2025">
+    <x-storefront.info-page :french-only="true" title="Conditions générales" updated="21 novembre 2025">
         <section>
             <h2>1. Acceptation des conditions</h2>
             <p>

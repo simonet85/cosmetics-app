@@ -17,6 +17,17 @@ class PaymentMethods
         'paypal' => 'PayPal',
     ];
 
+    /** @return array<string, string> method => label in the current language */
+    public static function labels(): array
+    {
+        return array_map(fn ($label) => __($label), self::LABELS);
+    }
+
+    public static function label(?string $method): string
+    {
+        return isset(self::LABELS[$method]) ? __(self::LABELS[$method]) : (string) $method;
+    }
+
     /** @return array<string, bool> */
     public static function enabled(): array
     {
@@ -32,6 +43,6 @@ class PaymentMethods
     /** @return array<string, string> method => label, only the accepted ones */
     public static function acceptedLabels(): array
     {
-        return array_intersect_key(self::LABELS, array_filter(self::enabled()));
+        return array_intersect_key(self::labels(), array_filter(self::enabled()));
     }
 }

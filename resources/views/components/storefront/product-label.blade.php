@@ -26,7 +26,7 @@
             @endif
 
             @if ($composition->isNotEmpty())
-                <h3 class="label-caps mt-6 border-b border-line pb-2 text-ink-muted">Composition</h3>
+                <h3 class="label-caps mt-6 border-b border-line pb-2 text-ink-muted">{{ __('Composition') }}</h3>
                 <ul class="divide-y divide-line">
                     @foreach ($composition as $line)
                         <li class="py-2">{{ $line }}</li>
@@ -39,18 +39,18 @@
             {{-- The wrapper is what gets observed: an element clipped by its own clip-path never counts as visible --}}
             <div data-reveal>
                 <div class="ticket inline-block bg-ticket px-4 py-3">
-                    <p class="label-caps">Prix net</p>
+                    <p class="label-caps">{{ __('Prix net') }}</p>
                     <x-ui.price :amount="$product->final_price" :original="$original" size="xl" />
                 </div>
             </div>
 
             <p class="mt-3 flex items-center gap-2 text-sm {{ $product->stock > 0 ? ($lowStock ? 'text-amber' : 'text-ink-muted') : 'text-danger' }}">
                 @if ($product->stock <= 0)
-                    <x-ui.icon name="alert" class="size-4" /> Épuisé pour le moment
+                    <x-ui.icon name="alert" class="size-4" /> {{ __('Épuisé pour le moment') }}
                 @elseif ($lowStock)
-                    <x-ui.icon name="alert" class="size-4" /> Plus que {{ $product->stock }} en stock
+                    <x-ui.icon name="alert" class="size-4" /> {{ __('Plus que :stock en stock', ['stock' => $product->stock]) }}
                 @else
-                    <x-ui.icon name="check" class="size-4" /> En stock
+                    <x-ui.icon name="check" class="size-4" /> {{ __('En stock') }}
                 @endif
             </p>
 

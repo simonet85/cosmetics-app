@@ -4,6 +4,16 @@
  */
 
 const csrfToken = () => document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+/*
+ * Translations: the layout prints the translated sentences this script uses as JSON (see App\Support\JsStrings);
+ * the French sentence is the key, so a missing translation simply shows the French text.
+ * The function is called __ like in PHP so that `php artisan deepl:translate` finds the keys here too.
+ */
+const dictionary = (() => {
+    try { return JSON.parse(document.getElementById('i18n')?.textContent ?? '{}'); } catch { return {}; }
+})();
+const __ = (key, vars = {}) => (dictionary[key] ?? key).replace(/:(\w+)/g, (match, name) => (name in vars ? vars[name] : match));
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- Toasts: announced politely, never steal focus ---------- */
@@ -78,7 +88,7 @@ function setupAddToCart() {
         if (button) {
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
-            if (label) label.textContent = 'Ajout en cours…';
+            if (label) label.textContent = __('Ajout en cours…');
         }
 
         try {
@@ -92,15 +102,15 @@ function setupAddToCart() {
 
             if (response.ok && data.success) {
                 setCount('cart', data.cart_count);
-                toast(data.message ?? 'Produit ajouté au panier.');
-                if (label) label.textContent = 'Ajouté';
+                toast(data.message ?? __('Produit ajouté au panier.'));
+                if (label) label.textContent = __('Ajouté');
                 setTimeout(() => { if (label) label.textContent = idle; }, 1800);
             } else {
-                toast(data.message ?? 'Impossible d\'ajouter ce produit pour le moment.', { type: 'error' });
+                toast(data.message ?? __('Impossible d\'ajouter ce produit pour le moment.'), { type: 'error' });
                 if (label) label.textContent = idle;
             }
         } catch {
-            toast('Connexion perdue. Réessayez dans un instant.', { type: 'error' });
+            toast(__('Connexion perdue. Réessayez dans un instant.'), { type: 'error' });
             if (label) label.textContent = idle;
         } finally {
             if (button) {
@@ -204,7 +214,7 @@ function setupProduct() {
                 setCount('wishlist', data.wishlist_count);
                 toast(data.message);
             } catch {
-                toast('Impossible de mettre à jour vos favoris pour le moment.', { type: 'error' });
+                toast(__('Impossible de mettre à jour vos favoris pour le moment.'), { type: 'error' });
             }
         });
     });
@@ -223,7 +233,7 @@ function setupCart() {
             credentials: 'same-origin',
         });
         const data = await response.json().catch(() => ({}));
-        if (!response.ok || !data.success) throw new Error(data.message || 'Une erreur est survenue.');
+        if (!response.ok || !data.success) throw new Error(data.message || __('Une erreur est survenue.'));
         return data;
     };
 
@@ -238,8 +248,8 @@ function setupCart() {
         const text = root.querySelector('[data-free-shipping-text]');
         if (text) {
             text.textContent = data.free_shipping_remaining > 0
-                ? `Plus que ${formatFcfa(data.free_shipping_remaining)} pour la livraison gratuite.`
-                : 'La livraison est gratuite pour cette commande.';
+                ? __('Plus que :amount pour la livraison gratuite.', { amount: formatFcfa(data.free_shipping_remaining) })
+                : __('La livraison est gratuite pour cette commande.');
         }
         const bar = root.querySelector('[data-free-shipping-bar]');
         if (bar && threshold > 0) bar.style.width = `${Math.min(100, Math.round((data.subtotal / threshold) * 100))}%`;
@@ -323,7 +333,7 @@ function setupCheckout() {
         if (form.dataset.sending === 'true') { event.preventDefault(); return; }
         form.dataset.sending = 'true';
         if (button) { button.setAttribute('aria-disabled', 'true'); button.setAttribute('aria-busy', 'true'); button.classList.add('opacity-60', 'pointer-events-none'); }
-        if (label) label.textContent = 'Enregistrement en cours…';
+        if (label) label.textContent = __('Enregistrement en cours…');
     });
 
     // Coming back with the back button restores the page as it was left: make the button usable again
@@ -375,10 +385,10 @@ function setupPaymentStatus() {
                 failedBox?.classList.remove('hidden');
                 keepPolling = false;
             } else if (message) {
-                message.textContent = `${data.message} (dernière vérification à ${data.checked_at})`;
+                message.textContent = __(':message (dernière vérification à :time)', { message: data.message, time: data.checked_at });
             }
         } catch {
-            if (message) message.textContent = 'Connexion perdue, nouvel essai automatique…';
+            if (message) message.textContent = __('Connexion perdue, nouvel essai automatique…');
         } finally {
             busy = false;
             if (button) button.disabled = false;
@@ -415,7 +425,7 @@ function setupWishlistPage() {
             item.remove();
             toast(data.message);
         } catch {
-            toast('Impossible de retirer ce produit pour le moment.', { type: 'error' });
+            toast(__('Impossible de retirer ce produit pour le moment.'), { type: 'error' });
         }
     });
 }
@@ -447,9 +457,9 @@ function setupOrderPaymentCheck() {
                 window.location.reload();
                 return;
             }
-            if (message) message.textContent = `${data.message} (dernière vérification à ${data.checked_at})`;
+            if (message) message.textContent = __(':message (dernière vérification à :time)', { message: data.message, time: data.checked_at });
         } catch {
-            if (message) message.textContent = 'Connexion perdue, nouvel essai automatique…';
+            if (message) message.textContent = __('Connexion perdue, nouvel essai automatique…');
         } finally {
             busy = false;
             if (button) button.disabled = false;
@@ -484,7 +494,7 @@ function setupSlider() {
         const go = (index, { announce = false } = {}) => {
             const target = (index + slides.length) % slides.length;
             track.scrollTo({ left: target * track.clientWidth, behavior: reducedMotion() ? 'auto' : 'smooth' });
-            if (announce && status) status.textContent = `Diapositive ${target + 1} sur ${slides.length}`;
+            if (announce && status) status.textContent = __('Diapositive :current sur :total', { current: target + 1, total: slides.length });
         };
 
         // Only the visible slide is reachable by keyboard and screen readers
@@ -519,7 +529,7 @@ function setupSlider() {
         const renderToggle = () => {
             if (!toggle) return;
             toggle.setAttribute('aria-pressed', playing ? 'false' : 'true');
-            if (toggleLabel) toggleLabel.textContent = playing ? 'Pause' : 'Lecture';
+            if (toggleLabel) toggleLabel.textContent = playing ? __('Pause') : __('Lecture');
         };
 
         if (toggle) {
@@ -527,7 +537,7 @@ function setupSlider() {
             toggle.addEventListener('click', () => {
                 playing = !playing;
                 renderToggle();
-                if (status) status.textContent = playing ? 'Défilement automatique activé' : 'Défilement automatique en pause';
+                if (status) status.textContent = playing ? __('Défilement automatique activé') : __('Défilement automatique en pause');
                 schedule();
             });
         }

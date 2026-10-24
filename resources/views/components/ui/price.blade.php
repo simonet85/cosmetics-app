@@ -20,10 +20,10 @@
 @endphp
 
 <span {{ $attributes->merge(['class' => 'inline-flex flex-wrap items-baseline gap-x-3 tnum']) }}>
-    @if ($hasDiscount)<span class="sr-only">Prix actuel :</span>@endif
+    @if ($hasDiscount)<span class="sr-only">{{ __('Prix actuel :') }}</span>@endif
     <span class="font-bold leading-none text-ink {{ $sizes[$size] ?? $sizes['md'] }}" style="font-stretch: 75%">{{ $number }}<span class="ml-1 text-[0.5em] font-semibold tracking-wide">FCFA</span></span>
     @if ($hasDiscount)
-        <span class="sr-only">au lieu de</span>
+        <span class="sr-only">{{ __('au lieu de') }}</span>
         <s class="text-base text-ink-muted">{{ format_fcfa($original) }}</s>
     @endif
 </span>

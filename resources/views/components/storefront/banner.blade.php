@@ -6,7 +6,7 @@
 --}}
 @php
     $hasLink = filled($banner->link_url);
-    $label = filled($banner->button_text) ? $banner->button_text : 'Découvrir';
+    $label = filled($banner->button_text) ? $banner->button_text : __('Découvrir');
 @endphp
 
 <section {{ $attributes->merge(['class' => 'grid border border-ink bg-mint md:grid-cols-2']) }} aria-labelledby="banner-{{ $banner->id }}">

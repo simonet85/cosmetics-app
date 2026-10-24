@@ -22,7 +22,7 @@
 
 <div class="grid gap-1.5 {{ $wrapper }}">
     <label for="{{ $id }}" class="text-sm font-semibold text-ink">
-        {{ $label }}@if ($required)<span class="text-danger" aria-hidden="true"> *</span><span class="sr-only"> (obligatoire)</span>@endif
+        {{ $label }}@if ($required)<span class="text-danger" aria-hidden="true"> *</span><span class="sr-only"> {{ __('(obligatoire)') }}</span>@endif
     </label>
 
     <input id="{{ $id }}" name="{{ $name }}" type="{{ $type }}" value="{{ $value }}"

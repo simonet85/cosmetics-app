@@ -35,7 +35,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Les informations d\'identification fournies ne correspondent pas à nos enregistrements.',
+            'email' => __('Les informations d\'identification fournies ne correspondent pas à nos enregistrements.'),
         ])->onlyInput('email');
     }
 
@@ -57,15 +57,15 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
             'terms' => ['required', 'accepted'],
         ], [
-            'first_name.required' => 'Le prénom est obligatoire.',
-            'last_name.required' => 'Le nom est obligatoire.',
-            'email.required' => 'L\'adresse email est obligatoire.',
-            'email.email' => 'L\'adresse email doit être valide.',
-            'email.unique' => 'Cette adresse email est déjà utilisée.',
-            'password.required' => 'Le mot de passe est obligatoire.',
-            'password.confirmed' => 'Les mots de passe ne correspondent pas.',
-            'terms.required' => 'Vous devez accepter les conditions d\'utilisation.',
-            'terms.accepted' => 'Vous devez accepter les conditions d\'utilisation.',
+            'first_name.required' => __('Le prénom est obligatoire.'),
+            'last_name.required' => __('Le nom est obligatoire.'),
+            'email.required' => __('L\'adresse email est obligatoire.'),
+            'email.email' => __('L\'adresse email doit être valide.'),
+            'email.unique' => __('Cette adresse email est déjà utilisée.'),
+            'password.required' => __('Le mot de passe est obligatoire.'),
+            'password.confirmed' => __('Les mots de passe ne correspondent pas.'),
+            'terms.required' => __('Vous devez accepter les conditions d\'utilisation.'),
+            'terms.accepted' => __('Vous devez accepter les conditions d\'utilisation.'),
         ]);
 
         $user = User::create([
@@ -80,7 +80,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/')->with('success', 'Bienvenue ! Votre compte a été créé avec succès.');
+        return redirect('/')->with('success', __('Bienvenue ! Votre compte a été créé avec succès.'));
     }
 
     public function logout(Request $request)

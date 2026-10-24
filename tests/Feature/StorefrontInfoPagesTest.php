@@ -25,7 +25,7 @@ class StorefrontInfoPagesTest extends TestCase
 
             $this->assertSame(1, substr_count($html, '<h1'), $route);
             $this->assertStringContainsString('id="content"', $html, $route);
-            $this->assertStringContainsString('aria-label="Fil d\'Ariane"', $html, $route);
+            $this->assertStringContainsString('aria-label="'.e('Fil d\'Ariane').'"', $html, $route);
             $this->assertStringNotContainsString('container-custom', $html, $route);
         }
     }

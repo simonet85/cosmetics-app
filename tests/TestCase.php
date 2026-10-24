@@ -7,6 +7,14 @@ use RuntimeException;
 
 abstract class TestCase extends BaseTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Symfony's test requests announce "en-us" by default; the shop is French unless a test says otherwise
+        $this->withHeader('Accept-Language', 'fr');
+    }
+
     /**
      * Refuse to boot a test application whose database is not a dedicated test
      * database: RefreshDatabase would otherwise wipe real data.

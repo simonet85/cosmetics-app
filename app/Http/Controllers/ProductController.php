@@ -27,12 +27,12 @@ class ProductController extends Controller
             'title' => 'required|string|max:255',
             'comment' => 'required|string',
         ], [
-            'rating.required' => 'Veuillez sélectionner une note.',
-            'rating.min' => 'La note doit être entre 1 et 5.',
-            'rating.max' => 'La note doit être entre 1 et 5.',
-            'title.required' => 'Le titre est requis.',
-            'title.max' => 'Le titre ne doit pas dépasser 255 caractères.',
-            'comment.required' => 'Le commentaire est requis.',
+            'rating.required' => __('Veuillez sélectionner une note.'),
+            'rating.min' => __('La note doit être entre 1 et 5.'),
+            'rating.max' => __('La note doit être entre 1 et 5.'),
+            'title.required' => __('Le titre est requis.'),
+            'title.max' => __('Le titre ne doit pas dépasser 255 caractères.'),
+            'comment.required' => __('Le commentaire est requis.'),
         ]);
 
         // Create the review
@@ -44,7 +44,7 @@ class ProductController extends Controller
             'is_approved' => false, // Reviews need admin approval
         ]);
 
-        return back()->with('success', 'Votre avis a été soumis et sera publié après modération.');
+        return back()->with('success', __('Votre avis a été soumis et sera publié après modération.'));
     }
 
     /**

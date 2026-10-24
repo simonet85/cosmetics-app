@@ -69,7 +69,7 @@ class PaymentCallbackController extends Controller
 
                 // Redirect to checkout success page
                 return redirect($order->successUrl())
-                    ->with('success', 'Votre paiement a été effectué avec succès!');
+                    ->with('success', __('Votre paiement a été effectué avec succès!'));
             }
 
             // Rediriger selon le statut du paiement
@@ -105,7 +105,7 @@ class PaymentCallbackController extends Controller
             ]);
 
             return view('moneyfusion.error', [
-                'message' => 'Une erreur est survenue lors du traitement de votre paiement',
+                'message' => __('Une erreur est survenue lors du traitement de votre paiement'),
             ]);
         }
     }

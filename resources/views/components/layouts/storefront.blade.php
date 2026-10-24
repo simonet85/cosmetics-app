@@ -13,7 +13,7 @@
     $shareImage = $image ?? asset('images/others/logo-black-02.png');
 @endphp
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,13 +32,16 @@
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ $brand }}">
-    <meta property="og:locale" content="fr_FR">
+    <meta property="og:locale" content="{{ config('locales.available.'.app()->getLocale().'.og', 'fr_FR') }}">
     <meta property="og:title" content="{{ $pageTitle }}">
     @if ($description)
         <meta property="og:description" content="{{ $description }}">
     @endif
     <meta property="og:url" content="{{ $canonicalUrl }}">
     <meta property="og:image" content="{{ $shareImage }}">
+
+    {{-- The sentences the script shows, in this language (see resources/js/storefront.js, __()) --}}
+    <script type="application/json" id="i18n">{!! json_encode(\App\Support\JsStrings::all(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
 
     {{-- Lets the CSS hide [data-reveal] content only when scripts can reveal it again --}}
     <script>document.documentElement.classList.add('js')</script>
@@ -48,7 +51,7 @@
     {{ $head ?? '' }}
 </head>
 <body class="min-h-dvh bg-ground font-sans text-ink antialiased">
-    <a href="#content" class="skip-link">Aller au contenu</a>
+    <a href="#content" class="skip-link">{{ __('Aller au contenu') }}</a>
 
     <x-storefront.header />
 

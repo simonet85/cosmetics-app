@@ -28,11 +28,11 @@ class PageController extends Controller
             'subject' => 'required|string|max:255',
             'message' => 'required|string|max:5000',
         ], [
-            'name.required' => 'Indiquez votre nom.',
-            'email.required' => 'Indiquez votre adresse e-mail.',
-            'email.email' => 'L\'adresse e-mail doit être valide.',
-            'subject.required' => 'Indiquez le sujet de votre message.',
-            'message.required' => 'Écrivez votre message.',
+            'name.required' => __('Indiquez votre nom.'),
+            'email.required' => __('Indiquez votre adresse e-mail.'),
+            'email.email' => __('L\'adresse e-mail doit être valide.'),
+            'subject.required' => __('Indiquez le sujet de votre message.'),
+            'message.required' => __('Écrivez votre message.'),
         ]);
 
         // Stored first: the message must never be lost, whatever happens to the e-mail
@@ -55,7 +55,7 @@ class PageController extends Controller
             report($e);
         }
 
-        return redirect()->route('pages.contact')->with('success', 'Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.');
+        return redirect()->route('pages.contact')->with('success', __('Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.'));
     }
 
     public function faq()

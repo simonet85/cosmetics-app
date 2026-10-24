@@ -2,8 +2,8 @@
 
 {{-- Frame shared by the sign-in, sign-up and password pages: breadcrumb, h1, one narrow column. --}}
 <div class="wrap py-6 sm:py-10">
-    <nav aria-label="Fil d'Ariane" class="flex flex-wrap items-center text-sm text-ink-muted">
-        <a href="{{ route('home') }}" class="inline-flex min-h-11 items-center underline">Accueil</a>
+    <nav aria-label="{{ __('Fil d\'Ariane') }}" class="flex flex-wrap items-center text-sm text-ink-muted">
+        <a href="{{ route('home') }}" class="inline-flex min-h-11 items-center underline">{{ __('Accueil') }}</a>
         @foreach ($crumbs as $crumb)
             <span aria-hidden="true" class="mx-2">/</span>
             @if (! empty($crumb['href']))

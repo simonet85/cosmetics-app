@@ -92,7 +92,7 @@ class StorefrontAccountTest extends TestCase
 
         $this->assertStringContainsString('Le prénom est obligatoire.', $html);
         $this->assertStringContainsString('aria-invalid="true"', $html);
-        $this->assertStringContainsString('conditions d\'utilisation', $html);
+        $this->assertStringContainsString(e('conditions d\'utilisation'), $html);
     }
 
     // ---------------------------------------------------------------- account area

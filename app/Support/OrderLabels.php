@@ -22,11 +22,11 @@ class OrderLabels
 
     public static function status(?string $status): string
     {
-        return self::STATUS[$status] ?? (string) $status;
+        return isset(self::STATUS[$status]) ? __(self::STATUS[$status]) : (string) $status;
     }
 
     public static function payment(?string $status): string
     {
-        return self::PAYMENT[$status] ?? (string) $status;
+        return isset(self::PAYMENT[$status]) ? __(self::PAYMENT[$status]) : (string) $status;
     }
 }

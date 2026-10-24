@@ -34,7 +34,7 @@ class CartController extends Controller
         if (! $product) {
             return response()->json([
                 'success' => false,
-                'message' => 'Ce produit n\'est plus disponible.',
+                'message' => __('Ce produit n\'est plus disponible.'),
             ], 422);
         }
 
@@ -42,14 +42,14 @@ class CartController extends Controller
         if ($product->stock < $request->quantity) {
             return response()->json([
                 'success' => false,
-                'message' => 'Stock insuffisant pour ce produit.',
+                'message' => __('Stock insuffisant pour ce produit.'),
             ], 400);
         }
 
         if (! $request->variant_id && $product->variants()->where('is_active', true)->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Choisissez une option avant d\'ajouter ce produit.',
+                'message' => __('Choisissez une option avant d\'ajouter ce produit.'),
             ], 422);
         }
 
@@ -61,14 +61,14 @@ class CartController extends Controller
             if (! $variant) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cette variante n\'est pas disponible pour ce produit.',
+                    'message' => __('Cette variante n\'est pas disponible pour ce produit.'),
                 ], 422);
             }
 
             if ($variant->stock < $request->quantity) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Stock insuffisant pour cette variante.',
+                    'message' => __('Stock insuffisant pour cette variante.'),
                 ], 400);
             }
         }
@@ -87,7 +87,7 @@ class CartController extends Controller
             if ($available < $newQuantity) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Stock insuffisant pour cette quantité.',
+                    'message' => __('Stock insuffisant pour cette quantité.'),
                 ], 400);
             }
 
@@ -104,7 +104,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Produit ajouté au panier avec succès!',
+            'message' => __('Produit ajouté au panier avec succès!'),
             'cart_count' => $this->cart->count(),
         ]);
     }
@@ -121,7 +121,7 @@ class CartController extends Controller
         if (! isset($cart[$request->cart_item_id])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Article non trouvé dans le panier.',
+                'message' => __('Article non trouvé dans le panier.'),
             ], 404);
         }
 
@@ -133,7 +133,7 @@ class CartController extends Controller
         if (! $product || $available < $request->quantity) {
             return response()->json([
                 'success' => false,
-                'message' => 'Stock insuffisant pour cette quantité.',
+                'message' => __('Stock insuffisant pour cette quantité.'),
             ], 400);
         }
 
@@ -145,7 +145,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Panier mis à jour avec succès!',
+            'message' => __('Panier mis à jour avec succès!'),
             'cart_count' => $this->cart->count(),
             'item_subtotal' => round($lines[$request->cart_item_id]['subtotal'] ?? 0),
             ...$this->totalsPayload($totals),
@@ -167,7 +167,7 @@ class CartController extends Controller
         if (! isset($cart[$request->cart_item_id])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Article non trouvé dans le panier.',
+                'message' => __('Article non trouvé dans le panier.'),
             ], 404);
         }
 
@@ -178,7 +178,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Article supprimé du panier avec succès!',
+            'message' => __('Article supprimé du panier avec succès!'),
             'cart_count' => $this->cart->count(),
             ...$this->totalsPayload($totals),
             'formatted' => $this->formattedTotals($totals),
@@ -191,7 +191,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Panier vidé avec succès!',
+            'message' => __('Panier vidé avec succès!'),
             'cart_count' => 0,
         ]);
     }

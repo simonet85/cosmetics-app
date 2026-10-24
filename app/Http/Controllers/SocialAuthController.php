@@ -26,7 +26,7 @@ class SocialAuthController extends Controller
         try {
             return Socialite::driver($provider)->redirect();
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Erreur lors de la connexion avec '.ucfirst($provider).'.');
+            return redirect()->route('login')->with('error', __('Erreur lors de la connexion avec :provider.', ['provider' => ucfirst($provider)]));
         }
     }
 
@@ -46,7 +46,7 @@ class SocialAuthController extends Controller
         try {
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Erreur lors de la connexion avec '.ucfirst($provider).'. Veuillez réessayer.');
+            return redirect()->route('login')->with('error', __('Erreur lors de la connexion avec :provider. Veuillez réessayer.', ['provider' => ucfirst($provider)]));
         }
 
         // Check if user already exists with this provider
@@ -102,7 +102,7 @@ class SocialAuthController extends Controller
 
         Auth::login($newUser, true);
 
-        return redirect()->intended('/')->with('success', 'Bienvenue sur Glowing Cosmetics!');
+        return redirect()->intended('/')->with('success', __('Bienvenue sur Glowing Cosmetics!'));
     }
 
     /**
