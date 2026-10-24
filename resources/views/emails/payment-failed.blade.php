@@ -52,7 +52,7 @@
 
         <div class="details">
             <p><strong>Commande :</strong> {{ $order->order_number }}</p>
-            <p><strong>Montant :</strong> {{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
+            <p><strong>Montant :</strong> {{ format_fcfa($order->total) }}</p>
         </div>
 
         <p>Vous pouvez réessayer à tout moment : vos articles vous attendent.</p>

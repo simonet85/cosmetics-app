@@ -133,9 +133,24 @@ function setupReveal() {
     items.forEach((el) => observer.observe(el));
 }
 
+// Shop filters are a disclosure on phones and a permanent sidebar from lg up
+function setupFilters() {
+    const panel = document.getElementById('filters');
+    if (!panel) return;
+
+    const wide = window.matchMedia('(min-width: 64rem)');
+    const sync = () => { if (wide.matches) panel.open = true; };
+    sync();
+    wide.addEventListener('change', sync);
+    panel.querySelector('summary').addEventListener('click', (event) => {
+        if (wide.matches) event.preventDefault();
+    });
+}
+
 setupDialogs();
 setupAddToCart();
 setupReveal();
+setupFilters();
 
 // Coming back with the browser's back button restores a cached page: resync the counters
 window.addEventListener('pageshow', (event) => { if (event.persisted) refreshCounts(); });

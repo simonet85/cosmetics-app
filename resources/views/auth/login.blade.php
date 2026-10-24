@@ -24,6 +24,10 @@
             <div>
                 <h2 class="text-2xl font-bold text-gray-900 mb-8">Connexion</h2>
 
+                @if (session('status'))
+                <div role="status" class="bg-green-50 border border-green-600 text-green-900 px-4 py-3 rounded mb-6 text-sm">{{ session('status') }}</div>
+                @endif
+
                 @if($errors->any())
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
                     <ul class="list-disc list-inside text-sm">
@@ -60,8 +64,8 @@
                     </div>
 
                     <div class="mb-6">
-                        <a href="{{ route('pages.contact') }}" class="inline-flex min-h-11 items-center text-sm text-gray-700 hover:text-gray-900 hover:underline">
-                            Mot de passe oublié ? Contactez-nous
+                        <a href="{{ route('password.request') }}" class="inline-flex min-h-11 items-center text-sm text-gray-700 hover:text-gray-900 hover:underline">
+                            Mot de passe oublié ?
                         </a>
                     </div>
 

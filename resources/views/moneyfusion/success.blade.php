@@ -21,7 +21,7 @@
                 <h2 class="text-xl font-semibold text-gray-900 mb-4">Détails de la commande</h2>
                 <div class="text-left space-y-2">
                     <p><span class="font-semibold">Numéro de commande:</span> {{ $order->order_number }}</p>
-                    <p><span class="font-semibold">Montant:</span> {{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
+                    <p><span class="font-semibold">Montant:</span> {{ format_fcfa($order->total) }}</p>
                     <p><span class="font-semibold">Email:</span> {{ $order->customer_email }}</p>
                     <p><span class="font-semibold">Statut:</span>
                         <span class="inline-block px-3 py-1 text-sm bg-green-100 text-green-800 rounded">Payé</span>

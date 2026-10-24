@@ -18,6 +18,7 @@ use App\Http\Controllers\MoneyFusion\PaymentCallbackController;
 use App\Http\Controllers\MoneyFusion\WebhookController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
@@ -31,6 +32,12 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+// Password reset (the link is e-mailed by the framework's broker)
+Route::get('/forgot-password', [PasswordResetController::class, 'showForgot'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendLink'])->middleware('throttle:5,1')->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'showReset'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
 
 // Social Authentication Routes
 Route::get('/auth/{provider}', [SocialAuthController::class, 'redirectToProvider'])->name('social.redirect');

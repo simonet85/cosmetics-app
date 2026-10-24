@@ -185,7 +185,7 @@ class CartTest extends TestCase
             ->assertOk()
             ->assertJson(['subtotal' => '24,000.00']);
 
-        $this->get(route('cart.index'))->assertOk()->assertSee('12 000,00 FCFA');
+        $this->get(route('cart.index'))->assertOk()->assertSee("12\u{00A0}000\u{00A0}FCFA");
     }
 
     public function test_a_new_discount_after_adding_is_reflected_in_the_cart(): void

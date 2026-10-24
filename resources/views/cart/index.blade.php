@@ -79,7 +79,7 @@
                             <div class="col-span-1 md:col-span-2">
                                 <div class="md:text-center">
                                     <span class="md:hidden font-medium text-gray-700">Prix: </span>
-                                    <span class="text-gray-900 font-semibold">{{ number_format($item['price'], 2, ',', ' ') }} FCFA</span>
+                                    <span class="text-gray-900 font-semibold">{{ format_fcfa($item['price']) }}</span>
                                 </div>
                             </div>
 
@@ -119,7 +119,7 @@
                             <div class="col-span-1 md:col-span-2">
                                 <div class="flex items-center justify-between md:justify-end gap-4">
                                     <span class="md:hidden font-medium text-gray-700">Total: </span>
-                                    <span class="text-gray-900 font-bold item-subtotal">{{ number_format($item['subtotal'], 2, ',', ' ') }} FCFA</span>
+                                    <span class="text-gray-900 font-bold item-subtotal">{{ format_fcfa($item['subtotal']) }}</span>
 
                                     {{-- Remove Button (Desktop) --}}
                                     <button
@@ -157,11 +157,11 @@
                 <div class="space-y-4 mb-6 pb-6 border-b border-gray-200">
                     <div class="flex justify-between text-gray-700">
                         <span>Sous-total</span>
-                        <span class="font-semibold" id="cart-subtotal">{{ number_format($subtotal, 2, ',', ' ') }} FCFA</span>
+                        <span class="font-semibold" id="cart-subtotal">{{ format_fcfa($subtotal) }}</span>
                     </div>
                     <div class="flex justify-between text-gray-700">
                         <span>Taxes</span>
-                        <span class="font-semibold" id="cart-tax">{{ number_format($tax, 2, ',', ' ') }} FCFA</span>
+                        <span class="font-semibold" id="cart-tax">{{ format_fcfa($tax) }}</span>
                     </div>
                     <div class="flex justify-between text-gray-700">
                         <span>Livraison</span>
@@ -169,7 +169,7 @@
                             @if($shipping == 0)
                             <span class="text-green-600">GRATUIT</span>
                             @else
-                            {{ number_format($shipping, 2, ',', ' ') }} FCFA
+                            {{ format_fcfa($shipping) }}
                             @endif
                         </span>
                     </div>
@@ -177,7 +177,7 @@
 
                 <div class="flex justify-between text-lg font-bold text-gray-900 mb-6">
                     <span>Total</span>
-                    <span id="cart-total">{{ number_format($total, 2, ',', ' ') }} FCFA</span>
+                    <span id="cart-total">{{ format_fcfa($total) }}</span>
                 </div>
 
                 <a href="{{ route('checkout.index') }}" class="btn btn-primary w-full mb-4">
@@ -211,11 +211,11 @@
 
 @push('scripts')
 <script>
-// Format number to French format (space for thousands, comma for decimals)
+// Whole francs, French grouping
 function formatPrice(price) {
     return parseFloat(price).toLocaleString('fr-FR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
     });
 }
 

@@ -18,7 +18,7 @@ class ProductPageTest extends TestCase
 
         $this->get(route('shop.show', $product->slug))
             ->assertOk()
-            ->assertSee('10,000 FCFA')
+            ->assertSee("10\u{00A0}000\u{00A0}FCFA")
             ->assertDontSee('id="product-list-price"', false);
     }
 
@@ -28,7 +28,7 @@ class ProductPageTest extends TestCase
 
         $this->get(route('shop.show', $product->slug))
             ->assertOk()
-            ->assertSeeInOrder(['id="product-price"', '8,000 FCFA', 'id="product-list-price"', '10,000 FCFA'], false);
+            ->assertSeeInOrder(['id="product-price"', "8\u{00A0}000\u{00A0}FCFA", 'id="product-list-price"', "10\u{00A0}000\u{00A0}FCFA"], false);
     }
 
     public function test_variant_button_shows_label_and_price_delta(): void
@@ -39,7 +39,7 @@ class ProductPageTest extends TestCase
         $this->get(route('shop.show', $product->slug))
             ->assertOk()
             ->assertSee('100ml')
-            ->assertSee('(+2,500 FCFA)')
+            ->assertSee("(+2\u{00A0}500\u{00A0}FCFA)")
             ->assertSee('data-price="12500"', false);
     }
 

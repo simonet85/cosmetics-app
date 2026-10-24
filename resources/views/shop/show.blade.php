@@ -98,9 +98,9 @@
 
             {{-- Price --}}
             <div class="flex items-center gap-4 mb-6">
-                <span id="product-price" class="text-4xl font-bold text-gray-900">{{ number_format($product->final_price, 0) }} FCFA</span>
+                <span id="product-price" class="text-4xl font-bold text-gray-900">{{ format_fcfa($product->final_price) }}</span>
                 @if($product->final_price < $product->price)
-                <span id="product-list-price" class="text-2xl text-gray-400 line-through">{{ number_format($product->price, 0) }} FCFA</span>
+                <span id="product-list-price" class="text-2xl text-gray-400 line-through">{{ format_fcfa($product->price) }}</span>
                 @endif
             </div>
 
@@ -125,7 +125,7 @@
                         >
                             {{ collect([$variant->size, $variant->color_name ?? $variant->color])->filter()->implode(' / ') ?: $variant->sku }}
                             @if($variant->price_modifier != 0)
-                            <span class="text-sm opacity-70">({{ $variant->price_modifier > 0 ? '+' : '-' }}{{ number_format(abs($variant->price_modifier), 0) }} FCFA)</span>
+                            <span class="text-sm opacity-70">({{ $variant->price_modifier > 0 ? '+' : '-' }}{{ format_fcfa(abs($variant->price_modifier)) }})</span>
                             @endif
                         </button>
                         @endforeach
@@ -382,7 +382,7 @@
                     </div>
                     @endif
                     <div class="flex items-center justify-center gap-2">
-                        <span class="text-lg font-bold text-gray-900">{{ number_format($relatedProduct->price, 0) }} FCFA</span>
+                        <span class="text-lg font-bold text-gray-900">{{ format_fcfa($relatedProduct->price) }}</span>
                     </div>
                 </div>
             </div>

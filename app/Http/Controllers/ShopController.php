@@ -4,92 +4,113 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class ShopController extends Controller
 {
+    private const SORTS = [
+        'latest' => 'Nouveautés',
+        'price_asc' => 'Prix croissant',
+        'price_desc' => 'Prix décroissant',
+        'name_asc' => 'Nom A à Z',
+        'popularity' => 'Popularité',
+    ];
+
+    /** SQL for the price the customer actually pays (discount price when there is one). */
+    private const EFFECTIVE_PRICE = 'COALESCE(NULLIF(discount_price, 0), price)';
+
     public function index(Request $request)
     {
-        $query = Product::with(['images', 'categories'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating')
-            ->active()
-            ->inStock();
+        return $this->listing($request, null);
+    }
 
-        // Filter by category
-        if ($request->has('category') && $request->category != '') {
-            $query->whereHas('categories', function ($q) use ($request) {
-                $q->where('slug', $request->category);
+    /**
+     * Display products by category.
+     */
+    public function category(Request $request, Category $category)
+    {
+        abort_unless($category->is_active, 404);
+
+        return $this->listing($request, $category);
+    }
+
+    private function listing(Request $request, ?Category $category)
+    {
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'category' => ['nullable', 'string', 'max:150'],
+            'tag' => ['nullable', 'string', 'max:150'],
+            'min_price' => ['nullable', 'numeric', 'min:0', 'max:100000000'],
+            'max_price' => ['nullable', 'numeric', 'min:0', 'max:100000000'],
+            'sort' => ['nullable', 'in:'.implode(',', array_keys(self::SORTS))],
+            'sold_out' => ['nullable', 'boolean'],
+        ]);
+
+        $categorySlug = $category?->slug ?? ($filters['category'] ?? null);
+
+        $query = Product::with(['images', 'categories'])->active();
+
+        if (! ($filters['sold_out'] ?? false)) {
+            $query->inStock();
+        }
+
+        if ($categorySlug) {
+            $query->whereHas('categories', fn ($q) => $q->where('slug', $categorySlug));
+        }
+
+        if (! empty($filters['tag'])) {
+            $query->whereHas('tags', fn ($q) => $q->where('slug', $filters['tag']));
+        }
+
+        if (isset($filters['min_price']) && $filters['min_price'] !== null) {
+            $query->whereRaw(self::EFFECTIVE_PRICE.' >= ?', [$filters['min_price']]);
+        }
+        if (isset($filters['max_price']) && $filters['max_price'] !== null) {
+            $query->whereRaw(self::EFFECTIVE_PRICE.' <= ?', [$filters['max_price']]);
+        }
+
+        if (! empty($filters['search'])) {
+            $term = '%'.addcslashes($filters['search'], '%_\\').'%';
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', $term)
+                    ->orWhere('short_description', 'like', $term)
+                    ->orWhere('full_description', 'like', $term);
             });
         }
 
-        // Filter by price range
-        if ($request->has('min_price')) {
-            $query->where('price', '>=', $request->min_price);
-        }
-        if ($request->has('max_price')) {
-            $query->where('price', '<=', $request->max_price);
-        }
+        $sort = $filters['sort'] ?? 'latest';
+        match ($sort) {
+            'price_asc' => $query->orderByRaw(self::EFFECTIVE_PRICE.' asc'),
+            'price_desc' => $query->orderByRaw(self::EFFECTIVE_PRICE.' desc'),
+            'name_asc' => $query->orderBy('name'),
+            'popularity' => $query->withCount('orderItems')->orderByDesc('order_items_count'),
+            default => $query->latest(),
+        };
+        $query->orderBy('id');
 
-        // Filter by rating
-        if ($request->has('rating') && $request->rating > 0) {
-            $query->whereHas('reviews', function ($q) use ($request) {
-                $q->havingRaw('AVG(rating) >= ?', [$request->rating]);
-            });
-        }
+        $products = $query->paginate(12)->withQueryString();
 
-        // Search by keyword
-        if ($request->has('search') && $request->search != '') {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->search.'%')
-                    ->orWhere('short_description', 'like', '%'.$request->search.'%')
-                    ->orWhere('full_description', 'like', '%'.$request->search.'%');
-            });
-        }
+        $categories = Category::active()->parent()->orderBy('order')->orderBy('name')->get();
+        $tags = Tag::whereHas('products', fn ($q) => $q->active()->inStock())->orderBy('name')->get();
 
-        // Filter by tag
-        if ($request->has('tag')) {
-            $query->whereHas('tags', function ($q) use ($request) {
-                $q->where('slug', $request->tag);
-            });
-        }
+        // Placeholder range in whole francs, from the catalogue itself
+        $range = Product::active()->inStock()
+            ->selectRaw('MIN('.self::EFFECTIVE_PRICE.') as min, MAX('.self::EFFECTIVE_PRICE.') as max')->first();
 
-        // Sort options
-        $sortBy = $request->get('sort', 'latest');
-        switch ($sortBy) {
-            case 'price_asc':
-                $query->orderBy('price', 'asc');
-                break;
-            case 'price_desc':
-                $query->orderBy('price', 'desc');
-                break;
-            case 'name_asc':
-                $query->orderBy('name', 'asc');
-                break;
-            case 'name_desc':
-                $query->orderBy('name', 'desc');
-                break;
-            case 'popularity':
-                $query->withCount('orderItems')->orderBy('order_items_count', 'desc');
-                break;
-            case 'rating':
-                $query->orderBy('reviews_avg_rating', 'desc');
-                break;
-            default: // latest
-                $query->orderBy('created_at', 'desc');
-                break;
-        }
+        $activeCategory = $category ?? ($categorySlug ? $categories->firstWhere('slug', $categorySlug) : null);
 
-        $perPage = $request->get('per_page', 12);
-        $products = $query->paginate($perPage)->withQueryString();
-
-        // Get all categories for filter
-        $categories = Category::active()->parent()->orderBy('name')->get();
-
-        // Get price range
-        $priceRange = Product::active()->selectRaw('MIN(price) as min, MAX(price) as max')->first();
-
-        return view('shop.index', compact('products', 'categories', 'priceRange'));
+        return view('storefront.shop', [
+            'products' => $products,
+            'categories' => $categories,
+            'tags' => $tags,
+            'sorts' => self::SORTS,
+            'sort' => $sort,
+            'filters' => $filters,
+            'activeCategory' => $activeCategory,
+            'categorySlug' => $categorySlug,
+            'priceRange' => ['min' => (int) floor((float) ($range->min ?? 0)), 'max' => (int) ceil((float) ($range->max ?? 0))],
+        ]);
     }
 
     public function show($slug)
@@ -119,32 +140,5 @@ class ShopController extends Controller
             ->get();
 
         return view('shop.show', compact('product', 'relatedProducts', 'isPreview'));
-    }
-
-    /**
-     * Display products by category.
-     */
-    public function category($slug)
-    {
-        $category = Category::where('slug', $slug)->active()->firstOrFail();
-
-        $products = Product::with(['images', 'categories'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating')
-            ->whereHas('categories', function ($q) use ($category) {
-                $q->where('category_id', $category->id);
-            })
-            ->active()
-            ->inStock()
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
-
-        // Get all categories for filter
-        $categories = Category::active()->parent()->orderBy('name')->get();
-
-        // Get price range
-        $priceRange = Product::active()->selectRaw('MIN(price) as min, MAX(price) as max')->first();
-
-        return view('shop.index', compact('products', 'categories', 'priceRange', 'category'));
     }
 }

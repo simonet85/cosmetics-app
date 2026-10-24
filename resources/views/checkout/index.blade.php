@@ -348,7 +348,7 @@
                                 @endif
                                 <p class="text-sm text-gray-600 mt-1">Qté: {{ $item['quantity'] }}</p>
                             </div>
-                            <span class="text-sm font-semibold text-gray-900">{{ number_format($item['subtotal'], 0) }} FCFA</span>
+                            <span class="text-sm font-semibold text-gray-900">{{ format_fcfa($item['subtotal']) }}</span>
                         </div>
                         @endforeach
                     </div>
@@ -357,11 +357,11 @@
                     <div class="space-y-3 mb-6 pb-6 border-b border-gray-200">
                         <div class="flex justify-between text-gray-700">
                             <span>Sous-total</span>
-                            <span class="font-semibold">{{ number_format($subtotal, 0) }} FCFA</span>
+                            <span class="font-semibold">{{ format_fcfa($subtotal) }}</span>
                         </div>
                         <div class="flex justify-between text-gray-700">
                             <span>Taxes (15%)</span>
-                            <span class="font-semibold">{{ number_format($tax, 0) }} FCFA</span>
+                            <span class="font-semibold">{{ format_fcfa($tax) }}</span>
                         </div>
                         <div class="flex justify-between text-gray-700">
                             <span>Livraison</span>
@@ -369,7 +369,7 @@
                                 @if($shipping == 0)
                                 <span class="text-green-600">GRATUIT</span>
                                 @else
-                                {{ number_format($shipping, 0) }} FCFA
+                                {{ format_fcfa($shipping) }}
                                 @endif
                             </span>
                         </div>
@@ -377,7 +377,7 @@
 
                     <div class="flex justify-between text-lg font-bold text-gray-900 mb-6">
                         <span>Total</span>
-                        <span>{{ number_format($total, 0) }} FCFA</span>
+                        <span>{{ format_fcfa($total) }}</span>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-full mb-4">

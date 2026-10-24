@@ -93,7 +93,7 @@
                             <i class="fas fa-dollar-sign text-green-600 text-xl"></i>
                         </div>
                     </div>
-                    <h3 class="text-3xl font-bold text-gray-900 mb-1">{{ number_format($totalSpent, 0) }} FCFA</h3>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-1">{{ format_fcfa($totalSpent) }}</h3>
                     <p class="text-gray-600 text-sm">Total dépensé</p>
                 </div>
             </div>
@@ -124,7 +124,7 @@
                                 </p>
                             </div>
                             <div class="text-right">
-                                <p class="text-xl font-bold text-gray-900">{{ number_format($order->total, 0) }} FCFA</p>
+                                <p class="text-xl font-bold text-gray-900">{{ format_fcfa($order->total) }}</p>
                                 <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold mt-2
                                     @if($order->status === 'pending') bg-yellow-100 text-yellow-800
                                     @elseif($order->status === 'processing') bg-blue-100 text-blue-800

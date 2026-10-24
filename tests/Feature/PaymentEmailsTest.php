@@ -142,7 +142,7 @@ class PaymentEmailsTest extends TestCase
 
         $failed = (new PaymentFailed($order, 'failed'))->render();
         $this->assertStringContainsString('ORD-MAIL1', $failed);
-        $this->assertStringContainsString('23 000 FCFA', $failed);
+        $this->assertStringContainsString("23\u{00A0}000\u{00A0}FCFA", $failed);
         $this->assertStringContainsString('Bonjour Awa', $failed);
         $this->assertStringContainsString('Paiement refusé', $failed);
         $this->assertStringContainsString('Aucun montant ne vous a été débité', $failed);
@@ -249,7 +249,7 @@ class PaymentEmailsTest extends TestCase
 
             return $mail->expiresInHours === 22
                 && str_contains($html, 'ORD-MAIL1')
-                && str_contains($html, '23 000 FCFA')
+                && str_contains($html, "23\u{00A0}000\u{00A0}FCFA")
                 && str_contains($html, 'Vérifier mon paiement')
                 && str_contains($html, '/checkout/pending/')
                 && str_contains($html, 'signature=')

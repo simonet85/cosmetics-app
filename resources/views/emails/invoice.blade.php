@@ -262,8 +262,8 @@
                             @endif
                         </td>
                         <td class="text-center">{{ $item->quantity }}</td>
-                        <td class="text-right">${{ number_format($item->price, 2) }}</td>
-                        <td class="text-right">${{ number_format($item->total, 2) }}</td>
+                        <td class="text-right">{{ format_fcfa($item->price) }}</td>
+                        <td class="text-right">{{ format_fcfa($item->total) }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -274,29 +274,29 @@
             <table>
                 <tr>
                     <td class="label">Sous-total :</td>
-                    <td class="amount">{{ number_format($order->subtotal, 2) }} FCFA</td>
+                    <td class="amount">{{ format_fcfa($order->subtotal) }}</td>
                 </tr>
                 @if($order->shipping > 0)
                     <tr>
                         <td class="label">Frais de transport :</td>
-                        <td class="amount">{{ number_format($order->shipping, 2) }} FCFA</td>
+                        <td class="amount">{{ format_fcfa($order->shipping) }}</td>
                     </tr>
                 @endif
                 @if($order->tax > 0)
                     <tr>
                         <td class="label">Taxe :</td>
-                        <td class="amount">{{ number_format($order->tax, 2) }} FCFA</td>
+                        <td class="amount">{{ format_fcfa($order->tax) }}</td>
                     </tr>
                 @endif
                 @if($order->discount > 0)
                     <tr>
                         <td class="label">Rabais :</td>
-                        <td class="amount">-{{ number_format($order->discount, 2) }} FCFA</td>
+                        <td class="amount">-{{ format_fcfa($order->discount) }}</td>
                     </tr>
                 @endif
                 <tr class="grand-total">
                     <td class="label">TOTAL  :</td>
-                    <td class="amount">{{ number_format($order->total, 2) }} FCFA</td>
+                    <td class="amount">{{ format_fcfa($order->total) }}</td>
                 </tr>
             </table>
         </div>

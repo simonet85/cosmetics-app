@@ -37,7 +37,7 @@
 
         <div class="details">
             <p><strong>Commande :</strong> {{ $order->order_number }}</p>
-            <p><strong>Montant :</strong> {{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
+            <p><strong>Montant :</strong> {{ format_fcfa($order->total) }}</p>
         </div>
 
         <p style="text-align: center; margin: 28px 0;">

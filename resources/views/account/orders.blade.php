@@ -89,7 +89,7 @@
                                 </div>
 
                                 <div class="flex flex-col items-end gap-2">
-                                    <p class="text-2xl font-bold text-gray-900">{{ number_format($order->total, 0) }} FCFA</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ format_fcfa($order->total) }}</p>
                                     <div class="flex gap-2">
                                         <span class="px-3 py-1 rounded-full text-xs font-semibold
                                             @if($order->status === 'pending') bg-yellow-100 text-yellow-800

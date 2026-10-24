@@ -63,3 +63,10 @@ header a:has(> i.fas),
     min-width: 2.75rem;
     min-height: 2.75rem;
 }
+
+/* Breadcrumb links on the pages not redesigned yet: 44px tall touch targets */
+nav.flex.text-sm > a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+}

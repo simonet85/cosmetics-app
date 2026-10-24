@@ -22,7 +22,7 @@
 
             <div class="bg-white p-6 rounded-lg shadow mb-6 text-left space-y-2">
                 <p><span class="font-semibold">Numéro de commande :</span> {{ $order->order_number }}</p>
-                <p><span class="font-semibold">Montant :</span> {{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
+                <p><span class="font-semibold">Montant :</span> {{ format_fcfa($order->total) }}</p>
                 <p><span class="font-semibold">Email :</span> {{ $order->customer_email }}</p>
             </div>
 

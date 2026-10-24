@@ -107,8 +107,8 @@ class VariantDisplayTest extends TestCase
 
         $this->get(route('shop.index'))
             ->assertOk()
-            ->assertSee('8,000 FCFA')
-            ->assertSee('10,000 FCFA')
-            ->assertSee('line-through');
+            ->assertSee("8\u{00A0}000")
+            ->assertSee("10\u{00A0}000\u{00A0}FCFA")
+            ->assertSee('<s class', false);
     }
 }

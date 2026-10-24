@@ -384,7 +384,7 @@
                     </tr>
                     <tr>
                         <td class="label">Total de la Commande :</td>
-                        <td class="value"><strong>${{ number_format($order->total, 2) }}</strong></td>
+                        <td class="value"><strong>{{ format_fcfa($order->total) }}</strong></td>
                     </tr>
                     <tr>
                         <td class="label">Statut :</td>
@@ -405,7 +405,7 @@
                             @if($item->variant)
                                 ({{ $item->variant->label }})
                             @endif
-                            - {{ number_format($item->total, 2) }} FCFA
+                            - {{ format_fcfa($item->total) }}
                         </li>
                     @endforeach
                 </ul>

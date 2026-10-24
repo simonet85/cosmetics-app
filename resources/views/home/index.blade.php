@@ -109,10 +109,10 @@
                     </div>
                     <div class="flex items-center justify-center gap-2">
                         @if($product->discount_price)
-                        <span class="text-gray-400 line-through">{{ number_format($product->price, 0) }} FCFA</span>
-                        <span class="text-red-600 font-bold">{{ number_format($product->discount_price, 0) }} FCFA</span>
+                        <span class="text-gray-400 line-through">{{ format_fcfa($product->price) }}</span>
+                        <span class="text-red-600 font-bold">{{ format_fcfa($product->discount_price) }}</span>
                         @else
-                        <span class="text-gray-900 font-bold">{{ number_format($product->price, 0) }} FCFA</span>
+                        <span class="text-gray-900 font-bold">{{ format_fcfa($product->price) }}</span>
                         @endif
                     </div>
                 </div>
@@ -154,7 +154,7 @@
                     <i class="fas fa-truck text-2xl text-gray-900"></i>
                 </div>
                 <h3 class="font-semibold text-gray-900 mb-2">Livraison Gratuite</h3>
-                <p class="text-gray-600">Livraison gratuite à partir de {{ number_format(floatval(getSetting('free_shipping_threshold', '50000')), 0, ',', ' ') }} FCFA</p>
+                <p class="text-gray-600">Livraison gratuite à partir de {{ format_fcfa(floatval(getSetting('free_shipping_threshold', '50000'))) }}</p>
             </div>
             <div class="text-center">
                 <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -255,10 +255,10 @@
                     </div>
                     <div class="flex items-center justify-center gap-2">
                         @if($product->discount_price)
-                        <span class="text-gray-400 line-through">{{ number_format($product->price, 0) }} FCFA</span>
-                        <span class="text-red-600 font-bold">{{ number_format($product->discount_price, 0) }} FCFA</span>
+                        <span class="text-gray-400 line-through">{{ format_fcfa($product->price) }}</span>
+                        <span class="text-red-600 font-bold">{{ format_fcfa($product->discount_price) }}</span>
                         @else
-                        <span class="text-gray-900 font-bold">{{ number_format($product->price, 0) }} FCFA</span>
+                        <span class="text-gray-900 font-bold">{{ format_fcfa($product->price) }}</span>
                         @endif
                     </div>
                 </div>

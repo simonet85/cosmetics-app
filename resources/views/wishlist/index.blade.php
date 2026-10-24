@@ -103,9 +103,9 @@
                 {{-- Price --}}
                 <div class="flex items-center justify-center gap-2">
                     @if($product->final_price < $product->price)
-                    <span class="text-sm text-gray-400 line-through">{{ number_format($product->price, 0) }} FCFA</span>
+                    <span class="text-sm text-gray-400 line-through">{{ format_fcfa($product->price) }}</span>
                     @endif
-                    <span class="text-lg font-bold text-gray-900">{{ number_format($product->final_price, 0) }} FCFA</span>
+                    <span class="text-lg font-bold text-gray-900">{{ format_fcfa($product->final_price) }}</span>
                 </div>
 
                 {{-- Stock Status --}}
