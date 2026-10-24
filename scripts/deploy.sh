@@ -116,7 +116,11 @@ note "saved: $BACKUP_FILE"
 # ------------------------------------------------------------------ 5. code and assets
 say "5. Update the code"
 remote "git fetch -q origin $BRANCH && git merge --ff-only origin/$BRANCH"
-remote 'composer install --no-dev --optimize-autoloader --no-interaction --no-progress 2>&1 | tail -3'
+# Hostinger disables proc_open, which Composer needs to run its own scripts, so they are skipped and package
+# discovery is run through artisan. The server runs PHP 8.5 while a locked dependency of dompdf only declares
+# support up to 8.4, hence --ignore-platform-req=php. A failure here must stop the deploy (pipefail).
+remote 'set -o pipefail; composer install --no-dev --optimize-autoloader --no-interaction --no-progress --no-scripts --ignore-platform-req=php 2>&1 | tail -3' || die "composer install failed on the server"
+remote 'php artisan package:discover --ansi 2>&1 | tail -1' || die "package discovery failed on the server"
 
 say "5b. Upload the assets"
 remote 'rm -rf public/build.prev; [ -d public/build ] && mv public/build public/build.prev || true'
