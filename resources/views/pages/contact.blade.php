@@ -173,24 +173,6 @@
                 </div>
             </div>
 
-            {{-- Social Media --}}
-            <div class="mt-8">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Suivez-nous</h3>
-                <div class="flex gap-3">
-                    <a href="#" class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white hover:bg-gray-700 transition">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white hover:bg-gray-700 transition">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white hover:bg-gray-700 transition">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white hover:bg-gray-700 transition">
-                        <i class="fab fa-pinterest"></i>
-                    </a>
-                </div>
-            </div>
         </div>
 
     </div>

@@ -53,14 +53,14 @@
                         </a>
                         <div>
                             <h3 class="text-xl uppercase">
-                                <a href="{{ route('products.show', $product->slug) }}" class="hover:underline">{{ $product->name }}</a>
+                                <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->name }}</a>
                             </h3>
                             @if ($product->categories->isNotEmpty())
                                 <p class="text-sm text-ink-muted">{{ $product->categories->first()->name }}</p>
                             @endif
                         </div>
                         <x-ui.price :amount="$product->final_price" :original="$product->discount_price > 0 ? $product->price : null" size="lg" class="col-start-2 sm:col-start-auto" />
-                        <x-storefront.add-to-cart :product="$product" :full="false" class="col-span-2 sm:col-span-1" />
+                        <x-storefront.add-to-cart :product="$product" class="col-span-2 sm:col-span-1" />
                     </li>
                 @endforeach
             </ul>

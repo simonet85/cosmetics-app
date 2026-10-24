@@ -14,6 +14,10 @@ export default defineConfig({
         host: '0.0.0.0',
         hmr: { host: 'localhost' },
         // Docker Desktop on Windows does not forward file change events from the bind mount
-        watch: { usePolling: true, interval: 500 },
+        watch: {
+            usePolling: true,
+            interval: 1000,
+            ignored: ['**/node_modules/**', '**/vendor/**', '**/storage/**', '**/.git/**', '**/public/build/**', '**/tests/**', '**/database/**', '**/.docs/**'],
+        },
     },
 });

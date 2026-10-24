@@ -108,9 +108,9 @@
                 >
                 <label for="terms" class="ml-2 text-sm text-gray-700">
                     Oui, j'accepte la
-                    <a href="#" class="text-gray-900 underline hover:no-underline">Politique de confidentialité</a>
+                    <a href="{{ route('privacy') }}" class="text-gray-900 underline hover:no-underline">Politique de confidentialité</a>
                     et les
-                    <a href="#" class="text-gray-900 underline hover:no-underline">Conditions d'utilisation</a>
+                    <a href="{{ route('terms') }}" class="text-gray-900 underline hover:no-underline">Conditions d'utilisation</a>
                 </label>
             </div>
 

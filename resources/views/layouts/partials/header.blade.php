@@ -4,13 +4,13 @@
 
             {{-- Mobile Menu Toggle --}}
             <div class="lg:hidden">
-                <button id="mobile-menu-toggle" type="button" class="text-gray-900">
+                <button id="mobile-menu-toggle" type="button" aria-label="Ouvrir le menu" class="text-gray-900">
                     <i class="fas fa-bars text-2xl"></i>
                 </button>
             </div>
 
             {{-- Logo --}}
-            <a href="{{ route('home') }}" class="flex-shrink-0">
+            <a href="{{ route('home') }}" class="flex-shrink-0 inline-flex min-h-11 items-center">
                 <span class="text-2xl font-bold text-gray-900">GLOWING</span>
             </a>
 
@@ -23,9 +23,9 @@
             </nav>
 
             {{-- Header Actions --}}
-            <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-0 sm:space-x-4">
                 {{-- Search --}}
-                <button type="button" id="search-toggle" class="text-gray-900 hover:text-[#5a7c6f] transition">
+                <button type="button" id="search-toggle" aria-label="Rechercher" class="text-gray-900 hover:text-[#5a7c6f] transition">
                     <i class="fas fa-search text-xl"></i>
                 </button>
 
@@ -60,13 +60,13 @@
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="text-gray-900 hover:text-[#5a7c6f] transition">
+                    <a href="{{ route('login') }}" aria-label="Se connecter" class="text-gray-900 hover:text-[#5a7c6f] transition">
                         <i class="fas fa-user text-xl"></i>
                     </a>
                 @endauth
 
                 {{-- Wishlist --}}
-                <a href="{{ route('wishlist.index') }}" class="relative text-gray-900 hover:text-[#5a7c6f] transition">
+                <a href="{{ route('wishlist.index') }}" aria-label="Mes favoris" class="relative text-gray-900 hover:text-[#5a7c6f] transition">
                     <i class="fas fa-heart text-xl"></i>
                     <span id="wishlist-count" class="absolute -top-2 -right-2 bg-gray-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center {{ session('wishlist_count', 0) > 0 ? '' : 'hidden' }}">
                         {{ session('wishlist_count', 0) }}
@@ -74,7 +74,7 @@
                 </a>
 
                 {{-- Cart --}}
-                <a href="{{ route('cart.index') }}" class="relative text-gray-900 hover:text-[#5a7c6f] transition">
+                <a href="{{ route('cart.index') }}" aria-label="Mon panier" class="relative text-gray-900 hover:text-[#5a7c6f] transition">
                     <i class="fas fa-shopping-bag text-xl"></i>
                     <span id="cart-count" class="absolute -top-2 -right-2 bg-gray-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center {{ session('cart_count', 0) > 0 ? '' : 'hidden' }}">
                         {{ session('cart_count', 0) }}
@@ -91,7 +91,7 @@
         <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-xl font-bold">Rechercher</h3>
-                <button id="search-close" type="button" class="text-gray-900 hover:text-gray-600">
+                <button id="search-close" type="button" aria-label="Fermer la recherche" class="text-gray-900 hover:text-gray-600">
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
@@ -112,7 +112,7 @@
 <div id="mobile-menu" class="fixed inset-0 z-50 bg-white transform -translate-x-full transition-transform duration-300 lg:hidden">
     <div class="flex items-center justify-between p-4 border-b">
         <span class="text-xl font-bold">Menu</span>
-        <button id="mobile-menu-close" type="button" class="text-gray-900">
+        <button id="mobile-menu-close" type="button" aria-label="Fermer le menu" class="text-gray-900">
             <i class="fas fa-times text-2xl"></i>
         </button>
     </div>

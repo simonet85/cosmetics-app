@@ -9,12 +9,7 @@
                 <p class="text-gray-700 text-lg mb-6">
                     Cosmétiques premium pour la beauté naturelle et le bien-être. Découvrez notre collection exclusive.
                 </p>
-                <div class="flex gap-4">
-                    <a href="#" class="text-gray-900 hover:text-gray-600 transition text-xl"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-gray-900 hover:text-gray-600 transition text-xl"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-gray-900 hover:text-gray-600 transition text-xl"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-900 hover:text-gray-600 transition text-xl"><i class="fab fa-youtube"></i></a>
-                </div>
+                {{-- Social links come back when the real account addresses exist (no dead "#" links) --}}
             </div>
 
             {{-- Quick Links --}}
@@ -34,9 +29,7 @@
                 <ul class="space-y-4">
                     <li><a href="{{ route('account.dashboard') }}" class="text-gray-700 hover:text-gray-900 transition">Mon Compte</a></li>
                     <li><a href="{{ route('account.orders') }}" class="text-gray-700 hover:text-gray-900 transition">Suivre ma Commande</a></li>
-                    <li><a href="#" class="text-gray-700 hover:text-gray-900 transition">Politique de Livraison</a></li>
-                    <li><a href="#" class="text-gray-700 hover:text-gray-900 transition">Retours</a></li>
-                </ul>
+                                                        </ul>
             </div>
 
             {{-- Newsletter --}}
@@ -57,8 +50,8 @@
                 &copy; {{ date('Y') }} {{ config('app.name') }}. Tous droits réservés.
             </p>
             <div class="flex gap-6">
-                <a href="#" class="text-gray-600 hover:text-gray-900 transition">Politique de Confidentialité</a>
-                <a href="#" class="text-gray-600 hover:text-gray-900 transition">Conditions Générales</a>
+                <a href="{{ route('privacy') }}" class="inline-flex min-h-11 items-center text-gray-600 hover:text-gray-900 transition">Politique de Confidentialité</a>
+                <a href="{{ route('terms') }}" class="inline-flex min-h-11 items-center text-gray-600 hover:text-gray-900 transition">Conditions Générales</a>
             </div>
         </div>
     </div>

@@ -60,8 +60,8 @@
                     </div>
 
                     <div class="mb-6">
-                        <a href="#" class="text-sm text-gray-700 hover:text-gray-900 hover:underline">
-                            Mot de passe oublié?
+                        <a href="{{ route('pages.contact') }}" class="inline-flex min-h-11 items-center text-sm text-gray-700 hover:text-gray-900 hover:underline">
+                            Mot de passe oublié ? Contactez-nous
                         </a>
                     </div>
 

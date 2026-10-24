@@ -5,7 +5,7 @@
         ['label' => 'À propos', 'href' => route('pages.about'), 'active' => request()->routeIs('pages.about')],
         ['label' => 'Contact', 'href' => route('pages.contact'), 'active' => request()->routeIs('pages.contact')],
     ];
-    $iconButton = 'relative inline-flex size-11 items-center justify-center text-ink hover:text-green-deep';
+    $iconButton = 'relative inline-flex size-11 shrink-0 items-center justify-center text-ink hover:text-green-deep';
 @endphp
 
 {{-- What the shop promises, straight from the settings --}}
@@ -31,7 +31,7 @@
             <span class="sr-only">Ouvrir le menu</span>
         </button>
 
-        <a href="{{ route('home') }}" class="mr-auto flex items-center lg:mr-8">
+        <a href="{{ route('home') }}" class="mr-auto flex min-h-11 items-center lg:mr-8">
             <img src="{{ asset('images/others/logo-black-02.png') }}" alt="{{ config('app.name', 'Glowing Cosmetics') }}" width="105" height="28" class="h-7 w-auto">
         </a>
 

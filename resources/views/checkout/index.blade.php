@@ -138,16 +138,16 @@
 
                 {{-- Billing Address --}}
                 <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="flex items-center justify-between mb-6">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-6">
                         <h2 class="text-2xl font-bold text-gray-900">
                             <i class="fas fa-receipt text-gray-600 mr-2"></i>Adresse de facturation
                         </h2>
-                        <label class="flex items-center cursor-pointer">
+                        <label class="flex min-h-11 items-center cursor-pointer">
                             <input
                                 type="checkbox"
                                 name="billing_same_as_shipping"
                                 value="1"
-                                class="w-4 h-4 text-gray-900 focus:ring-gray-900 rounded"
+                                class="size-5 text-gray-900 focus:ring-gray-900 rounded"
                                 id="billing-same"
                                 {{ old('billing_same_as_shipping', true) ? 'checked' : '' }}
                             >

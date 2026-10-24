@@ -2,7 +2,7 @@
 <footer class="on-dark mt-24 bg-ink text-white">
     <div class="wrap grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
         <div class="grid content-start gap-4">
-            <a href="{{ route('home') }}" class="inline-block">
+            <a href="{{ route('home') }}" class="inline-flex min-h-11 items-center">
                 <img src="{{ asset('images/others/logo-white-02.png') }}" alt="{{ config('app.name', 'Glowing Cosmetics') }}" width="105" height="28" class="h-7 w-auto">
             </a>
             <p class="max-w-xs text-white/80">Boutique en ligne de cosmétiques. Commandez depuis votre téléphone, sans compte obligatoire.</p>

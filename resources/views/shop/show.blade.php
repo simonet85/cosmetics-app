@@ -135,7 +135,7 @@
             @endif
 
             {{-- Quantity & Add to Cart --}}
-            <div class="flex items-center gap-4 mb-8">
+            <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-8">
                 <div class="flex items-center border-2 border-gray-300 rounded-lg">
                     <button type="button" class="px-4 py-3 hover:bg-gray-100 transition" onclick="decreaseQuantity()">
                         <i class="fas fa-minus"></i>
@@ -156,7 +156,7 @@
 
                 <button
                     type="button"
-                    class="flex-1 btn btn-primary py-3 text-lg"
+                    class="order-last basis-full sm:order-none sm:basis-0 sm:min-w-[12rem] flex-1 btn btn-primary py-3 text-lg whitespace-nowrap"
                     onclick="addToCart()"
                 >
                     <i class="fas fa-shopping-bag mr-2"></i>Ajouter au panier
@@ -222,10 +222,18 @@
             <div class="border-t border-gray-200 mt-6 pt-6">
                 <div class="flex items-center gap-4">
                     <span class="text-gray-600">Partager:</span>
-                    <a href="#" class="text-gray-600 hover:text-gray-900 transition"><i class="fab fa-facebook text-xl"></i></a>
-                    <a href="#" class="text-gray-600 hover:text-gray-900 transition"><i class="fab fa-twitter text-xl"></i></a>
-                    <a href="#" class="text-gray-600 hover:text-gray-900 transition"><i class="fab fa-pinterest text-xl"></i></a>
-                    <a href="#" class="text-gray-600 hover:text-gray-900 transition"><i class="fab fa-whatsapp text-xl"></i></a>
+                    @php
+                        $shareUrl = rawurlencode(url()->current());
+                        $shareText = rawurlencode($product->name);
+                        $shareLinks = [
+                            ['Facebook', 'fa-facebook', "https://www.facebook.com/sharer/sharer.php?u={$shareUrl}"],
+                            ['X', 'fa-twitter', "https://twitter.com/intent/tweet?url={$shareUrl}&text={$shareText}"],
+                            ['WhatsApp', 'fa-whatsapp', "https://wa.me/?text={$shareText}%20{$shareUrl}"],
+                        ];
+                    @endphp
+                    @foreach ($shareLinks as [$network, $icon, $href])
+                        <a href="{{ $href }}" target="_blank" rel="noopener noreferrer" aria-label="Partager sur {{ $network }}" class="inline-flex size-11 items-center justify-center text-gray-600 hover:text-gray-900 transition"><i class="fab {{ $icon }} text-xl"></i></a>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -339,7 +347,7 @@
 
                 <h3 class="text-xl font-bold text-gray-900 mb-4">Retours et échanges</h3>
                 <p class="text-gray-700 mb-4">Nous acceptons les retours dans les 30 jours suivant l'achat. Les articles doivent être inutilisés et dans leur emballage d'origine.</p>
-                <p class="text-gray-700">Pour plus d'informations, veuillez consulter notre page <a href="#" class="text-gray-900 font-semibold hover:underline">Politique de retour</a>.</p>
+                <p class="text-gray-700">Pour plus d'informations, veuillez consulter notre <a href="{{ route('pages.faq') }}" class="text-gray-900 font-semibold hover:underline">FAQ</a>.</p>
             </div>
         </div>
     </div>
