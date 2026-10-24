@@ -47,3 +47,14 @@ if (! function_exists('getPaymentMethodLabel')) {
         return $labels[$method] ?? ucfirst(str_replace('_', ' ', $method));
     }
 }
+
+if (! function_exists('format_fcfa')) {
+    /**
+     * Format an amount as French-style FCFA: whole francs, non-breaking spaces ("12 500 FCFA").
+     * The CFA franc has no subunit, so any decimals are rounded away.
+     */
+    function format_fcfa(float|int|string|null $amount): string
+    {
+        return number_format((float) $amount, 0, ',', "\u{00A0}")."\u{00A0}FCFA";
+    }
+}

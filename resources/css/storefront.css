@@ -1,0 +1,194 @@
+@import 'tailwindcss' source(none);
+@import '@fontsource-variable/archivo/wdth.css';
+
+/* Only the redesigned views feed this stylesheet; the old pages keep resources/css/app.css */
+@source '../views/components';
+@source '../views/storefront';
+@source '../js/storefront.js';
+
+/*
+ * Glowing Cosmetics storefront: "pharmacie dermo-cosmétique".
+ * Tokens come from design-system/glowing-cosmetics/MASTER.md. Components use these names, never raw hex values.
+ */
+@theme {
+    --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+
+    --color-ground: #ffffff;
+    --color-mint: #e3f0e8;
+    --color-ink: #13201a;
+    --color-ink-muted: #4a5750;
+    --color-green: #0b7a4b;
+    --color-green-deep: #075c37;
+    --color-sage: #5a7c6f;
+    --color-line: #d5ded8;
+    --color-field: #7a8a81;
+    --color-ticket: #fbd38d;
+    --color-amber: #9a4b06;
+    --color-danger: #b42318;
+
+    /* Shelf-edge corners: nearly square */
+    --radius-xs: 2px;
+    --radius-sm: 2px;
+    --radius-md: 3px;
+    --radius-lg: 4px;
+    --radius-xl: 4px;
+
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+
+    --breakpoint-xs: 22.5rem;
+}
+
+@layer base {
+    html {
+        font-family: var(--font-sans);
+        -webkit-text-size-adjust: 100%;
+        scroll-padding-top: 5rem;
+        /* Scrollbar in the palette */
+        scrollbar-color: var(--color-green) var(--color-mint);
+    }
+
+    body {
+        background: var(--color-ground);
+        color: var(--color-ink);
+        font-size: 1rem;
+        line-height: 1.6;
+        font-synthesis-weight: none;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Headlines: condensed width, heavy weight, like lettering on a shelf label */
+    h1, h2, h3 {
+        font-stretch: 75%;
+        font-weight: 700;
+        line-height: 1.05;
+        text-wrap: balance;
+        letter-spacing: -0.01em;
+    }
+
+    p, li { text-wrap: pretty; }
+
+    a {
+        text-underline-offset: 0.2em;
+        text-decoration-thickness: 1px;
+    }
+
+    ::selection {
+        background: var(--color-green);
+        color: #ffffff;
+    }
+
+    input, textarea, select { caret-color: var(--color-green); }
+
+    :focus-visible {
+        outline: 3px solid var(--color-green-deep);
+        outline-offset: 2px;
+    }
+
+    /* On the green and ink bands the ring has to be light */
+    .on-dark :focus-visible { outline-color: #ffffff; }
+
+    img { height: auto; }
+
+    dialog { color: inherit; }
+    dialog::backdrop { background: rgb(19 32 26 / 0.6); }
+}
+
+@layer components {
+    .wrap {
+        width: 100%;
+        max-width: 80rem;
+        margin-inline: auto;
+        padding-inline: 1rem;
+    }
+    @media (min-width: 40rem) { .wrap { padding-inline: 1.5rem; } }
+    @media (min-width: 64rem) { .wrap { padding-inline: 2rem; } }
+
+    /* Small uppercase condensed label, as printed on a box */
+    .label-caps {
+        font-stretch: 75%;
+        font-weight: 600;
+        font-size: 0.8125rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    /* Prices and quantities keep their width so columns do not jump */
+    .tnum { font-variant-numeric: tabular-nums lining-nums; }
+
+    .skip-link {
+        position: absolute;
+        left: 1rem;
+        top: -4rem;
+        z-index: 100;
+        background: var(--color-ink);
+        color: #ffffff;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        transition: top 150ms var(--ease-out-expo);
+    }
+    .skip-link:focus { top: 1rem; }
+
+    /* Drawer opened with <dialog>: focus trap and Escape come from the browser */
+    dialog.drawer {
+        margin: 0;
+        width: min(22rem, 100%);
+        max-width: none;
+        height: 100dvh;
+        max-height: none;
+        padding: 0;
+        background: var(--color-ground);
+    }
+    dialog.drawer[open] { animation: drawer-in 250ms var(--ease-out-expo); }
+
+    dialog.sheet {
+        margin: 0;
+        width: 100%;
+        max-width: none;
+        padding: 0;
+        background: var(--color-ground);
+        top: 0;
+    }
+    dialog.sheet[open] { animation: sheet-in 250ms var(--ease-out-expo); }
+
+    .toast {
+        animation: toast-in 250ms var(--ease-out-expo);
+    }
+
+    /* Reveal on scroll: content is visible unless JavaScript is running (html.js) */
+    html.js [data-reveal] {
+        opacity: 0;
+        transform: translateY(16px);
+        transition:
+            opacity 450ms var(--ease-out-expo),
+            transform 450ms var(--ease-out-expo);
+        transition-delay: calc(var(--reveal-index, 0) * 40ms);
+    }
+    html.js [data-reveal].is-visible {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* The one authored moment: the price ticket comes out of its slot, once */
+    html.js .ticket { clip-path: inset(0 0 100% 0); }
+    html.js .is-visible .ticket,
+    html.js .ticket.is-visible {
+        animation: ticket-out 650ms var(--ease-out-expo) 120ms forwards;
+    }
+}
+
+@keyframes drawer-in { from { transform: translateX(-100%); } to { transform: none; } }
+@keyframes sheet-in { from { transform: translateY(-100%); } to { transform: none; } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes ticket-out { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+    html.js [data-reveal] { opacity: 1 !important; transform: none !important; }
+    html.js .ticket { clip-path: none !important; }
+}

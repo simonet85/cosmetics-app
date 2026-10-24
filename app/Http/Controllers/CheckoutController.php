@@ -7,6 +7,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Services\CartService;
+use App\Support\PaymentMethods;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Simonet85\LaravelMoneyFusion\MoneyFusionService;
@@ -25,7 +26,7 @@ class CheckoutController extends Controller
 
         ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals();
 
-        $enabledPaymentMethods = $this->enabledPaymentMethods();
+        $enabledPaymentMethods = PaymentMethods::enabled();
 
         return view('checkout.index', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total', 'enabledPaymentMethods'));
     }
@@ -65,7 +66,7 @@ class CheckoutController extends Controller
         ]);
 
         // The admin can switch payment methods off in the settings: enforce it here, not just in the form.
-        if (! ($this->enabledPaymentMethods()[$request->payment_method] ?? false)) {
+        if (! (PaymentMethods::enabled()[$request->payment_method] ?? false)) {
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['payment_method' => 'Ce mode de paiement n\'est pas disponible.']);
@@ -236,20 +237,6 @@ class CheckoutController extends Controller
         abort_unless($order->isViewableBy(auth()->user(), $request), 403);
 
         return view('checkout.success', compact('order'));
-    }
-
-    /**
-     * @return array<string, bool>
-     */
-    private function enabledPaymentMethods(): array
-    {
-        return [
-            'credit_card' => getSetting('payment_credit_card_enabled', '1') === '1',
-            'paypal' => getSetting('payment_paypal_enabled', '1') === '1',
-            'bank_transfer' => getSetting('payment_bank_transfer_enabled', '1') === '1',
-            'cash_on_delivery' => getSetting('payment_cash_on_delivery_enabled', '1') === '1',
-            'moneyfusion' => getSetting('payment_moneyfusion_enabled', '1') === '1',
-        ];
     }
 
     /**
