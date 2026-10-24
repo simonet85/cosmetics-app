@@ -15,6 +15,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MoneyFusion\PaymentCallbackController;
 use App\Http\Controllers\MoneyFusion\WebhookController;
 use App\Http\Controllers\NewsletterController;
@@ -26,6 +27,9 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
+
+// Language switcher (remembers the choice in a cookie)
+Route::get('/langue/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

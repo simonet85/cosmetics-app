@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'force-https' => \App\Http\Middleware\ForceHttps::class,
         ]);
 
+        $middleware->web(append: [\App\Http\Middleware\SetLocale::class]);
+
         // Exclude MoneyFusion webhook from CSRF protection
         $middleware->validateCsrfTokens(except: [
             'api/moneyfusion/webhook',
