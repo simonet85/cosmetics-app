@@ -8,7 +8,6 @@
     $mainImage = $product->primary_image?->path ?? 'images/products/product-placeholder.jpg';
     $category = $product->categories->first();
     $composition = collect(preg_split('/[\r\n,;]+/', (string) $product->ingredients))->map(fn ($l) => trim($l))->filter();
-    $threshold = (float) getSetting('free_shipping_threshold', '50000');
     $payments = \App\Support\PaymentMethods::acceptedLabels();
     $lowStock = $product->stock > 0 && $product->stock <= 5;
     $maxQty = max(1, $firstVariant ? $firstVariant->stock : $product->stock);
@@ -70,7 +69,7 @@
             <div>
                 <div class="border border-ink bg-photo">
                     <img id="product-main-image" src="{{ asset($mainImage) }}" alt="{{ $product->name }}" width="330" height="440"
-                         fetchpriority="high" class="mx-auto aspect-[4/3] h-auto w-full object-contain lg:aspect-[3/4]">
+                         fetchpriority="high" class="mx-auto aspect-[4/3] h-auto w-full object-contain lg:aspect-auto lg:h-[34rem]">
                 </div>
                 @if ($images->count() > 1)
                     <ul class="mt-2 grid grid-cols-4 gap-2" aria-label="Photos du produit">
@@ -198,7 +197,7 @@
                 <ul class="mt-6 divide-y divide-line border-y border-line text-sm">
                     <li class="flex items-center gap-3 py-3">
                         <x-ui.icon name="truck" class="size-5 shrink-0 text-green-deep" />
-                        <span>Livraison gratuite dès {{ format_fcfa($threshold) }}</span>
+                        <span>{{ \App\Support\Shipping::promise() }}</span>
                     </li>
                     <li class="flex items-center gap-3 py-3">
                         <x-ui.icon name="smartphone" class="size-5 shrink-0 text-green-deep" />

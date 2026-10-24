@@ -1,15 +1,15 @@
 @php
-    $threshold = (float) getSetting('free_shipping_threshold', '50000');
+    $threshold = \App\Support\Shipping::freeThreshold();   // null when shipping is always free
     $taxRate = rtrim(rtrim(number_format((float) getSetting('tax_rate', '15'), 2, ',', ''), '0'), ',');
     $payments = \App\Support\PaymentMethods::acceptedLabels();
-    $remaining = max(0, $threshold - $subtotal);
-    $progress = $threshold > 0 ? min(100, (int) round($subtotal / $threshold * 100)) : 100;
+    $remaining = $threshold === null ? 0 : max(0, $threshold - $subtotal);
+    $progress = $threshold ? min(100, (int) round($subtotal / $threshold * 100)) : 100;
     $itemCount = collect($cartItems)->sum('quantity');
 @endphp
 
 <x-layouts.storefront title="Panier" description="Votre panier Glowing Cosmetics." robots="noindex,follow">
     <div class="wrap py-6 sm:py-10"
-         data-cart data-threshold="{{ $threshold }}"
+         data-cart data-threshold="{{ $threshold ?? 0 }}"
          data-update-url="{{ route('cart.update') }}" data-remove-url="{{ route('cart.remove') }}" data-clear-url="{{ route('cart.clear') }}">
         <nav aria-label="Fil d'Ariane" class="flex flex-wrap items-center text-sm text-ink-muted">
             <a href="{{ route('home') }}" class="inline-flex min-h-11 items-center underline">Accueil</a>
@@ -26,7 +26,8 @@
         @else
             <div class="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-12">
                 <div>
-                    <div class="border border-ink bg-mint p-4" data-free-shipping>
+                    @if ($threshold !== null)
+                    <div class="mb-4 border border-ink bg-mint p-4" data-free-shipping>
                         <p class="font-semibold" data-free-shipping-text>
                             @if ($remaining > 0)
                                 Plus que {{ format_fcfa($remaining) }} pour la livraison gratuite.
@@ -36,8 +37,9 @@
                         </p>
                         <div class="mt-2 h-2 bg-white" aria-hidden="true"><div class="h-2 bg-green" style="width: {{ $progress }}%" data-free-shipping-bar></div></div>
                     </div>
+                    @endif
 
-                    <ul class="mt-4 divide-y divide-line border-y border-ink" aria-label="Articles du panier">
+                    <ul class="divide-y divide-line border-y border-ink" aria-label="Articles du panier">
                         @foreach ($cartItems as $item)
                             @php
                                 $product = $item['product'];
@@ -89,15 +91,11 @@
 
                 <aside class="border border-ink bg-white p-5 lg:sticky lg:top-24" aria-labelledby="summary-title">
                     <h2 id="summary-title" class="text-2xl">Résumé</h2>
-                    <dl class="tnum mt-4 grid grid-cols-[1fr_auto] gap-x-4 gap-y-2">
-                        <dt class="text-ink-muted">Sous-total ({{ $itemCount }} {{ $itemCount > 1 ? 'articles' : 'article' }})</dt>
-                        <dd data-sum="subtotal">{{ format_fcfa($subtotal) }}</dd>
-                        <dt class="text-ink-muted">Taxes ({{ $taxRate }} %)</dt>
-                        <dd data-sum="tax">{{ format_fcfa($tax) }}</dd>
-                        <dt class="text-ink-muted">Livraison</dt>
-                        <dd data-sum="shipping">{{ $shipping > 0 ? format_fcfa($shipping) : 'Gratuite' }}</dd>
-                        <dt class="mt-2 border-t border-ink pt-3 text-lg font-bold">Total</dt>
-                        <dd class="mt-2 border-t border-ink pt-3 text-2xl font-bold" style="font-stretch: 75%" data-sum="total">{{ format_fcfa($total) }}</dd>
+                    <dl class="tnum mt-4 grid gap-2">
+                        <div class="flex justify-between gap-4"><dt class="text-ink-muted">Sous-total ({{ $itemCount }} {{ $itemCount > 1 ? 'articles' : 'article' }})</dt><dd data-sum="subtotal">{{ format_fcfa($subtotal) }}</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-ink-muted">Taxes ({{ $taxRate }} %)</dt><dd data-sum="tax">{{ format_fcfa($tax) }}</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-ink-muted">Livraison</dt><dd data-sum="shipping">{{ $shipping > 0 ? format_fcfa($shipping) : 'Gratuite' }}</dd></div>
+                        <div class="mt-2 flex items-baseline justify-between gap-4 border-t border-ink pt-3"><dt class="text-lg font-bold">Total</dt><dd class="text-2xl font-bold" style="font-stretch: 75%" data-sum="total">{{ format_fcfa($total) }}</dd></div>
                     </dl>
 
                     <x-ui.button :href="route('checkout.index')" class="mt-5 w-full">Passer la commande</x-ui.button>

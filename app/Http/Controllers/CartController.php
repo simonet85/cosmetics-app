@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Services\CartService;
+use App\Support\Shipping;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -210,7 +211,7 @@ class CartController extends Controller
             'tax' => round($totals['tax']),
             'shipping' => round($totals['shipping']),
             'total' => round($totals['total']),
-            'free_shipping_remaining' => max(0, round((float) getSetting('free_shipping_threshold', '50000') - $totals['subtotal'])),
+            'free_shipping_remaining' => ($threshold = Shipping::freeThreshold()) === null ? null : max(0, round($threshold - $totals['subtotal'])),
         ];
     }
 

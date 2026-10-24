@@ -4,6 +4,7 @@ namespace App\View\Composers;
 
 use App\Models\Category;
 use App\Support\PaymentMethods;
+use App\Support\Shipping;
 use Illuminate\View\View;
 
 /**
@@ -21,7 +22,7 @@ class StorefrontComposer
 
         $view->with([
             'navCategories' => Category::active()->parent()->orderBy('order')->limit(5)->get(['id', 'name', 'slug']),
-            'freeShippingThreshold' => (float) getSetting('free_shipping_threshold', '50000'),
+            'shippingPromise' => Shipping::promise(),
             'paymentLabels' => PaymentMethods::acceptedLabels(),
             'cartCount' => (int) array_sum(array_column($cart, 'quantity')),
             'wishlistCount' => $wishlistCount,

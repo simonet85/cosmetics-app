@@ -167,6 +167,7 @@ class StorefrontFoundationTest extends TestCase
 
     public function test_the_promise_band_reads_the_free_shipping_threshold_and_payments_from_the_settings(): void
     {
+        $this->setting('standard_shipping_cost', '2000');
         $this->setting('free_shipping_threshold', '75000');
         $this->setting('payment_credit_card_enabled', '0');
         $this->setting('payment_paypal_enabled', '0');
@@ -181,8 +182,18 @@ class StorefrontFoundationTest extends TestCase
         $this->assertStringNotContainsString('paypal', strtolower($html));
     }
 
+    public function test_when_shipping_costs_nothing_the_band_does_not_invent_a_threshold(): void
+    {
+        $html = $this->page();
+
+        $this->assertStringContainsString('Livraison gratuite', $html);
+        $this->assertStringNotContainsString('Livraison gratuite dès', $html);
+    }
+
     public function test_the_promise_band_falls_back_to_the_default_threshold(): void
     {
+        $this->setting('standard_shipping_cost', '2000');
+
         $this->assertStringContainsString('Livraison gratuite dès 50'.self::NBSP.'000'.self::NBSP.'FCFA', $this->page());
     }
 

@@ -13,6 +13,13 @@ class StorefrontCartTest extends TestCase
 {
     use RefreshDatabase;
 
+    private function shippingCost(string $cost = '2000'): void
+    {
+        \Illuminate\Support\Facades\DB::table('settings')->updateOrInsert(['key' => 'standard_shipping_cost'], [
+            'value' => $cost, 'type' => 'text', 'group' => 'shipping', 'created_at' => now(), 'updated_at' => now(),
+        ]);
+    }
+
     private function add(Product $product, int $quantity = 1, ?ProductVariant $variant = null)
     {
         return $this->postJson(route('cart.add'), array_filter([
@@ -30,6 +37,7 @@ class StorefrontCartTest extends TestCase
 
     public function test_cart_page_shows_lines_totals_and_the_free_shipping_gap(): void
     {
+        $this->shippingCost();
         $product = Product::factory()->create(['name' => 'Sérum Éclat', 'price' => 12000, 'stock' => 10]);
         $this->add($product, 2);
 
@@ -46,21 +54,30 @@ class StorefrontCartTest extends TestCase
 
     public function test_free_shipping_is_announced_once_the_threshold_is_reached(): void
     {
+        $this->shippingCost();
         $this->add(Product::factory()->create(['price' => 60000, 'stock' => 5]));
 
         $this->get(route('cart.index'))
             ->assertSee('La livraison est gratuite pour cette commande.')->assertSee('Gratuite');
     }
 
+    public function test_no_free_shipping_progress_when_shipping_is_always_free(): void
+    {
+        $this->add(Product::factory()->create(['price' => 1000, 'stock' => 5]));
+
+        $this->get(route('cart.index'))->assertOk()->assertDontSee('pour la livraison gratuite')->assertSee('Gratuite');
+    }
+
     public function test_update_and_remove_return_formatted_whole_franc_totals(): void
     {
+        $this->shippingCost();
         $product = Product::factory()->create(['price' => 10000, 'stock' => 10]);
         $this->add($product);
 
         $this->postJson(route('cart.update'), ['cart_item_id' => (string) $product->id, 'quantity' => 3])
             ->assertOk()
             ->assertJsonPath('formatted.item_subtotal', "30\u{00A0}000\u{00A0}FCFA")
-            ->assertJsonPath('formatted.total', "34\u{00A0}500\u{00A0}FCFA")
+            ->assertJsonPath('formatted.total', "36\u{00A0}500\u{00A0}FCFA")
             ->assertJsonPath('free_shipping_remaining', 20000);
 
         $this->postJson(route('cart.remove'), ['cart_item_id' => (string) $product->id])

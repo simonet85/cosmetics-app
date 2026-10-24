@@ -1,4 +1,4 @@
-{{-- Data (navCategories, freeShippingThreshold, paymentLabels, cartCount, wishlistCount) comes from StorefrontComposer. --}}
+{{-- Data (navCategories, shippingPromise, paymentLabels, cartCount, wishlistCount) comes from StorefrontComposer. --}}
 @php
     $links = [
         ['label' => 'Boutique', 'href' => route('shop.index'), 'active' => request()->routeIs('shop.*')],
@@ -13,7 +13,7 @@
     <div class="wrap flex flex-wrap items-center justify-center gap-x-6 gap-y-1 py-2 text-sm font-medium">
         <p class="flex items-center gap-2">
             <x-ui.icon name="truck" class="size-4" />
-            <span>Livraison gratuite dès {{ format_fcfa($freeShippingThreshold) }}</span>
+            <span>{{ $shippingPromise }}</span>
         </p>
         @if ($paymentLabels)
             <p class="hidden items-center gap-2 sm:flex">

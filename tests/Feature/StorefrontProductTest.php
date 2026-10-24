@@ -154,9 +154,18 @@ class StorefrontProductTest extends TestCase
     {
         $product = Product::factory()->create();
 
+        // No shipping cost: delivery is simply free, no threshold is invented
         $this->get(route('products.show', $product->slug))
-            ->assertSee("Livraison gratuite dès 50\u{00A0}000\u{00A0}FCFA")
+            ->assertSee('Livraison gratuite')->assertDontSee('Livraison gratuite dès')
             ->assertSee('Mobile money');
+
+        \Illuminate\Support\Facades\DB::table('settings')->insert([
+            'key' => 'standard_shipping_cost', 'value' => '2000', 'type' => 'text', 'group' => 'shipping',
+            'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        $this->get(route('products.show', $product->slug))
+            ->assertSee("Livraison gratuite dès 50\u{00A0}000\u{00A0}FCFA");
     }
 
     public function test_guests_are_sent_to_sign_in_and_customers_can_review_with_a_title(): void

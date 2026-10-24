@@ -71,7 +71,8 @@ class CartService
 
         $standardShippingCost = floatval(getSetting('standard_shipping_cost', '0'));
         $freeShippingThreshold = floatval(getSetting('free_shipping_threshold', '50000'));
-        $shipping = $subtotal >= $freeShippingThreshold ? 0.0 : $standardShippingCost;
+        // An empty cart ships nothing, so it is not charged shipping
+        $shipping = $lines === [] || $subtotal >= $freeShippingThreshold ? 0.0 : $standardShippingCost;
 
         return [
             'subtotal' => $subtotal,
