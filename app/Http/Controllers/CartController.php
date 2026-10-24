@@ -127,7 +127,18 @@ class CartController extends Controller
 
         $item = $cart[$request->cart_item_id];
         $product = Product::active()->find($item['product_id']);
-        $variant = ! empty($item['variant_id']) ? ProductVariant::find($item['variant_id']) : null;
+        $variant = ! empty($item['variant_id'])
+            ? ProductVariant::where('product_id', $item['product_id'])->where('is_active', true)->find($item['variant_id'])
+            : null;
+
+        // The line was added with an option that has since been deleted or switched off: never fall back to the product's stock
+        if ($product && ! empty($item['variant_id']) && ! $variant) {
+            return response()->json([
+                'success' => false,
+                'message' => __('L\'option choisie pour :name n\'est plus disponible. Retirez-la de votre panier.', ['name' => $product->name]),
+            ], 400);
+        }
+
         $available = $variant ? $variant->stock : $product?->stock;
 
         if (! $product || $available < $request->quantity) {

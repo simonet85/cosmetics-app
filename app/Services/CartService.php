@@ -131,6 +131,11 @@ class CartService
         }
 
         foreach (session()->get('cart', []) as $item) {
+            // A line in an old or damaged shape must not break the sign-in: it is simply not merged
+            if (! is_array($item) || empty($item['product_id']) || (int) ($item['quantity'] ?? 0) < 1) {
+                continue;
+            }
+
             $key = $this->key($item['product_id'], $item['variant_id'] ?? null);
 
             $merged[$key] = [

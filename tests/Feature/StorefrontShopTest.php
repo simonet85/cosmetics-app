@@ -95,7 +95,8 @@ class StorefrontShopTest extends TestCase
     public function test_invalid_filters_are_rejected_instead_of_trusted(): void
     {
         $this->get(route('shop.index', ['min_price' => 'abc']))->assertSessionHasErrors('min_price');
-        $this->get(route('shop.index', ['sort' => 'drop table']))->assertSessionHasErrors('sort');
+        // An unknown sort (an old link) is never used in the query: the list just keeps its default order
+        $this->get(route('shop.index', ['sort' => 'drop table']))->assertOk()->assertSessionHasNoErrors();
         $this->get(route('shop.index', ['max_price' => -5]))->assertSessionHasErrors('max_price');
     }
 

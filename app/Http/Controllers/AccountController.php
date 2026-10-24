@@ -64,8 +64,9 @@ class AccountController extends Controller
             'country' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'current_password' => 'nullable|required_with:new_password',
-            'new_password' => 'nullable|min:8|confirmed',
+            'new_password' => 'nullable|required_with:current_password|min:8|confirmed',
         ], [
+            'new_password.required_with' => __('Indiquez le nouveau mot de passe.'),
             'first_name.required' => __('Le prénom est obligatoire.'),
             'last_name.required' => __('Le nom est obligatoire.'),
             'email.required' => __('L\'adresse email est obligatoire.'),
@@ -162,7 +163,7 @@ class AccountController extends Controller
         $user->update($updateData);
 
         // Update password if provided
-        if ($request->filled('current_password')) {
+        if ($request->filled('current_password') && $request->filled('new_password')) {
             $user->update([
                 'password' => Hash::make($request->new_password),
             ]);

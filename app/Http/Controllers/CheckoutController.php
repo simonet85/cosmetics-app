@@ -113,6 +113,19 @@ class CheckoutController extends Controller
      * Cash orders are not paid yet, so nothing else tells the customer the order exists: send the receipt.
      * The order is already saved; a mail problem is logged and never turns into a failed checkout.
      */
+    /**
+     * Remember which order a submit token created, so a double click or a reload lands on the same order.
+     * Runs after the commit: a cache failure must never undo (or pretend to undo) an order that is saved.
+     */
+    private function rememberOrder(string $key, Order $order): void
+    {
+        try {
+            Cache::put($key.':order', $order->id, now()->addDay());
+        } catch (Throwable $e) {
+            report($e);
+        }
+    }
+
     private function sendReceived(Order $order): void
     {
         if (getSetting('send_order_confirmation', '1') !== '1' || ! $order->customer_email) {
@@ -276,7 +289,7 @@ class CheckoutController extends Controller
                     ]);
 
                     DB::commit();
-                    Cache::put($key.':order', $order->id, now()->addDay());
+                    $this->rememberOrder($key, $order);
 
                     // Redirect to MoneyFusion payment page
                     return redirect($paymentResult['url']);
@@ -294,7 +307,7 @@ class CheckoutController extends Controller
             $this->cart->clear();
 
             DB::commit();
-            Cache::put($key.':order', $order->id, now()->addDay());
+            $this->rememberOrder($key, $order);
 
             $this->sendReceived($order);
 

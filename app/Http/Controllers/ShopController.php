@@ -43,7 +43,8 @@ class ShopController extends Controller
             'tag' => ['nullable', 'string', 'max:150'],
             'min_price' => ['nullable', 'numeric', 'min:0', 'max:100000000'],
             'max_price' => ['nullable', 'numeric', 'min:0', 'max:100000000'],
-            'sort' => ['nullable', 'in:'.implode(',', array_keys(self::SORTS))],
+            // An unknown value (an old bookmarked link) is not an error: the list simply uses the default order
+            'sort' => ['nullable', 'string', 'max:30'],
             'sold_out' => ['nullable', 'boolean'],
         ]);
 
@@ -79,7 +80,7 @@ class ShopController extends Controller
             });
         }
 
-        $sort = $filters['sort'] ?? 'latest';
+        $sort = array_key_exists($filters['sort'] ?? '', self::SORTS) ? $filters['sort'] : 'latest';
         match ($sort) {
             'price_asc' => $query->orderByRaw(self::EFFECTIVE_PRICE.' asc'),
             'price_desc' => $query->orderByRaw(self::EFFECTIVE_PRICE.' desc'),
