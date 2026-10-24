@@ -95,8 +95,9 @@ Packagist shows `laravel/framework` v13.x (requires PHP ^8.3) and `simonet85/lar
 Production (klab-consulting.com) runs the code of phases 0 to 5; the database password in its `.env` was fixed and the site answers 200. To pick up later:
 
 - [ ] Real MoneyFusion test payment (250 F minimum): confirm whether the gateway's `Montant` is net or gross of fees. The package refuses a paid status when it differs from the amount sent, so a net amount would leave legitimate payments pending.
-- [ ] Set `APP_DEBUG=false` in the production `.env` (it is `true`).
+- [x] Set `APP_DEBUG=false` in the production `.env` (done 2026-10-24, together with `APP_LOCALE=fr` and `APP_FALLBACK_LOCALE=fr`: the file said `en`, which would have sent queued e-mails in English). The demo banners were switched off at the same time (deactivated, not deleted: they can be removed in the admin).
+- [ ] Add `DEEPL_API_KEY` to the production `.env` with `bash scripts/set-remote-deepl-key.sh` (run by the owner), then `php artisan translations:sync en` on the server to translate the catalogue.
 - [ ] Create the hPanel cron job: `* * * * * cd ~/domains/klab-consulting.com/laravel && php artisan schedule:run` (nothing scheduled runs until then).
 - [ ] 7 legacy MoneyFusion orders are still pending and `moneyfusion_payments` is empty: backfill payment rows from `orders.moneyfusion_token` so the scheduled check can settle or expire them.
-- [ ] Tidy the server: `public/build.prev/`, `.env.bak-20261021` (mode 755), `.env` itself (mode 755).
+- [x] Server permissions: `.env` and `.env.bak-20261021` are now mode 600. `public/build.prev/` is the previous build kept by `scripts/deploy.sh` (replaced at each deploy). The cron job cannot be created over SSH (no `crontab` on the host): hPanel only, see above.
 - [ ] GitHub Actions is blocked by an account billing lock; re-run the CI jobs once it is lifted.
