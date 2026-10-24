@@ -65,6 +65,7 @@
                     <option value="promotional" {{ old('type', $banner->type) === 'promotional' ? 'selected' : '' }}>Promotionnel</option>
                     <option value="category" {{ old('type', $banner->type) === 'category' ? 'selected' : '' }}>Catégorie</option>
                     <option value="product" {{ old('type', $banner->type) === 'product' ? 'selected' : '' }}>Produit</option>
+                    @if (old('type', $banner->type) === 'promo')<option value="promo" selected>Promo (ancienne valeur)</option>@endif
                 </select>
                 @error('type')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -84,6 +85,7 @@
                     <option value="home_middle" {{ old('position', $banner->position) === 'home_middle' ? 'selected' : '' }}>Milieu de Page</option>
                     <option value="home_bottom" {{ old('position', $banner->position) === 'home_bottom' ? 'selected' : '' }}>Bas de Page</option>
                     <option value="sidebar" {{ old('position', $banner->position) === 'sidebar' ? 'selected' : '' }}>Sidebar</option>
+                    @if (in_array(old('position', $banner->position), ['hero', 'promo'], true))<option value="{{ old('position', $banner->position) }}" selected>{{ ucfirst(old('position', $banner->position)) }} (ancienne valeur)</option>@endif
                 </select>
                 @error('position')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

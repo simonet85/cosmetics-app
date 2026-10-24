@@ -30,8 +30,9 @@ class AdminBannerController extends Controller
         }
 
         // Sort
-        $sortBy = $request->get('sort_by', 'order');
-        $sortOrder = $request->get('sort_order', 'asc');
+        // Only known columns and directions reach the query (the values came straight from the URL)
+        $sortBy = in_array($request->get('sort_by'), ['order', 'title', 'type', 'position', 'is_active', 'created_at'], true) ? $request->get('sort_by') : 'order';
+        $sortOrder = $request->get('sort_order') === 'desc' ? 'desc' : 'asc';
         $query->orderBy($sortBy, $sortOrder);
 
         $banners = $query->paginate(20)->withQueryString();
@@ -47,8 +48,8 @@ class AdminBannerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'type' => 'required|in:hero,promotional,category,product',
-            'position' => 'required|in:home_slider,home_top,home_middle,home_bottom,sidebar',
+            'type' => 'required|in:hero,promotional,category,product,promo',
+            'position' => 'required|in:home_slider,home_top,home_middle,home_bottom,sidebar,hero,promo',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -112,8 +113,8 @@ class AdminBannerController extends Controller
     public function update(Request $request, Banner $banner)
     {
         $validated = $request->validate([
-            'type' => 'required|in:hero,promotional,category,product',
-            'position' => 'required|in:home_slider,home_top,home_middle,home_bottom,sidebar',
+            'type' => 'required|in:hero,promotional,category,product,promo',
+            'position' => 'required|in:home_slider,home_top,home_middle,home_bottom,sidebar,hero,promo',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'description' => 'nullable|string',

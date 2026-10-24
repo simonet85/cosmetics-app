@@ -40,6 +40,8 @@
                     <option value="home_middle" {{ request('position') === 'home_middle' ? 'selected' : '' }}>Milieu de Page</option>
                     <option value="home_bottom" {{ request('position') === 'home_bottom' ? 'selected' : '' }}>Bas de Page</option>
                     <option value="sidebar" {{ request('position') === 'sidebar' ? 'selected' : '' }}>Sidebar</option>
+                    <option value="hero" {{ request('position') === 'hero' ? 'selected' : '' }}>Hero (ancienne valeur)</option>
+                    <option value="promo" {{ request('position') === 'promo' ? 'selected' : '' }}>Promo (ancienne valeur)</option>
                 </select>
             </div>
 

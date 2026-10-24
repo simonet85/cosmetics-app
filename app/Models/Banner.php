@@ -31,4 +31,12 @@ class Banner extends Model
     {
         return $q->where('is_active', true);
     }
+
+    /** Active and inside its schedule (no date means no limit on that side). */
+    public function scopeLive($q)
+    {
+        return $q->where('is_active', true)
+            ->where(fn ($w) => $w->whereNull('start_date')->orWhere('start_date', '<=', now()->toDateString()))
+            ->where(fn ($w) => $w->whereNull('end_date')->orWhere('end_date', '>=', now()->toDateString()));
+    }
 }
