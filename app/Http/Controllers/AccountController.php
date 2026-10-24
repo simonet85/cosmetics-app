@@ -26,7 +26,7 @@ class AccountController extends Controller
             ->where('status', 'pending')
             ->count();
         $completedOrders = Order::where('user_id', $user->id)
-            ->where('status', 'completed')
+            ->where('status', 'delivered')
             ->count();
         $totalSpent = Order::where('user_id', $user->id)
             ->where('payment_status', 'paid')
@@ -135,6 +135,14 @@ class AccountController extends Controller
             }
         }
 
+        // Check the current password before saving anything: a refused password change must not leave
+        // the rest of the form half saved.
+        if ($request->filled('current_password') && ! Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()
+                ->withErrors(['current_password' => 'Le mot de passe actuel est incorrect.'])
+                ->withInput();
+        }
+
         // Update user info
         $updateData = [
             'first_name' => $validated['first_name'],
@@ -155,12 +163,6 @@ class AccountController extends Controller
 
         // Update password if provided
         if ($request->filled('current_password')) {
-            if (! Hash::check($request->current_password, $user->password)) {
-                return redirect()->back()
-                    ->withErrors(['current_password' => 'Le mot de passe actuel est incorrect.'])
-                    ->withInput();
-            }
-
             $user->update([
                 'password' => Hash::make($request->new_password),
             ]);

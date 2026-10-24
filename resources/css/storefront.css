@@ -193,3 +193,15 @@
     html.js [data-reveal] { opacity: 1 !important; transform: none !important; }
     html.js .ticket { clip-path: none !important; }
 }
+
+/* Long text pages (legal, FAQ answers): the markup is plain h2/h3/p/ul, the look is set here */
+.info-prose > section + section { margin-top: 2.5rem; }
+.info-prose h2 { font-size: 1.875rem; margin-bottom: 1rem; }
+.info-prose h3 { font-size: 1.375rem; margin: 1.5rem 0 0.75rem; }
+.info-prose p { line-height: 1.7; margin-bottom: 1rem; max-width: 65ch; }
+.info-prose ul, .info-prose ol { margin: 0 0 1rem 1.25rem; max-width: 65ch; }
+.info-prose ul { list-style: disc; }
+.info-prose ol { list-style: decimal; }
+.info-prose li { margin-bottom: 0.5rem; padding-left: 0.25rem; line-height: 1.6; }
+.info-prose a { color: var(--color-green-deep); text-decoration: underline; }
+.info-prose strong { font-weight: 700; }

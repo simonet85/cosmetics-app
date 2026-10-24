@@ -13,17 +13,15 @@ class WishlistController extends Controller
         $wishlistItems = [];
 
         foreach ($wishlist as $productId) {
-            $product = Product::with(['images', 'categories'])
-                ->withCount('reviews')
-                ->withAvg('reviews', 'rating')
-                ->find($productId);
+            // Only products that can still be bought: an inactive or archived one drops out of the list
+            $product = Product::with(['images', 'categories'])->active()->find($productId);
 
             if ($product) {
                 $wishlistItems[] = $product;
             }
         }
 
-        return view('wishlist.index', compact('wishlistItems'));
+        return view('wishlist.index', ['wishlistItems' => collect($wishlistItems)]);
     }
 
     public function add(Request $request)

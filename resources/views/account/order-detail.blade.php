@@ -1,242 +1,97 @@
-@extends('layouts.app')
+@php
+    use App\Support\OrderLabels;
 
-@section('content')
+    $shipping = $order->shipping_address ?? [];
+    $cancelled = $order->status === 'cancelled';
+    $canPay = $order->payment_method === 'moneyfusion' && $order->payment_status === 'pending' && ! $cancelled;
+    $canCancel = $order->status === 'pending';
+@endphp
 
-{{-- Page Header --}}
-<div class="bg-gray-50 py-12 mb-12">
-    <div class="container-custom">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">Détails de la commande</h1>
-        <nav aria-label="Fil d'Ariane" class="flex items-center text-sm">
-            <a href="{{ route('home') }}" class="text-gray-600 hover:text-gray-900">Accueil</a>
-            <span class="mx-2 text-gray-400">/</span>
-            <a href="{{ route('account.dashboard') }}" class="text-gray-600 hover:text-gray-900">Mon compte</a>
-            <span class="mx-2 text-gray-400">/</span>
-            <a href="{{ route('account.orders') }}" class="text-gray-600 hover:text-gray-900">Commandes</a>
-            <span class="mx-2 text-gray-400">/</span>
-            <span class="text-gray-900">{{ $order->order_number }}</span>
-        </nav>
-    </div>
-</div>
-
-<div class="container-custom mb-20">
-    <div class="max-w-5xl mx-auto">
-        {{-- Order Header --}}
-        <div class="bg-white rounded-lg shadow-sm p-8 mb-6">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <div>
-                    <h2 class="text-3xl font-bold text-gray-900">{{ $order->order_number }}</h2>
-                    <p class="text-gray-600 mt-2">
-                        <i class="fas fa-calendar mr-2"></i>
-                        Commandé le {{ $order->created_at->format('d/m/Y à H:i') }}
-                    </p>
-                </div>
-
-                <div class="flex gap-3">
-                    <span class="px-4 py-2 rounded-lg text-sm font-semibold
-                        @if($order->status === 'pending') bg-yellow-100 text-yellow-800
-                        @elseif($order->status === 'processing') bg-blue-100 text-blue-800
-                        @elseif($order->status === 'completed') bg-green-100 text-green-800
-                        @elseif($order->status === 'cancelled') bg-red-100 text-red-800
-                        @endif">
-                        @if($order->status === 'pending') En attente
-                        @elseif($order->status === 'processing') En cours
-                        @elseif($order->status === 'completed') Complétée
-                        @elseif($order->status === 'cancelled') Annulée
-                        @else {{ ucfirst($order->status) }}
-                        @endif
-                    </span>
-                    <span class="px-4 py-2 rounded-lg text-sm font-semibold
-                        @if($order->payment_status === 'paid') bg-green-100 text-green-800
-                        @elseif($order->payment_status === 'pending') bg-yellow-100 text-yellow-800
-                        @elseif($order->payment_status === 'failed') bg-red-100 text-red-800
-                        @endif">
-                        @if($order->payment_status === 'paid') Payé
-                        @elseif($order->payment_status === 'pending') Paiement en attente
-                        @elseif($order->payment_status === 'failed') Paiement échoué
-                        @else {{ ucfirst($order->payment_status) }}
-                        @endif
-                    </span>
-                </div>
-            </div>
-
-            {{-- Order Progress --}}
-            @if($order->status !== 'cancelled')
-            <div class="relative">
-                <div class="flex justify-between mb-2">
-                    <span class="text-sm font-medium {{ $order->status === 'pending' || $order->status === 'processing' || $order->status === 'completed' ? 'text-[#5a7c6f]' : 'text-gray-400' }}">Confirmée</span>
-                    <span class="text-sm font-medium {{ $order->status === 'processing' || $order->status === 'completed' ? 'text-[#5a7c6f]' : 'text-gray-400' }}">En traitement</span>
-                    <span class="text-sm font-medium {{ $order->status === 'completed' ? 'text-[#5a7c6f]' : 'text-gray-400' }}">Livrée</span>
-                </div>
-                <div class="relative h-2 bg-gray-200 rounded-full">
-                    <div class="absolute h-full bg-[#5a7c6f] rounded-full transition-all
-                        @if($order->status === 'pending') w-1/3
-                        @elseif($order->status === 'processing') w-2/3
-                        @elseif($order->status === 'completed') w-full
-                        @endif">
-                    </div>
-                </div>
-            </div>
-            @endif
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {{-- Order Items --}}
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-6">Articles commandés</h3>
-
-                    <div class="divide-y divide-gray-200">
-                        @foreach($order->items as $item)
-                        <div class="py-4 flex items-center gap-4">
-                            @if($item->product && $item->product->primaryImage)
-                            <img
-                                src="{{ asset($item->product->primaryImage->path) }}"
-                                alt="{{ $item->product_name }}"
-                                class="w-20 h-20 object-cover rounded border border-gray-200"
-                            >
-                            @else
-                            <div class="w-20 h-20 bg-gray-200 rounded border border-gray-200 flex items-center justify-center">
-                                <i class="fas fa-image text-gray-400"></i>
-                            </div>
-                            @endif
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900">{{ $item->product_name }}</h4>
-                                @if($item->variant)
-                                <p class="text-sm text-gray-600 mt-1">{{ $item->variant->label }}</p>
+<x-layouts.storefront :title="'Commande '.$order->order_number" robots="noindex,nofollow">
+    <x-storefront.account-shell :title="'Commande '.$order->order_number" current="orders">
+        <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-12">
+            <div>
+                <section aria-labelledby="items-title">
+                    <h2 id="items-title" class="text-3xl">Articles</h2>
+                    <ul class="mt-4 divide-y divide-line border-y border-ink">
+                        @foreach ($order->items as $item)
+                            <li class="flex items-start gap-4 py-4">
+                                @if ($item->product)
+                                    <span class="w-16 shrink-0 bg-photo"><x-storefront.product-image :product="$item->product" sizes="64px" class="aspect-[3/4] object-contain" /></span>
                                 @endif
-                                <p class="text-sm text-gray-600 mt-1">SKU: {{ $item->sku }}</p>
-                                <p class="text-sm text-gray-600">Quantité: {{ $item->quantity }}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm text-gray-600">{{ format_fcfa($item->price) }} × {{ $item->quantity }}</p>
-                                <p class="font-bold text-gray-900">{{ format_fcfa($item->total) }}</p>
-                            </div>
-                        </div>
+                                <span class="min-w-0 flex-1">
+                                    <span class="block font-semibold">{{ $item->product_name }}</span>
+                                    @if ($item->variant)<span class="block text-sm text-ink-muted">{{ $item->variant->label }}</span>@endif
+                                    <span class="tnum block text-sm text-ink-muted">{{ format_fcfa($item->price) }} × {{ $item->quantity }}</span>
+                                </span>
+                                <span class="tnum font-semibold">{{ format_fcfa($item->total) }}</span>
+                            </li>
                         @endforeach
-                    </div>
-                </div>
+                    </ul>
+                    <dl class="tnum mt-4 ml-auto grid max-w-sm gap-2">
+                        <div class="flex justify-between gap-4"><dt class="text-ink-muted">Sous-total</dt><dd>{{ format_fcfa($order->subtotal) }}</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-ink-muted">Taxes</dt><dd>{{ format_fcfa($order->tax) }}</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-ink-muted">Livraison</dt><dd>{{ $order->shipping_cost > 0 ? format_fcfa($order->shipping_cost) : 'Gratuite' }}</dd></div>
+                        <div class="mt-2 flex items-baseline justify-between gap-4 border-t border-ink pt-3"><dt class="text-lg font-bold">Total</dt><dd class="text-2xl font-bold" style="font-stretch: 75%">{{ format_fcfa($order->total) }}</dd></div>
+                    </dl>
+                </section>
             </div>
 
-            {{-- Order Summary & Info --}}
-            <div class="space-y-6">
-                {{-- Order Summary --}}
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Résumé</h3>
+            <aside class="grid gap-6">
+                <section class="border border-ink bg-white p-5" aria-labelledby="state-title">
+                    <h2 id="state-title" class="text-2xl">État</h2>
+                    <dl class="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+                        <dt class="text-ink-muted">Date</dt><dd>{{ $order->created_at->translatedFormat('j F Y à H:i') }}</dd>
+                        <dt class="text-ink-muted">Commande</dt><dd class="font-semibold">{{ OrderLabels::status($order->status) }}</dd>
+                        <dt class="text-ink-muted">Paiement</dt><dd class="font-semibold">{{ OrderLabels::payment($order->payment_status) }}</dd>
+                        <dt class="text-ink-muted">Mode</dt><dd>{{ \App\Support\PaymentMethods::LABELS[$order->payment_method] ?? $order->payment_method }}</dd>
+                        @if ($order->tracking_number)
+                            <dt class="text-ink-muted">Suivi</dt>
+                            <dd>{{ $order->shipping_carrier }} {{ $order->tracking_number }}
+                                @if ($order->tracking_url)<a href="{{ $order->tracking_url }}" target="_blank" rel="noopener noreferrer" class="underline">Suivre le colis<span class="sr-only"> (nouvel onglet)</span></a>@endif
+                            </dd>
+                        @endif
+                    </dl>
 
-                    <div class="space-y-3 mb-4 pb-4 border-b border-gray-200">
-                        <div class="flex justify-between text-gray-700">
-                            <span>Sous-total</span>
-                            <span class="font-semibold">{{ format_fcfa($order->subtotal) }}</span>
+                    @if ($canPay)
+                        <div class="mt-4 grid gap-3" data-payment-poll data-status-url="{{ $order->paymentStatusUrl() }}">
+                            <x-ui.button :href="$order->moneyfusion_payment_url ?: $order->pendingUrl()" class="w-full">Régler cette commande</x-ui.button>
+                            <p id="payment-check-message" class="text-sm text-ink-muted" role="status" aria-live="polite">Déjà payé ? Le statut se met à jour tout seul.</p>
+                            <x-ui.button type="button" variant="secondary" id="payment-check-button" class="w-full">Vérifier maintenant</x-ui.button>
                         </div>
-                        <div class="flex justify-between text-gray-700">
-                            <span>Taxes</span>
-                            <span class="font-semibold">{{ format_fcfa($order->tax) }}</span>
-                        </div>
-                        <div class="flex justify-between text-gray-700">
-                            <span>Livraison</span>
-                            <span class="font-semibold">
-                                @if($order->shipping_cost == 0)
-                                <span class="text-green-600">GRATUIT</span>
-                                @else
-                                {{ format_fcfa($order->shipping_cost) }}
-                                @endif
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between text-xl font-bold text-gray-900">
-                        <span>Total</span>
-                        <span>{{ format_fcfa($order->total) }}</span>
-                    </div>
-                </div>
-
-                {{-- Shipping Address --}}
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">
-                        <i class="fas fa-shipping-fast mr-2 text-[#5a7c6f]"></i>
-                        Adresse de livraison
-                    </h3>
-                    @php
-                        $shipping = $order->shipping_address;
-                    @endphp
-                    <div class="text-sm text-gray-700 space-y-1">
-                        <p class="font-semibold text-gray-900">{{ $shipping['first_name'] }} {{ $shipping['last_name'] }}</p>
-                        <p>Ville : {{ $shipping['city'] }}</p>
-                        <p>Quartier : {{ $shipping['quartier'] }}</p>
-                        <p class="mt-3">
-                            <i class="fas fa-phone mr-2"></i>
-                            {{ $shipping['phone'] }}
-                        </p>
-                    </div>
-                </div>
-
-                {{-- Payment Info --}}
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">
-                        <i class="fas fa-credit-card mr-2 text-[#5a7c6f]"></i>
-                        Paiement
-                    </h3>
-                    <div class="text-sm text-gray-700 space-y-2">
-                        <p>
-                            <span class="font-semibold">Méthode:</span>
-                            {{ getPaymentMethodLabel($order->payment_method) }}
-                        </p>
-                        <p>
-                            <span class="font-semibold">Statut:</span>
-                            <span class="
-                                @if($order->payment_status === 'paid') text-green-600
-                                @elseif($order->payment_status === 'pending') text-yellow-600
-                                @else text-red-600
-                                @endif">
-                                @if($order->payment_status === 'paid') Payé
-                                @elseif($order->payment_status === 'pending') En attente
-                                @else Échoué
-                                @endif
-                            </span>
-                        </p>
-                    </div>
-
-                    @if($order->payment_method === 'moneyfusion' && $order->payment_status === 'pending' && $order->status !== 'cancelled')
-                        @include('account.partials.payment-check', ['statusUrl' => route('payment.status', $order)])
                     @endif
-                </div>
+                </section>
 
-                {{-- Actions --}}
-                <div class="space-y-3">
-                    <a href="{{ route('account.orders') }}" class="btn btn-outline w-full">
-                        <i class="fas fa-arrow-left mr-2"></i>Retour aux commandes
-                    </a>
+                <section class="border border-ink bg-white p-5" aria-labelledby="ship-title">
+                    <h2 id="ship-title" class="text-2xl">Livraison</h2>
+                    <p class="mt-3">
+                        <strong>{{ trim(($shipping['first_name'] ?? '').' '.($shipping['last_name'] ?? '')) }}</strong><br>
+                        {{ $shipping['quartier'] ?? '' }}@if (! empty($shipping['city'])), {{ $shipping['city'] }}@endif<br>
+                        {{ $shipping['phone'] ?? $order->customer_phone }}
+                    </p>
+                    @if ($order->notes)<p class="mt-2 text-sm text-ink-muted">Vos instructions : {{ $order->notes }}</p>@endif
+                </section>
 
-                    @if($order->status === 'pending')
-                    <form action="{{ route('account.orders.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette commande?')">
-                        @csrf
-                        @method('PUT')
-                        <button type="submit" class="btn btn-outline w-full text-red-600 border-red-600 hover:bg-red-50">
-                            <i class="fas fa-times mr-2"></i>Annuler la commande
-                        </button>
-                    </form>
-                    @endif
-
-                    @if($order->status === 'completed')
-                    <a href="{{ route('shop.index') }}" class="btn btn-primary w-full">
-                        <i class="fas fa-redo mr-2"></i>Recommander
-                    </a>
-                    @endif
-                </div>
-            </div>
+                @if ($canCancel)
+                    <section aria-labelledby="cancel-title">
+                        <h2 id="cancel-title" class="sr-only">Annuler</h2>
+                        <x-ui.button type="button" variant="secondary" class="w-full" data-dialog-open="cancel-dialog">Annuler cette commande</x-ui.button>
+                    </section>
+                @endif
+            </aside>
         </div>
 
-        {{-- Order Notes --}}
-        @if($order->notes)
-        <div class="bg-white rounded-lg shadow-sm p-6 mt-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-4">
-                <i class="fas fa-comment-alt mr-2 text-[#5a7c6f]"></i>
-                Notes de commande
-            </h3>
-            <p class="text-gray-700">{{ $order->notes }}</p>
-        </div>
+        @if ($canCancel)
+            <dialog id="cancel-dialog" class="m-auto w-[min(26rem,calc(100%-2rem))] border border-ink bg-white p-5" aria-labelledby="cancel-heading">
+                <h2 id="cancel-heading" class="text-2xl">Annuler la commande ?</h2>
+                <p class="mt-2 text-ink-muted">Les articles retournent en stock. Cette action ne peut pas être défaite.</p>
+                <form method="POST" action="{{ route('account.orders.cancel', $order) }}" class="mt-5 grid gap-2 sm:grid-cols-2">
+                    @csrf
+                    @method('PUT')
+                    <x-ui.button type="button" variant="secondary" data-dialog-close>Garder la commande</x-ui.button>
+                    <x-ui.button type="submit">Annuler la commande</x-ui.button>
+                </form>
+            </dialog>
         @endif
-    </div>
-</div>
-
-@endsection
+    </x-storefront.account-shell>
+</x-layouts.storefront>

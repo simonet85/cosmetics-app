@@ -1,182 +1,47 @@
-@extends('layouts.app')
+@php
+    $email = trim((string) getSetting('contact_email', ''));
+    $phone = trim((string) getSetting('phone', ''));
+@endphp
 
-@section('content')
+<x-layouts.storefront title="Contact" description="Écrivez à l'équipe Glowing Cosmetics : une question sur une commande, un produit ou un retour.">
+    <x-storefront.info-page title="Contactez-nous" width="max-w-5xl">
+        @if (session('success'))
+            <p role="status" class="mb-6 border border-green bg-mint px-4 py-3 font-semibold">{{ session('success') }}</p>
+        @endif
 
-{{-- Page Header --}}
-<div class="bg-gray-50 py-12 mb-12">
-    <div class="container-custom">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">Contactez-nous</h1>
-        <nav aria-label="Fil d'Ariane" class="flex items-center text-sm">
-            <a href="{{ route('home') }}" class="text-gray-600 hover:text-gray-900">Accueil</a>
-            <span class="mx-2 text-gray-400">/</span>
-            <span class="text-gray-900">Contact</span>
-        </nav>
-    </div>
-</div>
-
-<div class="container-custom mb-20">
-
-    @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg mb-8">
-        <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
-    </div>
-    @endif
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-
-        {{-- Contact Form --}}
-        <div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Envoyez-nous un message</h2>
-            <p class="text-gray-700 mb-8">
-                Vous avez une question, une suggestion ou besoin d'aide? N'hésitez pas à nous contacter. Notre équipe vous répondra dans les plus brefs délais.
-            </p>
-
-            <form action="{{ route('pages.contact.submit') }}" method="POST">
+        <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
+            <form method="POST" action="{{ route('pages.contact.submit') }}" class="grid gap-5">
                 @csrf
-
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Nom complet *</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value="{{ old('name') }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('name') border-red-500 @enderror"
-                        required
-                    >
-                    @error('name')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
+                <p class="text-ink-muted">Une question sur une commande ? Indiquez son numéro dans votre message.</p>
+                <x-ui.field label="Nom complet" name="name" :value="old('name', auth()->user()?->full_name)" :error="$errors->first('name')" autocomplete="name" required />
+                <x-ui.field label="Adresse e-mail" name="email" type="email" :value="old('email', auth()->user()?->email)" :error="$errors->first('email')" autocomplete="email" inputmode="email" required />
+                <x-ui.field label="Téléphone (facultatif)" name="phone" type="tel" :value="old('phone')" :error="$errors->first('phone')" autocomplete="tel" inputmode="tel" />
+                <x-ui.field label="Sujet" name="subject" :value="old('subject')" :error="$errors->first('subject')" required />
+                <div class="grid gap-1.5">
+                    <label for="field-message" class="text-sm font-semibold">Message <span class="text-danger" aria-hidden="true">*</span><span class="sr-only"> (obligatoire)</span></label>
+                    <textarea id="field-message" name="message" rows="6" required maxlength="5000" @if ($errors->has('message')) aria-invalid="true" aria-describedby="field-message-error" @endif
+                              class="w-full rounded-sm border bg-white p-3 text-base {{ $errors->has('message') ? 'border-danger' : 'border-field' }}">{{ old('message') }}</textarea>
+                    @error('message')<p id="field-message-error" class="flex items-start gap-1.5 text-sm font-medium text-danger"><x-ui.icon name="alert" class="mt-0.5 size-4" /> {{ $message }}</p>@enderror
                 </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Adresse email *</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('email') border-red-500 @enderror"
-                        required
-                    >
-                    @error('email')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Téléphone</label>
-                    <input
-                        type="tel"
-                        name="phone"
-                        value="{{ old('phone') }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('phone') border-red-500 @enderror"
-                    >
-                    @error('phone')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Sujet *</label>
-                    <input
-                        type="text"
-                        name="subject"
-                        value="{{ old('subject') }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('subject') border-red-500 @enderror"
-                        required
-                    >
-                    @error('subject')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Message *</label>
-                    <textarea
-                        name="message"
-                        rows="6"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 @error('message') border-red-500 @enderror"
-                        required
-                    >{{ old('message') }}</textarea>
-                    @error('message')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <button type="submit" class="btn btn-primary w-full md:w-auto px-8">
-                    <i class="fas fa-paper-plane mr-2"></i>Envoyer le message
-                </button>
+                <div><x-ui.button type="submit" class="w-full sm:w-auto">Envoyer le message</x-ui.button></div>
             </form>
+
+            <aside aria-labelledby="direct-title" class="border border-ink bg-white p-5 self-start">
+                <h2 id="direct-title" class="!mt-0 text-2xl">Nous joindre</h2>
+                @if ($email === '' && $phone === '')
+                    <p class="mt-3 text-ink-muted">Utilisez le formulaire : nous vous répondons par e-mail.</p>
+                @else
+                    <dl class="mt-3 grid gap-3">
+                        @if ($email !== '')
+                            <div><dt class="label-caps text-ink-muted">E-mail</dt><dd class="break-all"><a href="mailto:{{ $email }}" class="underline">{{ $email }}</a></dd></div>
+                        @endif
+                        @if ($phone !== '')
+                            <div><dt class="label-caps text-ink-muted">Téléphone</dt><dd><a href="tel:{{ preg_replace('/[^+\d]/', '', $phone) }}" class="underline">{{ $phone }}</a></dd></div>
+                        @endif
+                    </dl>
+                @endif
+                <p class="mt-4 text-sm"><a href="{{ route('pages.faq') }}" class="inline-flex min-h-11 items-center underline">Voir les questions fréquentes</a></p>
+            </aside>
         </div>
-
-        {{-- Contact Information --}}
-        <div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Informations de contact</h2>
-
-            <div class="space-y-6 mb-12">
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0 w-12 h-12 bg-[#5a7c6f] rounded-full flex items-center justify-center">
-                        <i class="fas fa-map-marker-alt text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 mb-1">Adresse</h3>
-                        <p class="text-gray-700">
-                            123 Rue de la Beauté<br>
-                            Montréal, QC H2X 1Y4<br>
-                            Canada
-                        </p>
-                    </div>
-                </div>
-
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0 w-12 h-12 bg-[#5a7c6f] rounded-full flex items-center justify-center">
-                        <i class="fas fa-phone text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 mb-1">Téléphone</h3>
-                        <p class="text-gray-700">
-                            +1 (514) 123-4567<br>
-                            Lun - Ven: 9h00 - 18h00
-                        </p>
-                    </div>
-                </div>
-
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0 w-12 h-12 bg-[#5a7c6f] rounded-full flex items-center justify-center">
-                        <i class="fas fa-envelope text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 mb-1">Email</h3>
-                        <p class="text-gray-700">
-                            contact@glowing.com<br>
-                            support@glowing.com
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Business Hours --}}
-            <div class="bg-gray-50 rounded-lg p-6">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Heures d'ouverture</h3>
-                <div class="space-y-2 text-gray-700">
-                    <div class="flex justify-between">
-                        <span>Lundi - Vendredi:</span>
-                        <span class="font-semibold">9h00 - 18h00</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>Samedi:</span>
-                        <span class="font-semibold">10h00 - 17h00</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>Dimanche:</span>
-                        <span class="font-semibold">Fermé</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-@endsection
+    </x-storefront.info-page>
+</x-layouts.storefront>

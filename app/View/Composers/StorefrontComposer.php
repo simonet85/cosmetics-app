@@ -16,9 +16,8 @@ class StorefrontComposer
     {
         $cart = session('cart', []);
 
-        $wishlistCount = auth()->check()
-            ? auth()->user()->wishlist()->count()
-            : count(session('wishlist', []));
+        // The wishlist lives in the session for everyone (that is what the pages and the toggle read and write)
+        $wishlistCount = count(session('wishlist', []));
 
         $view->with([
             'navCategories' => Category::active()->parent()->orderBy('order')->limit(5)->get(['id', 'name', 'slug']),

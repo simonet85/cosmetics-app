@@ -390,6 +390,77 @@ function setupPaymentStatus() {
     check();
 }
 
+/* ---------- Wishlist page: remove an item without reloading ---------- */
+function setupWishlistPage() {
+    const list = document.querySelector('[data-wishlist-list]');
+    if (!list) return;
+
+    list.addEventListener('click', async (event) => {
+        const button = event.target.closest('[data-wishlist-remove]');
+        if (!button) return;
+
+        const item = button.closest('li');
+        try {
+            const response = await fetch(list.dataset.removeUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': csrfToken() },
+                body: JSON.stringify({ product_id: Number(button.dataset.wishlistRemove) }),
+                credentials: 'same-origin',
+            });
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.message);
+
+            setCount('wishlist', data.wishlist_count);
+            if (data.wishlist_count === 0) { window.location.reload(); return; }
+            item.remove();
+            toast(data.message);
+        } catch {
+            toast('Impossible de retirer ce produit pour le moment.', { type: 'error' });
+        }
+    });
+}
+
+/* ---------- Order page: check a pending mobile money payment (button + every 30 s) ---------- */
+function setupOrderPaymentCheck() {
+    const root = document.querySelector('[data-payment-poll]');
+    if (!root) return;
+
+    const button = document.getElementById('payment-check-button');
+    const message = document.getElementById('payment-check-message');
+    let busy = false;
+    let timer = null;
+
+    async function check() {
+        if (busy) return;
+        busy = true;
+        clearTimeout(timer);
+        if (button) button.disabled = true;
+
+        let keepPolling = true;
+        try {
+            const response = await fetch(root.dataset.statusUrl, { headers: { Accept: 'application/json' }, credentials: 'same-origin' });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+
+            if (data.state === 'paid' || data.state === 'failed') {
+                if (message) message.textContent = data.message;
+                window.location.reload();
+                return;
+            }
+            if (message) message.textContent = `${data.message} (dernière vérification à ${data.checked_at})`;
+        } catch {
+            if (message) message.textContent = 'Connexion perdue, nouvel essai automatique…';
+        } finally {
+            busy = false;
+            if (button) button.disabled = false;
+            if (keepPolling) timer = setTimeout(check, 30000);
+        }
+    }
+
+    button?.addEventListener('click', check);
+    timer = setTimeout(check, 30000);
+}
+
 setupDialogs();
 setupAddToCart();
 setupReveal();
@@ -398,6 +469,8 @@ setupProduct();
 setupCart();
 setupCheckout();
 setupPaymentStatus();
+setupWishlistPage();
+setupOrderPaymentCheck();
 
 // Coming back with the browser's back button restores a cached page: resync the counters
 window.addEventListener('pageshow', (event) => { if (event.persisted) refreshCounts(); });

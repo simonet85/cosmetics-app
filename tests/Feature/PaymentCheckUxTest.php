@@ -233,7 +233,8 @@ class PaymentCheckUxTest extends TestCase
             ->assertOk()
             ->assertSee('Vérifier maintenant')
             ->assertSee('id="payment-check-button"', false)
-            ->assertSee('setTimeout(check, 30000)', false);
+            ->assertSee('data-payment-poll', false)
+            ->assertSee('data-status-url="'.$order->paymentStatusUrl(), false);
     }
 
     public function test_the_order_page_has_no_check_button_when_there_is_nothing_to_check(): void

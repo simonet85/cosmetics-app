@@ -1,158 +1,39 @@
-@extends('layouts.app')
+@php
+    $social = collect(['google' => 'Google', 'facebook' => 'Facebook'])->filter(fn ($label, $key) => config("services.{$key}.client_id"));
+@endphp
 
-@section('content')
-
-{{-- Breadcrumb --}}
-<div class="bg-gray-50 py-4 mb-12">
-    <div class="container-custom">
-        <nav aria-label="Fil d'Ariane" class="flex items-center text-sm">
-            <a href="{{ route('home') }}" class="text-gray-600 hover:text-gray-900">Accueil</a>
-            <span class="mx-2 text-gray-400">/</span>
-            <span class="text-gray-900">Inscription</span>
-        </nav>
-    </div>
-</div>
-
-<div class="container-custom mb-20">
-
-    <h1 class="text-4xl font-bold text-gray-900 text-center mb-12">S'inscrire</h1>
-
-    <div class="max-w-md mx-auto">
-
-        @if($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            <ul class="list-disc list-inside text-sm">
-                @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        <form method="POST" action="{{ route('register.post') }}">
+<x-layouts.storefront title="Créer un compte" description="Créez votre compte Glowing Cosmetics pour suivre vos commandes." robots="noindex,follow">
+    <x-storefront.auth-card title="Créer un compte" :crumbs="[['label' => 'Connexion', 'href' => route('login')], ['label' => 'Inscription']]">
+        <form method="POST" action="{{ route('register.post') }}" class="grid gap-5">
             @csrf
-
-            <div class="mb-6">
-                <input
-                    type="text"
-                    name="first_name"
-                    value="{{ old('first_name') }}"
-                    placeholder="Prénom"
-                    class="w-full px-4 py-4 bg-gray-50 border-0 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-500 @error('first_name') ring-2 ring-red-500 @enderror"
-                    required
-                    autofocus
-                >
-                @error('first_name')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+            <div class="grid gap-5 sm:grid-cols-2">
+                <x-ui.field label="Prénom" name="first_name" :value="old('first_name')" :error="$errors->first('first_name')" autocomplete="given-name" required autofocus />
+                <x-ui.field label="Nom" name="last_name" :value="old('last_name')" :error="$errors->first('last_name')" autocomplete="family-name" required />
             </div>
+            <x-ui.field label="Adresse e-mail" name="email" type="email" :value="old('email')" :error="$errors->first('email')" autocomplete="email" inputmode="email" required />
+            <x-ui.field label="Mot de passe" name="password" type="password" :error="$errors->first('password')" autocomplete="new-password" required minlength="8" help="8 caractères minimum." />
+            <x-ui.field label="Confirmez le mot de passe" name="password_confirmation" type="password" autocomplete="new-password" required minlength="8" />
 
-            <div class="mb-6">
-                <input
-                    type="text"
-                    name="last_name"
-                    value="{{ old('last_name') }}"
-                    placeholder="Nom"
-                    class="w-full px-4 py-4 bg-gray-50 border-0 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-500 @error('last_name') ring-2 ring-red-500 @enderror"
-                    required
-                >
-                @error('last_name')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="mb-6">
-                <input
-                    type="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    placeholder="Votre email"
-                    class="w-full px-4 py-4 bg-gray-50 border-0 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-500 @error('email') ring-2 ring-red-500 @enderror"
-                    required
-                >
-                @error('email')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="mb-6">
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Mot de passe"
-                    class="w-full px-4 py-4 bg-gray-50 border-0 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-500 @error('password') ring-2 ring-red-500 @enderror"
-                    required
-                >
-                @error('password')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="mb-6">
-                <input
-                    type="password"
-                    name="password_confirmation"
-                    placeholder="Confirmer le mot de passe"
-                    class="w-full px-4 py-4 bg-gray-50 border-0 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-500"
-                    required
-                >
-            </div>
-
-            <div class="flex items-start mb-6">
-                <input
-                    type="checkbox"
-                    name="terms"
-                    id="terms"
-                    class="w-4 h-4 text-gray-900 focus:ring-gray-900 rounded mt-1"
-                    required
-                >
-                <label for="terms" class="ml-2 text-sm text-gray-700">
-                    Oui, j'accepte la
-                    <a href="{{ route('privacy') }}" class="text-gray-900 underline hover:no-underline">Politique de confidentialité</a>
-                    et les
-                    <a href="{{ route('terms') }}" class="text-gray-900 underline hover:no-underline">Conditions d'utilisation</a>
+            <div>
+                <label class="flex min-h-11 cursor-pointer items-start gap-3 py-2">
+                    <input type="checkbox" id="field-terms" name="terms" value="1" required class="mt-0.5 size-5 shrink-0 accent-green" @checked(old('terms')) @if ($errors->has('terms')) aria-invalid="true" @endif>
+                    <span>J'accepte la <a href="{{ route('privacy') }}" class="underline">politique de confidentialité</a> et les <a href="{{ route('terms') }}" class="underline">conditions d'utilisation</a>.</span>
                 </label>
+                @error('terms')<p class="flex items-start gap-1.5 text-sm font-medium text-danger"><x-ui.icon name="alert" class="mt-0.5 size-4" /> {{ $message }}</p>@enderror
             </div>
 
-            <button
-                type="submit"
-                class="w-full bg-[#5a7c6f] hover:bg-[#4a6c5f] text-white font-semibold py-4 rounded transition-colors mb-8"
-            >
-                S'inscrire
-            </button>
-
-            <div class="text-center mb-4">
-                <span class="text-gray-600">ou s'inscrire avec</span>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <a
-                    href="{{ route('social.redirect', 'facebook') }}"
-                    class="border-2 border-gray-300 text-gray-700 font-medium py-3 rounded hover:border-gray-900 transition-colors flex items-center justify-center gap-2"
-                >
-                    <i class="fab fa-facebook text-blue-600"></i>
-                    Facebook
-                </a>
-
-                <a
-                    href="{{ route('social.redirect', 'google') }}"
-                    class="border-2 border-gray-300 text-gray-700 font-medium py-3 rounded hover:border-gray-900 transition-colors flex items-center justify-center gap-2"
-                >
-                    <i class="fab fa-google text-red-600"></i>
-                    Google
-                </a>
-            </div>
-
-            <div class="text-center mt-6">
-                <p class="text-gray-700">
-                    Vous avez déjà un compte?
-                    <a href="{{ route('login') }}" class="text-gray-900 font-semibold hover:underline">Se connecter</a>
-                </p>
-            </div>
+            <x-ui.button type="submit" class="w-full">Créer mon compte</x-ui.button>
         </form>
 
-    </div>
+        @if ($social->isNotEmpty())
+            <div class="grid gap-2 border-t border-line pt-5">
+                <p class="text-sm text-ink-muted">Ou inscrivez-vous avec</p>
+                @foreach ($social as $key => $label)
+                    <x-ui.button variant="secondary" :href="route('social.redirect', $key)" class="w-full">{{ $label }}</x-ui.button>
+                @endforeach
+            </div>
+        @endif
 
-</div>
-
-@endsection
+        <p class="border-t border-line pt-5">Déjà un compte ? <a href="{{ route('login') }}" class="inline-flex min-h-11 items-center font-semibold underline">Se connecter</a></p>
+    </x-storefront.auth-card>
+</x-layouts.storefront>
