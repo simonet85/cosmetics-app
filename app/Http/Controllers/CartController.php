@@ -17,7 +17,7 @@ class CartController extends Controller
 
         ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals();
 
-        return view('cart.index', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total'));
+        return view('storefront.cart', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total'));
     }
 
     public function add(Request $request)
@@ -43,6 +43,13 @@ class CartController extends Controller
                 'success' => false,
                 'message' => 'Stock insuffisant pour ce produit.',
             ], 400);
+        }
+
+        if (! $request->variant_id && $product->variants()->where('is_active', true)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Choisissez une option avant d\'ajouter ce produit.',
+            ], 422);
         }
 
         if ($request->variant_id) {
@@ -74,7 +81,9 @@ class CartController extends Controller
         if (isset($cart[$cartItemId])) {
             $newQuantity = $cart[$cartItemId]['quantity'] + $request->quantity;
 
-            if ($product->stock < $newQuantity) {
+            $available = isset($variant) ? $variant->stock : $product->stock;
+
+            if ($available < $newQuantity) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Stock insuffisant pour cette quantité.',
@@ -90,7 +99,7 @@ class CartController extends Controller
             ];
         }
 
-        session()->put('cart', $cart);
+        $this->cart->save($cart);
 
         return response()->json([
             'success' => true,
@@ -115,9 +124,12 @@ class CartController extends Controller
             ], 404);
         }
 
-        $product = Product::find($cart[$request->cart_item_id]['product_id']);
+        $item = $cart[$request->cart_item_id];
+        $product = Product::active()->find($item['product_id']);
+        $variant = ! empty($item['variant_id']) ? ProductVariant::find($item['variant_id']) : null;
+        $available = $variant ? $variant->stock : $product?->stock;
 
-        if (! $product || $product->stock < $request->quantity) {
+        if (! $product || $available < $request->quantity) {
             return response()->json([
                 'success' => false,
                 'message' => 'Stock insuffisant pour cette quantité.',
@@ -125,7 +137,7 @@ class CartController extends Controller
         }
 
         $cart[$request->cart_item_id]['quantity'] = (int) $request->quantity;
-        session()->put('cart', $cart);
+        $this->cart->save($cart);
 
         $lines = $this->cart->lines();
         $totals = $this->cart->totals($lines);
@@ -134,11 +146,12 @@ class CartController extends Controller
             'success' => true,
             'message' => 'Panier mis à jour avec succès!',
             'cart_count' => $this->cart->count(),
-            'item_subtotal' => number_format($lines[$request->cart_item_id]['subtotal'] ?? 0, 2),
-            'subtotal' => number_format($totals['subtotal'], 2),
-            'tax' => number_format($totals['tax'], 2),
-            'shipping' => number_format($totals['shipping'], 2),
-            'total' => number_format($totals['total'], 2),
+            'item_subtotal' => round($lines[$request->cart_item_id]['subtotal'] ?? 0),
+            ...$this->totalsPayload($totals),
+            'formatted' => [
+                'item_subtotal' => format_fcfa($lines[$request->cart_item_id]['subtotal'] ?? 0),
+                ...$this->formattedTotals($totals),
+            ],
         ]);
     }
 
@@ -158,7 +171,7 @@ class CartController extends Controller
         }
 
         unset($cart[$request->cart_item_id]);
-        session()->put('cart', $cart);
+        $this->cart->save($cart);
 
         $totals = $this->cart->totals();
 
@@ -166,16 +179,14 @@ class CartController extends Controller
             'success' => true,
             'message' => 'Article supprimé du panier avec succès!',
             'cart_count' => $this->cart->count(),
-            'subtotal' => number_format($totals['subtotal'], 2),
-            'tax' => number_format($totals['tax'], 2),
-            'shipping' => number_format($totals['shipping'], 2),
-            'total' => number_format($totals['total'], 2),
+            ...$this->totalsPayload($totals),
+            'formatted' => $this->formattedTotals($totals),
         ]);
     }
 
     public function clear()
     {
-        session()->forget('cart');
+        $this->cart->clear();
 
         return response()->json([
             'success' => true,
@@ -189,5 +200,28 @@ class CartController extends Controller
         return response()->json([
             'count' => $this->cart->count(),
         ]);
+    }
+
+    /** @param  array{subtotal: float, tax: float, shipping: float, total: float}  $totals */
+    private function totalsPayload(array $totals): array
+    {
+        return [
+            'subtotal' => round($totals['subtotal']),
+            'tax' => round($totals['tax']),
+            'shipping' => round($totals['shipping']),
+            'total' => round($totals['total']),
+            'free_shipping_remaining' => max(0, round((float) getSetting('free_shipping_threshold', '50000') - $totals['subtotal'])),
+        ];
+    }
+
+    /** @param  array{subtotal: float, tax: float, shipping: float, total: float}  $totals */
+    private function formattedTotals(array $totals): array
+    {
+        return [
+            'subtotal' => format_fcfa($totals['subtotal']),
+            'tax' => format_fcfa($totals['tax']),
+            'shipping' => $totals['shipping'] > 0 ? format_fcfa($totals['shipping']) : 'Gratuite',
+            'total' => format_fcfa($totals['total']),
+        ];
     }
 }

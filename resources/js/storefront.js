@@ -210,11 +210,111 @@ function setupProduct() {
     });
 }
 
+/* ---------- Cart page: change quantities, remove, clear, without reloading ---------- */
+function setupCart() {
+    const root = document.querySelector('[data-cart]');
+    if (!root) return;
+
+    const post = async (url, payload) => {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': csrfToken() },
+            body: JSON.stringify(payload),
+            credentials: 'same-origin',
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.success) throw new Error(data.message || 'Une erreur est survenue.');
+        return data;
+    };
+
+    const threshold = parseFloat(root.dataset.threshold) || 0;
+
+    const showTotals = (data) => {
+        Object.entries(data.formatted ?? {}).forEach(([key, value]) => {
+            const target = root.querySelector(`[data-sum="${key}"]`);
+            if (target) target.textContent = value;
+        });
+
+        const text = root.querySelector('[data-free-shipping-text]');
+        if (text) {
+            text.textContent = data.free_shipping_remaining > 0
+                ? `Plus que ${formatFcfa(data.free_shipping_remaining)} pour la livraison gratuite.`
+                : 'La livraison est gratuite pour cette commande.';
+        }
+        const bar = root.querySelector('[data-free-shipping-bar]');
+        if (bar && threshold > 0) bar.style.width = `${Math.min(100, Math.round((data.subtotal / threshold) * 100))}%`;
+
+        if (typeof data.cart_count === 'number') setCount('cart', data.cart_count);
+    };
+
+    const update = async (line, quantity) => {
+        const input = line.querySelector('[data-cart-qty]');
+        const max = parseInt(input.max, 10) || 1;
+        quantity = Math.min(max, Math.max(1, quantity));
+        if (quantity === parseInt(input.dataset.prev, 10)) { input.value = quantity; return; }
+
+        line.setAttribute('aria-busy', 'true');
+        try {
+            const data = await post(root.dataset.updateUrl, { cart_item_id: line.dataset.cartLine, quantity });
+            input.value = quantity;
+            input.dataset.prev = String(quantity);
+            line.querySelector('[data-line-total]').textContent = data.formatted.item_subtotal;
+            showTotals(data);
+        } catch (error) {
+            input.value = input.dataset.prev;
+            toast(error.message, { type: 'error' });
+        } finally {
+            line.removeAttribute('aria-busy');
+        }
+    };
+
+    root.addEventListener('click', async (event) => {
+        const step = event.target.closest('[data-cart-step]');
+        if (step) {
+            const line = step.closest('[data-cart-line]');
+            const input = line.querySelector('[data-cart-qty]');
+            update(line, (parseInt(input.value, 10) || 1) + parseInt(step.dataset.cartStep, 10));
+            return;
+        }
+
+        const remove = event.target.closest('[data-cart-remove]');
+        if (remove) {
+            const line = remove.closest('[data-cart-line]');
+            try {
+                const data = await post(root.dataset.removeUrl, { cart_item_id: line.dataset.cartLine });
+                setCount('cart', data.cart_count);
+                if (root.querySelectorAll('[data-cart-line]').length <= 1) { window.location.reload(); return; }
+                line.remove();
+                showTotals(data);
+                toast(data.message);
+            } catch (error) {
+                toast(error.message, { type: 'error' });
+            }
+            return;
+        }
+
+        if (event.target.closest('[data-cart-clear]')) {
+            try {
+                await post(root.dataset.clearUrl, {});
+                window.location.reload();
+            } catch (error) {
+                toast(error.message, { type: 'error' });
+            }
+        }
+    });
+
+    root.addEventListener('change', (event) => {
+        const input = event.target.closest('[data-cart-qty]');
+        if (input) update(input.closest('[data-cart-line]'), parseInt(input.value, 10) || 1);
+    });
+}
+
 setupDialogs();
 setupAddToCart();
 setupReveal();
 setupFilters();
 setupProduct();
+setupCart();
 
 // Coming back with the browser's back button restores a cached page: resync the counters
 window.addEventListener('pageshow', (event) => { if (event.persisted) refreshCounts(); });

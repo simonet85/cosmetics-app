@@ -97,7 +97,7 @@ class CartTest extends TestCase
 
         $this->postJson(route('cart.update'), ['cart_item_id' => (string) $product->id, 'quantity' => 4])
             ->assertOk()
-            ->assertJson(['success' => true, 'cart_count' => 4, 'subtotal' => '40,000.00']);
+            ->assertJson(['success' => true, 'cart_count' => 4, 'subtotal' => 40000, 'formatted' => ['subtotal' => "40\u{00A0}000\u{00A0}FCFA"]]);
     }
 
     public function test_update_is_rejected_above_stock(): void
@@ -183,7 +183,7 @@ class CartTest extends TestCase
 
         $this->postJson(route('cart.update'), ['cart_item_id' => (string) $product->id, 'quantity' => 2])
             ->assertOk()
-            ->assertJson(['subtotal' => '24,000.00']);
+            ->assertJson(['subtotal' => 24000, 'item_subtotal' => 24000]);
 
         $this->get(route('cart.index'))->assertOk()->assertSee("12\u{00A0}000\u{00A0}FCFA");
     }

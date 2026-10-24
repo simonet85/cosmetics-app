@@ -65,7 +65,7 @@ class PaymentCallbackController extends Controller
                 $this->orderPayments->markPaid($order);
 
                 // Clear cart
-                session()->forget('cart');
+                app(\App\Services\CartService::class)->clear();
 
                 // Redirect to checkout success page
                 return redirect($order->successUrl())

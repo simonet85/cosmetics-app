@@ -211,7 +211,7 @@ class CheckoutController extends Controller
             }
 
             // Clear cart for non-MoneyFusion payments
-            session()->forget('cart');
+            app(\App\Services\CartService::class)->clear();
 
             DB::commit();
 
