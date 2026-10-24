@@ -6,7 +6,7 @@
 
     // One chip per active filter, each one removes itself
     $chips = collect();
-    if ($categorySlug && $activeCategory) { $chips->push(['label' => $activeCategory->name, 'url' => $without(['category'])]); }
+    if ($categorySlug && $activeCategory && ! request()->routeIs('shop.category')) { $chips->push(['label' => $activeCategory->name, 'url' => $without(['category'])]); }
     if (! empty($filters['tag'])) { $chips->push(['label' => '#'.($tags->firstWhere('slug', $filters['tag'])?->name ?? $filters['tag']), 'url' => $without(['tag'])]); }
     if (! empty($filters['search'])) { $chips->push(['label' => '« '.$filters['search'].' »', 'url' => $without(['search'])]); }
     if (isset($filters['min_price'])) { $chips->push(['label' => 'dès '.format_fcfa($filters['min_price']), 'url' => $without(['min_price'])]); }

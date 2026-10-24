@@ -336,6 +336,60 @@ function setupCheckout() {
     document.querySelector('[data-error-summary]')?.focus();
 }
 
+/* ---------- Payment pending page: poll the status, move on by itself ---------- */
+function setupPaymentStatus() {
+    const root = document.querySelector('[data-payment-status]');
+    if (!root) return;
+
+    const statusUrl = root.dataset.statusUrl;
+    const pendingBox = document.getElementById('pending-box');
+    const failedBox = document.getElementById('failed-box');
+    const message = document.getElementById('pending-message');
+    const button = document.getElementById('check-now');
+    const startedAt = Date.now();
+    let timer = null;
+    let busy = false;
+
+    // Every 5 s for the first 5 minutes, then every 30 s
+    const nextDelay = () => (Date.now() - startedAt < 5 * 60 * 1000 ? 5000 : 30000);
+
+    async function check() {
+        if (busy) return;
+        busy = true;
+        clearTimeout(timer);
+        if (button) button.disabled = true;
+
+        let keepPolling = true;
+        try {
+            const response = await fetch(statusUrl, { headers: { Accept: 'application/json' }, credentials: 'same-origin' });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+
+            if (data.state === 'paid') {
+                if (message) message.textContent = data.message;
+                window.location.href = data.redirect;
+                return;
+            }
+            if (data.state === 'failed') {
+                pendingBox?.classList.add('hidden');
+                failedBox?.classList.remove('hidden');
+                keepPolling = false;
+            } else if (message) {
+                message.textContent = `${data.message} (dernière vérification à ${data.checked_at})`;
+            }
+        } catch {
+            if (message) message.textContent = 'Connexion perdue, nouvel essai automatique…';
+        } finally {
+            busy = false;
+            if (button) button.disabled = false;
+            if (keepPolling) timer = setTimeout(check, nextDelay());
+        }
+    }
+
+    button?.addEventListener('click', check);
+    check();
+}
+
 setupDialogs();
 setupAddToCart();
 setupReveal();
@@ -343,6 +397,7 @@ setupFilters();
 setupProduct();
 setupCart();
 setupCheckout();
+setupPaymentStatus();
 
 // Coming back with the browser's back button restores a cached page: resync the counters
 window.addEventListener('pageshow', (event) => { if (event.persisted) refreshCounts(); });

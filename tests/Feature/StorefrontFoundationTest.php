@@ -208,6 +208,30 @@ class StorefrontFoundationTest extends TestCase
         $this->assertSame(2, substr_count($html, 'aria-current="page"'), 'the desktop nav and the drawer each mark it once');
     }
 
+    public function test_rayons_have_their_own_strip_and_the_current_one_is_marked(): void
+    {
+        Category::factory()->create(['name' => 'Visage', 'slug' => 'visage', 'is_active' => true, 'order' => 1, 'parent_id' => null]);
+        Category::factory()->create(['name' => 'Corps', 'slug' => 'corps', 'is_active' => true, 'order' => 2, 'parent_id' => null]);
+
+        $html = $this->get(route('shop.category', 'visage'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('aria-label="Rayons"', $html);
+        // strip + drawer each mark the current rayon, and only it
+        $this->assertSame(2, preg_match_all('/<a href="[^"]*\/shop\/category\/visage"\s+aria-current="page"/', $html));
+        $this->assertDoesNotMatchRegularExpression('/\/shop\/category\/corps"\s+aria-current/', $html);
+        // on a rayon page the "Boutique" entry is not marked: the rayon is the more precise answer
+        $this->assertDoesNotMatchRegularExpression('/<a href="[^"]*\/shop"\s+aria-current="page"/', $html);
+    }
+
+    public function test_boutique_stays_marked_on_a_product_page(): void
+    {
+        $product = \App\Models\Product::factory()->create();
+
+        $html = $this->get(route('products.show', $product->slug))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<a href="[^"]*\/shop"\s+aria-current="page"/', $html);
+    }
+
     public function test_no_section_is_marked_current_on_the_home_page(): void
     {
         Route::get('/_probe-home', fn () => Blade::render('<x-layouts.storefront>x</x-layouts.storefront>'))->name('probe.home');

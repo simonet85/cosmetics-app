@@ -166,8 +166,8 @@ class PaymentCheckUxTest extends TestCase
             ->assertSee($order->order_number)
             ->assertSee('Vérifier maintenant');
 
-        // The polling script carries a signed URL for the status endpoint
-        $this->assertStringContainsString(str_replace('/', '\\/', url("/payment/status/{$order->id}")), $response->getContent());
+        // The polling script (resources/js/storefront.js) reads a signed URL for the status endpoint from a data attribute
+        $this->assertStringContainsString('data-status-url="'.url("/payment/status/{$order->id}"), $response->getContent());
         $this->assertStringContainsString('signature=', $response->getContent());
         $this->assertMatchesRegularExpression('/id="failed-box" class="[^"]*hidden/', $response->getContent());
     }

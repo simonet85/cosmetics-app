@@ -1,10 +1,12 @@
 {{-- Data (navCategories, shippingPromise, paymentLabels, cartCount, wishlistCount) comes from StorefrontComposer. --}}
 @php
     $links = [
-        ['label' => 'Boutique', 'href' => route('shop.index'), 'active' => request()->routeIs('shop.*')],
+        ['label' => 'Boutique', 'href' => route('shop.index'), 'active' => (request()->routeIs('shop.*') && ! request()->routeIs('shop.category')) || request()->routeIs('products.*')],
         ['label' => 'À propos', 'href' => route('pages.about'), 'active' => request()->routeIs('pages.about')],
         ['label' => 'Contact', 'href' => route('pages.contact'), 'active' => request()->routeIs('pages.contact')],
     ];
+    // The rayon being browsed, from /shop/category/{slug} or ?category={slug}
+    $currentRayon = request()->routeIs('shop.category') ? (string) optional(request()->route('category'))->slug : (string) request()->query('category');
     $iconButton = 'relative inline-flex size-11 shrink-0 items-center justify-center text-ink hover:text-green-deep';
 @endphp
 
@@ -43,12 +45,6 @@
                            class="inline-flex min-h-11 items-center px-3 font-semibold hover:text-green-deep {{ $link['active'] ? 'underline decoration-2 decoration-green underline-offset-8' : '' }}">{{ $link['label'] }}</a>
                     </li>
                 @endforeach
-                @foreach ($navCategories as $category)
-                    <li class="hidden xl:block">
-                        <a href="{{ route('shop.category', $category->slug) }}"
-                           class="inline-flex min-h-11 items-center px-3 text-ink-muted hover:text-green-deep">{{ $category->name }}</a>
-                    </li>
-                @endforeach
             </ul>
         </nav>
 
@@ -78,6 +74,21 @@
     </div>
 </header>
 
+{{-- Rayons: always visible from lg up (below that they live in the drawer) --}}
+@if ($navCategories->isNotEmpty())
+    <nav aria-label="Rayons" class="hidden border-b border-line bg-white lg:block">
+        <ul class="wrap flex items-center gap-1">
+            <li class="label-caps pr-3 text-ink-muted">Rayons</li>
+            @foreach ($navCategories as $category)
+                <li>
+                    <a href="{{ route('shop.category', $category->slug) }}" @if ($currentRayon === $category->slug) aria-current="page" @endif
+                       class="inline-flex min-h-11 items-center px-3 hover:text-green-deep {{ $currentRayon === $category->slug ? 'font-semibold underline decoration-2 decoration-green underline-offset-8' : 'text-ink-muted' }}">{{ $category->name }}</a>
+                </li>
+            @endforeach
+        </ul>
+    </nav>
+@endif
+
 {{-- Navigation drawer (small screens) --}}
 <dialog id="nav-drawer" class="drawer" aria-label="Menu">
     <div class="flex h-full flex-col">
@@ -95,10 +106,17 @@
                 @foreach ($links as $link)
                     <li><a href="{{ $link['href'] }}" @if ($link['active']) aria-current="page" @endif class="flex min-h-12 items-center border-b border-line text-lg font-semibold">{{ $link['label'] }}</a></li>
                 @endforeach
-                @foreach ($navCategories as $category)
-                    <li><a href="{{ route('shop.category', $category->slug) }}" class="flex min-h-12 items-center border-b border-line text-ink-muted">{{ $category->name }}</a></li>
-                @endforeach
             </ul>
+
+            @if ($navCategories->isNotEmpty())
+                <p class="label-caps mt-6 text-ink-muted">Rayons</p>
+                <ul class="grid">
+                    @foreach ($navCategories as $category)
+                        <li><a href="{{ route('shop.category', $category->slug) }}" @if ($currentRayon === $category->slug) aria-current="page" @endif
+                               class="flex min-h-12 items-center border-b border-line {{ $currentRayon === $category->slug ? 'font-semibold' : 'text-ink-muted' }}">{{ $category->name }}</a></li>
+                    @endforeach
+                </ul>
+            @endif
 
             <ul class="mt-6 grid gap-1 text-base">
                 @auth

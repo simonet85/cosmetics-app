@@ -302,7 +302,7 @@ class CheckoutController extends Controller
         // (guests are redirected to it right after ordering).
         abort_unless($order->isViewableBy(auth()->user(), $request), 403);
 
-        return view('checkout.success', compact('order'));
+        return view('storefront.order', compact('order'));
     }
 
     /**
@@ -317,7 +317,7 @@ class CheckoutController extends Controller
             return redirect($order->successUrl());
         }
 
-        return view('checkout.pending', [
+        return view('storefront.payment-pending', [
             'order' => $order,
             'statusUrl' => $order->paymentStatusUrl(),
             'failed' => in_array($order->payment_status, ['failed', 'refunded'], true) || $order->status === 'cancelled',
