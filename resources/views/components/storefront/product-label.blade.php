@@ -13,10 +13,10 @@
 
 <article class="grid gap-0 border border-ink bg-white lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]" aria-labelledby="lead-name">
     <a href="{{ route('products.show', $product->slug) }}" class="block bg-mint" tabindex="-1" aria-hidden="true">
-        <x-storefront.product-image :product="$product" :eager="true" class="aspect-[3/4] lg:h-full" />
+        <x-storefront.product-image :product="$product" :eager="true" class="aspect-[4/3] object-contain lg:aspect-auto lg:h-[26rem]" />
     </a>
 
-    <div class="flex flex-col justify-between gap-6 p-5 sm:p-8">
+    <div class="flex flex-col justify-between gap-5 p-5 sm:p-8">
         <div>
             <h2 id="lead-name" class="text-4xl uppercase sm:text-5xl">
                 <a href="{{ route('products.show', $product->slug) }}" class="hover:underline">{{ $product->name }}</a>
@@ -36,9 +36,12 @@
         </div>
 
         <div>
-            <div class="ticket inline-block bg-ticket px-4 py-3" data-reveal>
-                <p class="label-caps">Prix net</p>
-                <x-ui.price :amount="$product->final_price" :original="$original" size="xl" />
+            {{-- The wrapper is what gets observed: an element clipped by its own clip-path never counts as visible --}}
+            <div data-reveal>
+                <div class="ticket inline-block bg-ticket px-4 py-3">
+                    <p class="label-caps">Prix net</p>
+                    <x-ui.price :amount="$product->final_price" :original="$original" size="xl" />
+                </div>
             </div>
 
             <p class="mt-3 flex items-center gap-2 text-sm {{ $product->stock > 0 ? ($lowStock ? 'text-amber' : 'text-ink-muted') : 'text-danger' }}">

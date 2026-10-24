@@ -123,7 +123,8 @@ function setupReveal() {
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
+            // Content already scrolled past (fast jump, anchor link) must not stay hidden
+            if (!entry.isIntersecting && entry.boundingClientRect.bottom > 0) return;
             entry.target.classList.add('is-visible');
             observer.unobserve(entry.target);
         });

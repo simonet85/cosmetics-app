@@ -20,9 +20,9 @@
         <section class="on-dark bg-green py-12 text-white sm:py-16" aria-labelledby="univers">
             <div class="wrap">
                 <h2 id="univers" class="text-3xl sm:text-4xl">Les rayons</h2>
-                <ul class="mt-6 grid gap-px bg-white/30 sm:grid-cols-2 lg:grid-cols-3">
+                <ul class="mt-6 grid border-t border-white/30 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($categories as $category)
-                        <li class="bg-green">
+                        <li class="border-b border-white/30">
                             <a href="{{ route('shop.category', $category->slug) }}"
                                class="flex min-h-16 items-center justify-between gap-4 px-4 py-4 text-xl font-semibold uppercase hover:bg-green-deep" style="font-stretch: 75%">
                                 {{ $category->name }}

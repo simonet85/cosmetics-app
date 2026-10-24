@@ -6,4 +6,4 @@
 @endphp
 <img src="{{ asset($path) }}" alt="{{ $product->name }}" width="330" height="440" sizes="{{ $sizes }}"
      loading="{{ $eager ? 'eager' : 'lazy' }}" decoding="async" @if ($eager) fetchpriority="high" @endif
-     {{ $attributes->merge(['class' => 'h-auto w-full object-cover']) }}>
+     {{ $attributes->merge(['class' => 'h-auto w-full']) }}>
