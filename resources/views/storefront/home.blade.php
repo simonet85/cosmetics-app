@@ -12,6 +12,15 @@
             $lead ? ['product', $lead] : null,
             isset($banners['middle']) ? ['banner', $banners['middle']] : null,
         ])->filter()->values();
+
+        // Without enough banners the sequence is completed with other featured products (up to three slides),
+        // so the slider still works; these products then leave the shelf below to avoid showing them twice.
+        $spare = $featuredProducts->merge($bestSellers)->merge($hotProducts)->unique('id')
+            ->reject(fn ($p) => $lead && $p->id === $lead->id)->values();
+        while ($slides->count() < 3 && $spare->isNotEmpty()) {
+            $slides->push(['product', $spare->shift()]);
+        }
+        $slideProductIds = $slides->filter(fn ($slide) => $slide[0] === 'product')->map(fn ($slide) => $slide[1]->id);
     @endphp
 
     @php
@@ -89,7 +98,7 @@
 
     @php
         $shelf = $featuredProducts->merge($bestSellers)->merge($hotProducts)
-            ->unique('id')->reject(fn ($p) => $lead && $p->id === $lead->id)->take(8);
+            ->unique('id')->reject(fn ($p) => $slideProductIds->contains($p->id))->take(8);
     @endphp
     @if ($shelf->isNotEmpty())
         <section class="wrap pb-12 sm:pb-16" aria-labelledby="selection">

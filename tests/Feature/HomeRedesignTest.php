@@ -66,7 +66,8 @@ class HomeRedesignTest extends TestCase
 
     public function test_the_selection_is_a_grid_of_product_cards_with_an_add_button(): void
     {
-        Product::factory()->count(3)->create(['is_active' => true, 'is_archived' => false, 'is_featured' => true, 'stock' => 5]);
+        // three of them open the slider, the others are left for the shelf
+        Product::factory()->count(5)->create(['is_active' => true, 'is_archived' => false, 'is_featured' => true, 'stock' => 5]);
 
         $html = $this->get('/')->assertOk()->getContent();
 

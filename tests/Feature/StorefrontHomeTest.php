@@ -231,6 +231,22 @@ Seconde ligne', $html);
         $this->assertStringNotContainsString('data-slider-prev', $html);
     }
 
+    public function test_without_banners_the_slider_is_completed_with_other_featured_products(): void
+    {
+        foreach (['Premier', 'Deuxième', 'Troisième', 'Quatrième'] as $name) {
+            Product::factory()->create(['name' => $name, 'is_featured' => true, 'stock' => 5]);
+        }
+
+        $html = $this->get('/')->assertOk()->getContent();
+
+        $this->assertSame(3, substr_count($html, 'aria-roledescription="slide"'));
+        $this->assertStringContainsString('data-slider-controls', $html);
+        $this->assertSame(3, substr_count($html, 'data-slider-dot='));
+        // a product shown as a slide is not repeated in the shelf: only the fourth one is left there
+        $shelf = substr($html, strpos($html, 'aria-labelledby="selection"'));
+        $this->assertSame(1, preg_match_all('/<h3[^>]*>/', $shelf));
+    }
+
     public function test_the_bottom_banner_stays_outside_the_slider(): void
     {
         Product::factory()->create(['is_featured' => true]);
