@@ -178,4 +178,76 @@ Seconde ligne', $html);
     {
         $this->get('/')->assertOk()->assertDontSee('aria-labelledby="banner-', false);
     }
+
+    public function test_the_first_screen_is_a_three_slide_sequence_banner_product_banner(): void
+    {
+        Product::factory()->create(['name' => 'Produit phare', 'is_featured' => true]);
+        $this->banner(['title' => 'Bannière un', 'position' => 'home_top']);
+        $this->banner(['title' => 'Bannière trois', 'position' => 'home_middle']);
+
+        $html = $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('data-slider', $html);
+        $this->assertStringContainsString('aria-roledescription="carousel"', $html);
+        $this->assertSame(3, substr_count($html, 'aria-roledescription="slide"'));
+        foreach (['1 sur 3', '2 sur 3', '3 sur 3'] as $label) {
+            $this->assertStringContainsString('aria-label="'.$label.'"', $html);
+        }
+        // order: 1 banner, 2 featured product, 3 banner
+        $one = strpos($html, 'Bannière un');
+        $two = strpos($html, 'Produit phare');
+        $three = strpos($html, 'Bannière trois');
+        $this->assertLessThan($two, $one);
+        $this->assertLessThan($three, $two);
+        // the three of them are inside the slider, before the rayons band
+        $this->assertLessThan(strpos($html, 'Les rayons') ?: PHP_INT_MAX, $three);
+    }
+
+    public function test_the_slider_has_arrows_dots_and_a_pause_control_with_names(): void
+    {
+        Product::factory()->create(['is_featured' => true]);
+        $this->banner();
+
+        $html = $this->get('/')->getContent();
+
+        $this->assertStringContainsString('data-slider-prev', $html);
+        $this->assertStringContainsString('data-slider-next', $html);
+        $this->assertStringContainsString('Diapositive précédente', $html);
+        $this->assertStringContainsString('Diapositive suivante', $html);
+        $this->assertStringContainsString('aria-label="Diapositive 2 sur 2"', $html);
+        $this->assertSame(2, substr_count($html, 'data-slider-dot='));
+        $this->assertStringContainsString('data-slider-toggle', $html);
+        $this->assertStringContainsString('aria-live="polite"', $html);
+    }
+
+    public function test_a_single_slide_gets_no_slider_controls(): void
+    {
+        Product::factory()->create(['is_featured' => true, 'name' => 'Seul produit']);
+
+        $html = $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('Seul produit', $html);
+        $this->assertStringNotContainsString('data-slider-controls', $html);
+        $this->assertStringNotContainsString('data-slider-prev', $html);
+    }
+
+    public function test_the_bottom_banner_stays_outside_the_slider(): void
+    {
+        Product::factory()->create(['is_featured' => true]);
+        $this->banner(['title' => 'Bannière du bas', 'position' => 'home_bottom']);
+
+        $html = $this->get('/')->getContent();
+
+        $this->assertSame(1, substr_count($html, 'aria-roledescription="slide"'));   // only the product
+        $this->assertStringContainsString('Bannière du bas', $html);
+    }
+
+    public function test_slides_are_stacked_when_scripts_do_not_run(): void
+    {
+        $css = file_get_contents(resource_path('css/storefront.css'));
+
+        $this->assertStringContainsString('.slider-track { display: grid;', $css);
+        $this->assertStringContainsString('html.js .slider-track', $css);
+        $this->assertStringContainsString('scroll-snap-type: x mandatory', $css);
+    }
 }

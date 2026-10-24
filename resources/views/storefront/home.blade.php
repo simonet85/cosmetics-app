@@ -2,27 +2,40 @@
     title="Soins cosmétiques"
     description="Soins du visage, du corps et des cheveux : composition lisible, prix nets en FCFA, paiement mobile money."
 >
-    @php $lead = $featuredProducts->first(); @endphp
+    @php
+        $lead = $featuredProducts->first();
+
+        // The first screen is a sequence 1 -> 2 -> 3: the top banner, the featured product, the middle banner.
+        // A part that does not exist is simply not a slide; one slide alone is shown without any control.
+        $slides = collect([
+            isset($banners['top']) ? ['banner', $banners['top']] : null,
+            $lead ? ['product', $lead] : null,
+            isset($banners['middle']) ? ['banner', $banners['middle']] : null,
+        ])->filter()->values();
+    @endphp
 
     <div class="wrap py-8 sm:py-12">
         <h1 class="sr-only">Glowing Cosmetics, soins cosmétiques</h1>
 
-        @isset($banners['top'])
-            <x-storefront.banner :banner="$banners['top']" :eager="true" class="mb-8" />
-        @endisset
-
-        @if ($lead)
-            <x-storefront.product-label :product="$lead" />
-        @else
+        @if ($slides->isEmpty())
             <x-ui.empty-state title="La sélection arrive bientôt" text="Découvrez en attendant l'ensemble de la boutique.">
                 <x-ui.button :href="route('shop.index')">Voir la boutique</x-ui.button>
             </x-ui.empty-state>
+        @else
+            <x-storefront.slider label="À la une" :count="$slides->count()">
+                @foreach ($slides as [$kind, $item])
+                    <div class="slider-slide" data-slide role="group" aria-roledescription="slide"
+                         aria-label="{{ $loop->iteration }} sur {{ $slides->count() }}">
+                        @if ($kind === 'banner')
+                            <x-storefront.banner :banner="$item" :eager="$loop->first" class="h-full" />
+                        @else
+                            <x-storefront.product-label :product="$item" :eager="$loop->first" class="h-full" />
+                        @endif
+                    </div>
+                @endforeach
+            </x-storefront.slider>
         @endif
     </div>
-
-    @isset($banners['middle'])
-        <div class="wrap pb-12 sm:pb-16"><x-storefront.banner :banner="$banners['middle']" /></div>
-    @endisset
 
     @if ($categories->isNotEmpty())
         <section class="on-dark bg-green py-12 text-white sm:py-16" aria-labelledby="univers">

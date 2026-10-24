@@ -205,3 +205,20 @@
 .info-prose li { margin-bottom: 0.5rem; padding-left: 0.25rem; line-height: 1.6; }
 .info-prose a { color: var(--color-green-deep); text-decoration: underline; }
 .info-prose strong { font-weight: 700; }
+
+/* Slider (home): stacked slides without JavaScript, native scroll-snap track with it */
+.slider-track { display: grid; gap: 2rem; }
+.slider-controls { display: none; }
+html.js .slider-track {
+    /* Positioned so absolutely placed descendants (the sr-only texts) are clipped with the slides, not left beside the page */
+    position: relative;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+}
+html.js .slider-track::-webkit-scrollbar { display: none; }
+html.js .slider-slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; }
+html.js .slider-controls { display: flex; }

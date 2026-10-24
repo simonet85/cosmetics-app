@@ -461,6 +461,91 @@ function setupOrderPaymentCheck() {
     timer = setTimeout(check, 30000);
 }
 
+/* ---------- Slider (home): arrows, dots, pausable auto-advance on top of a native scroll-snap track ---------- */
+function setupSlider() {
+    document.querySelectorAll('[data-slider]').forEach((root) => {
+        const track = root.querySelector('[data-slider-track]');
+        const slides = [...root.querySelectorAll('[data-slide]')];
+        if (!track || slides.length < 2) return;
+
+        const dots = [...root.querySelectorAll('[data-slider-dot]')];
+        const toggle = root.querySelector('[data-slider-toggle]');
+        const toggleLabel = root.querySelector('[data-slider-toggle-label]');
+        const status = root.querySelector('[data-slider-status]');
+        const delay = 7000;
+        let current = 0;
+        let timer = null;
+        let playing = !reducedMotion();   // never moves by itself for people who asked for less motion
+        let hovering = false;
+
+        // Where the track really is (a click during a smooth scroll must continue from there, not from the last settled slide)
+        const position = () => Math.round(track.scrollLeft / track.clientWidth);
+
+        const go = (index, { announce = false } = {}) => {
+            const target = (index + slides.length) % slides.length;
+            track.scrollTo({ left: target * track.clientWidth, behavior: reducedMotion() ? 'auto' : 'smooth' });
+            if (announce && status) status.textContent = `Diapositive ${target + 1} sur ${slides.length}`;
+        };
+
+        // Only the visible slide is reachable by keyboard and screen readers
+        const show = (index) => {
+            current = index;
+            slides.forEach((slide, i) => {
+                slide.toggleAttribute('inert', i !== index);
+                slide.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+            });
+            dots.forEach((dot, i) => dot.setAttribute('aria-current', i === index ? 'true' : 'false'));
+        };
+
+        const schedule = () => {
+            clearTimeout(timer);
+            if (playing && !hovering) timer = setTimeout(() => { go(current + 1); }, delay);
+        };
+
+        let settle = null;
+        track.addEventListener('scroll', () => {
+            clearTimeout(settle);
+            settle = setTimeout(() => {
+                const index = Math.round(track.scrollLeft / track.clientWidth);
+                if (index !== current) show(index);
+                schedule();
+            }, 80);
+        }, { passive: true });
+
+        root.querySelector('[data-slider-prev]')?.addEventListener('click', () => { go(position() - 1, { announce: true }); });
+        root.querySelector('[data-slider-next]')?.addEventListener('click', () => { go(position() + 1, { announce: true }); });
+        dots.forEach((dot) => dot.addEventListener('click', () => go(Number(dot.dataset.sliderDot), { announce: true })));
+
+        const renderToggle = () => {
+            if (!toggle) return;
+            toggle.setAttribute('aria-pressed', playing ? 'false' : 'true');
+            if (toggleLabel) toggleLabel.textContent = playing ? 'Pause' : 'Lecture';
+        };
+
+        if (toggle) {
+            toggle.hidden = reducedMotion();   // nothing to pause when it never starts
+            toggle.addEventListener('click', () => {
+                playing = !playing;
+                renderToggle();
+                if (status) status.textContent = playing ? 'Défilement automatique activé' : 'Défilement automatique en pause';
+                schedule();
+            });
+        }
+
+        // Reading or interacting pauses the movement
+        root.addEventListener('mouseenter', () => { hovering = true; clearTimeout(timer); });
+        root.addEventListener('mouseleave', () => { hovering = false; schedule(); });
+        root.addEventListener('focusin', () => { hovering = true; clearTimeout(timer); });
+        root.addEventListener('focusout', () => { hovering = false; schedule(); });
+        document.addEventListener('visibilitychange', () => (document.hidden ? clearTimeout(timer) : schedule()));
+        window.addEventListener('resize', () => track.scrollTo({ left: current * track.clientWidth, behavior: 'auto' }));
+
+        show(0);
+        renderToggle();
+        schedule();
+    });
+}
+
 setupDialogs();
 setupAddToCart();
 setupReveal();
@@ -471,6 +556,7 @@ setupCheckout();
 setupPaymentStatus();
 setupWishlistPage();
 setupOrderPaymentCheck();
+setupSlider();
 
 // Coming back with the browser's back button restores a cached page: resync the counters
 window.addEventListener('pageshow', (event) => { if (event.persisted) refreshCounts(); });
