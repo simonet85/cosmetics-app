@@ -52,7 +52,12 @@ if [ "$DRY_RUN" = 1 ]; then
   note "[dry-run] npm run build (through the node container or local Node)"
 else
   if command -v docker >/dev/null 2>&1 && [ -f docker-compose.yml ]; then
-    docker compose run --rm --no-deps node sh -c "npm ci --no-audit --no-fund && npm run build"
+    if docker compose ps --status running --services 2>/dev/null | grep -qx node; then
+      # The dev server owns node_modules (shared mount): a second "npm ci" would empty it under its feet
+      docker compose exec -T node npm run build
+    else
+      docker compose run --rm --no-deps node sh -c "npm ci --no-audit --no-fund && npm run build"
+    fi
   else
     npm ci --no-audit --no-fund && npm run build
   fi
