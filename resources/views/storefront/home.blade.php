@@ -46,7 +46,7 @@
                         <li class="border-b border-white/30">
                             <a href="{{ route('shop.category', $category->slug) }}"
                                class="flex min-h-16 items-center justify-between gap-4 px-4 py-4 text-xl font-semibold uppercase hover:bg-green-deep" style="font-stretch: 75%">
-                                {{ $category->name }}
+                                {{ $category->tr('name') }}
                                 <x-ui.icon name="arrow-right" class="size-5 shrink-0" />
                             </a>
                         </li>
@@ -74,10 +74,10 @@
                         </a>
                         <div>
                             <h3 class="text-xl uppercase">
-                                <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->name }}</a>
+                                <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->tr('name') }}</a>
                             </h3>
                             @if ($product->categories->isNotEmpty())
-                                <p class="text-sm text-ink-muted">{{ $product->categories->first()->name }}</p>
+                                <p class="text-sm text-ink-muted">{{ $product->categories->first()->tr('name') }}</p>
                             @endif
                         </div>
                         <x-ui.price :amount="$product->final_price" :original="$product->discount_price > 0 ? $product->price : null" size="lg" class="col-start-2 sm:col-start-auto" />

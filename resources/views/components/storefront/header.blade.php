@@ -84,7 +84,7 @@
             @foreach ($navCategories as $category)
                 <li>
                     <a href="{{ route('shop.category', $category->slug) }}" @if ($currentRayon === $category->slug) aria-current="page" @endif
-                       class="inline-flex min-h-11 items-center px-3 hover:text-green-deep {{ $currentRayon === $category->slug ? 'font-semibold underline decoration-2 decoration-green underline-offset-8' : 'text-ink-muted' }}">{{ $category->name }}</a>
+                       class="inline-flex min-h-11 items-center px-3 hover:text-green-deep {{ $currentRayon === $category->slug ? 'font-semibold underline decoration-2 decoration-green underline-offset-8' : 'text-ink-muted' }}">{{ $category->tr('name') }}</a>
                 </li>
             @endforeach
         </ul>
@@ -115,7 +115,7 @@
                 <ul class="grid">
                     @foreach ($navCategories as $category)
                         <li><a href="{{ route('shop.category', $category->slug) }}" @if ($currentRayon === $category->slug) aria-current="page" @endif
-                               class="flex min-h-12 items-center border-b border-line {{ $currentRayon === $category->slug ? 'font-semibold' : 'text-ink-muted' }}">{{ $category->name }}</a></li>
+                               class="flex min-h-12 items-center border-b border-line {{ $currentRayon === $category->slug ? 'font-semibold' : 'text-ink-muted' }}">{{ $category->tr('name') }}</a></li>
                     @endforeach
                 </ul>
             @endif

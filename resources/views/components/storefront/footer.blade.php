@@ -13,7 +13,7 @@
             <ul class="mt-3 grid gap-1">
                 <li><a href="{{ route('shop.index') }}" class="inline-flex min-h-11 items-center text-white/80 hover:text-white">{{ __('Toute la boutique') }}</a></li>
                 @foreach ($navCategories as $category)
-                    <li><a href="{{ route('shop.category', $category->slug) }}" class="inline-flex min-h-11 items-center text-white/80 hover:text-white">{{ $category->name }}</a></li>
+                    <li><a href="{{ route('shop.category', $category->slug) }}" class="inline-flex min-h-11 items-center text-white/80 hover:text-white">{{ $category->tr('name') }}</a></li>
                 @endforeach
             </ul>
         </nav>

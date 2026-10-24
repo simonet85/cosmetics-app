@@ -24,10 +24,10 @@
 
     <div class="flex flex-1 flex-col gap-2 p-3 sm:p-4">
         @if ($product->categories->isNotEmpty())
-            <p class="label-caps text-ink-muted">{{ $product->categories->first()->name }}</p>
+            <p class="label-caps text-ink-muted">{{ $product->categories->first()->tr('name') }}</p>
         @endif
         <h3 class="text-lg uppercase leading-tight sm:text-xl">
-            <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->name }}</a>
+            <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->tr('name') }}</a>
         </h3>
         <x-ui.price :amount="$final" :original="$discount > 0 ? $list : null" size="lg" class="mt-auto" />
         <x-storefront.add-to-cart :product="$product" :label="__('Ajouter')" class="mt-2" />

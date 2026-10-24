@@ -54,19 +54,19 @@
 
                                 <div class="grid content-start gap-1">
                                     <h2 class="text-xl uppercase leading-tight">
-                                        <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->name }}</a>
+                                        <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->tr('name') }}</a>
                                     </h2>
                                     @if ($variantLabel)<p class="text-sm text-ink-muted">{{ $variantLabel }}</p>@endif
                                     <p class="tnum text-sm text-ink-muted">{{ __(':price l\'unité', ['price' => format_fcfa($item['price'])]) }}</p>
                                 </div>
 
                                 <div class="col-span-2 flex flex-wrap items-center justify-between gap-3 sm:col-span-1 sm:col-start-2">
-                                    <div class="flex items-center border border-ink" role="group" aria-label="{{ __('Quantité de :name', ['name' => $product->name]) }}">
+                                    <div class="flex items-center border border-ink" role="group" aria-label="{{ __('Quantité de :name', ['name' => $product->tr('name')]) }}">
                                         <button type="button" data-cart-step="-1" aria-label="{{ __('Retirer une unité') }}" class="inline-flex size-12 cursor-pointer items-center justify-center hover:bg-mint">
                                             <x-ui.icon name="minus" class="size-5" />
                                         </button>
                                         <input type="number" value="{{ $item['quantity'] }}" min="1" max="{{ $max }}" inputmode="numeric" data-cart-qty data-prev="{{ $item['quantity'] }}"
-                                               aria-label="{{ __('Quantité de :name', ['name' => $product->name]) }}"
+                                               aria-label="{{ __('Quantité de :name', ['name' => $product->tr('name')]) }}"
                                                class="tnum h-12 w-14 border-x border-ink text-center text-lg [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none">
                                         <button type="button" data-cart-step="1" aria-label="{{ __('Ajouter une unité') }}" class="inline-flex size-12 cursor-pointer items-center justify-center hover:bg-mint">
                                             <x-ui.icon name="plus" class="size-5" />
@@ -76,7 +76,7 @@
                                     <p class="tnum text-2xl font-bold" style="font-stretch: 75%" data-line-total>{{ format_fcfa($item['subtotal']) }}</p>
 
                                     <button type="button" data-cart-remove class="inline-flex min-h-11 cursor-pointer items-center gap-1 text-sm underline">
-                                        {{ __('Retirer') }}<span class="sr-only"> {{ __(':name du panier', ['name' => $product->name]) }}</span>
+                                        {{ __('Retirer') }}<span class="sr-only"> {{ __(':name du panier', ['name' => $product->tr('name')]) }}</span>
                                     </button>
                                 </div>
                             </li>

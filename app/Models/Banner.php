@@ -2,10 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Translatable;
 use Illuminate\Database\Eloquent\Model;
 
 class Banner extends Model
 {
+    use Translatable;
+
+    /** Text with a translation per language (see Translatable). */
+    protected array $translatable = ['title', 'subtitle', 'description', 'button_text'];
+
     protected $fillable = [
         'type',
         'position',

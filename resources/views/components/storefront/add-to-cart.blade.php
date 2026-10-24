@@ -11,7 +11,7 @@
         $label ??= $default;
     @endphp
     @if ($product->stock > 0)
-        <x-ui.button type="submit" :class="$width" :aria-label="$label === $default ? null : __(':action :name au panier', ['action' => $label, 'name' => $product->name])">
+        <x-ui.button type="submit" :class="$width" :aria-label="$label === $default ? null : __(':action :name au panier', ['action' => $label, 'name' => $product->tr('name')])">
             <x-ui.icon name="bag" class="size-5" />
             <span data-label>{{ $label }}</span>
         </x-ui.button>

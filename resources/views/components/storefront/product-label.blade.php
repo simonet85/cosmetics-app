@@ -5,7 +5,7 @@
     Composition lines are the first three entries of the real `ingredients` field; nothing is shown when it is empty.
 --}}
 @php
-    $composition = collect(preg_split('/[\r\n,;]+/', (string) $product->ingredients))
+    $composition = collect(preg_split('/[\r\n,;]+/', (string) $product->tr('ingredients')))
         ->map(fn ($line) => trim($line))->filter()->take(3);
     $original = $product->discount_price > 0 ? $product->price : null;
     $lowStock = $product->stock > 0 && $product->stock <= 5;
@@ -19,10 +19,10 @@
     <div class="flex flex-col justify-between gap-5 p-5 sm:p-8">
         <div>
             <h2 id="lead-name" class="text-4xl uppercase sm:text-5xl">
-                <a href="{{ route('products.show', $product->slug) }}" class="hover:underline">{{ $product->name }}</a>
+                <a href="{{ route('products.show', $product->slug) }}" class="hover:underline">{{ $product->tr('name') }}</a>
             </h2>
-            @if ($product->short_description)
-                <p class="mt-3 max-w-prose text-ink-muted">{{ $product->short_description }}</p>
+            @if ($product->tr('short_description'))
+                <p class="mt-3 max-w-prose text-ink-muted">{{ $product->tr('short_description') }}</p>
             @endif
 
             @if ($composition->isNotEmpty())

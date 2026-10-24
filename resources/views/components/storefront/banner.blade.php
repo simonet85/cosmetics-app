@@ -6,16 +6,16 @@
 --}}
 @php
     $hasLink = filled($banner->link_url);
-    $label = filled($banner->button_text) ? $banner->button_text : __('Découvrir');
+    $label = filled($banner->tr('button_text')) ? $banner->tr('button_text') : __('Découvrir');
 @endphp
 
 <section {{ $attributes->merge(['class' => 'grid border border-ink bg-mint md:grid-cols-2']) }} aria-labelledby="banner-{{ $banner->id }}">
     <div class="order-2 flex flex-col justify-center gap-3 p-6 sm:p-10 md:order-1">
-        @if (filled($banner->subtitle))<p class="label-caps text-green-deep">{{ $banner->subtitle }}</p>@endif
-        <h2 id="banner-{{ $banner->id }}" class="whitespace-pre-line text-4xl uppercase sm:text-5xl">{{ $banner->title }}</h2>
-        @if (filled($banner->description))<p class="max-w-prose text-ink-muted">{{ $banner->description }}</p>@endif
+        @if (filled($banner->tr('subtitle')))<p class="label-caps text-green-deep">{{ $banner->tr('subtitle') }}</p>@endif
+        <h2 id="banner-{{ $banner->id }}" class="whitespace-pre-line text-4xl uppercase sm:text-5xl">{{ $banner->tr('title') }}</h2>
+        @if (filled($banner->tr('description')))<p class="max-w-prose text-ink-muted">{{ $banner->tr('description') }}</p>@endif
         @if ($hasLink)
-            <div class="mt-2"><x-ui.button :href="$banner->link_url">{{ $label }}<span class="sr-only"> : {{ $banner->title }}</span></x-ui.button></div>
+            <div class="mt-2"><x-ui.button :href="$banner->link_url">{{ $label }}<span class="sr-only"> : {{ $banner->tr('title') }}</span></x-ui.button></div>
         @endif
     </div>
     <div class="order-1 bg-photo md:order-2">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,7 +12,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Translatable;
+
+    /** Text with a translation per language (see Translatable). */
+    protected array $translatable = ['name', 'short_description', 'full_description', 'how_to_use', 'ingredients'];
 
     /**
      * sku and slug carry database-level unique indexes that still apply to soft-deleted rows.

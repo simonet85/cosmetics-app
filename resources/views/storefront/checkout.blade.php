@@ -128,7 +128,7 @@
                         <li class="flex items-start gap-3 py-3">
                             <span class="w-14 shrink-0 bg-photo"><x-storefront.product-image :product="$item['product']" sizes="56px" class="aspect-[3/4] object-contain" /></span>
                             <span class="min-w-0 flex-1">
-                                <span class="block font-semibold">{{ $item['product']->name }}</span>
+                                <span class="block font-semibold">{{ $item['product']->tr('name') }}</span>
                                 @if ($variantLabel)<span class="block text-sm text-ink-muted">{{ $variantLabel }}</span>@endif
                                 <span class="block text-sm text-ink-muted">{{ __('Quantité : :quantity', ['quantity' => $item['quantity']]) }}</span>
                             </span>

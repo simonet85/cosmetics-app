@@ -1,13 +1,13 @@
 @php
-    $title = $activeCategory?->name ?? __('La boutique');
+    $title = $activeCategory?->tr('name') ?? __('La boutique');
     $queryKeys = ['search', 'category', 'tag', 'min_price', 'max_price', 'sort', 'sold_out'];
     $filtered = collect($queryKeys)->contains(fn ($key) => request()->filled($key));
     $without = fn (array $keys) => route('shop.index', collect(request()->query())->except([...$keys, 'page'])->all());
 
     // One chip per active filter, each one removes itself
     $chips = collect();
-    if ($categorySlug && $activeCategory && ! request()->routeIs('shop.category')) { $chips->push(['label' => $activeCategory->name, 'url' => $without(['category'])]); }
-    if (! empty($filters['tag'])) { $chips->push(['label' => '#'.($tags->firstWhere('slug', $filters['tag'])?->name ?? $filters['tag']), 'url' => $without(['tag'])]); }
+    if ($categorySlug && $activeCategory && ! request()->routeIs('shop.category')) { $chips->push(['label' => $activeCategory->tr('name'), 'url' => $without(['category'])]); }
+    if (! empty($filters['tag'])) { $chips->push(['label' => '#'.($tags->firstWhere('slug', $filters['tag'])?->tr('name') ?? $filters['tag']), 'url' => $without(['tag'])]); }
     if (! empty($filters['search'])) { $chips->push(['label' => '« '.$filters['search'].' »', 'url' => $without(['search'])]); }
     if (isset($filters['min_price'])) { $chips->push(['label' => __('dès :amount', ['amount' => format_fcfa($filters['min_price'])]), 'url' => $without(['min_price'])]); }
     if (isset($filters['max_price'])) { $chips->push(['label' => __('jusqu\'à :amount', ['amount' => format_fcfa($filters['max_price'])]), 'url' => $without(['max_price'])]); }
@@ -19,7 +19,7 @@
 
 <x-layouts.storefront
     :title="$title"
-    :description="$activeCategory ? __('Les produits :name : prix nets en FCFA, composition lisible, livraison et paiement mobile money.', ['name' => $activeCategory->name]) : __('Tous nos soins : prix nets en FCFA, composition lisible, livraison et paiement mobile money.')"
+    :description="$activeCategory ? __('Les produits :name : prix nets en FCFA, composition lisible, livraison et paiement mobile money.', ['name' => $activeCategory->tr('name')]) : __('Tous nos soins : prix nets en FCFA, composition lisible, livraison et paiement mobile money.')"
     :canonical="$activeCategory ? route('shop.category', $activeCategory->slug) : route('shop.index')"
     :robots="$filtered && ! $activeCategory ? 'noindex,follow' : null"
 >
@@ -30,7 +30,7 @@
             @if ($activeCategory)
                 <a href="{{ route('shop.index') }}" class="inline-flex min-h-11 items-center underline">{{ __('Boutique') }}</a>
                 <span aria-hidden="true" class="mx-2">/</span>
-                <span aria-current="page" class="text-ink">{{ $activeCategory->name }}</span>
+                <span aria-current="page" class="text-ink">{{ $activeCategory->tr('name') }}</span>
             @else
                 <span aria-current="page" class="text-ink">{{ __('Boutique') }}</span>
             @endif
@@ -59,7 +59,7 @@
                         <legend class="label-caps mb-1 text-ink-muted">{{ __('Rayon') }}</legend>
                         <label class="{{ $radio }}"><input type="radio" name="category" value="" class="size-5 accent-green" @checked(! $categorySlug)> {{ __('Tous les rayons') }}</label>
                         @foreach ($categories as $cat)
-                            <label class="{{ $radio }}"><input type="radio" name="category" value="{{ $cat->slug }}" class="size-5 accent-green" @checked($categorySlug === $cat->slug)> {{ $cat->name }}</label>
+                            <label class="{{ $radio }}"><input type="radio" name="category" value="{{ $cat->slug }}" class="size-5 accent-green" @checked($categorySlug === $cat->slug)> {{ $cat->tr('name') }}</label>
                         @endforeach
                     </fieldset>
 
@@ -68,7 +68,7 @@
                             <legend class="label-caps mb-1 text-ink-muted">{{ __('Étiquette') }}</legend>
                             <label class="{{ $radio }}"><input type="radio" name="tag" value="" class="size-5 accent-green" @checked(empty($filters['tag']))> {{ __('Toutes') }}</label>
                             @foreach ($tags as $tag)
-                                <label class="{{ $radio }}"><input type="radio" name="tag" value="{{ $tag->slug }}" class="size-5 accent-green" @checked(($filters['tag'] ?? null) === $tag->slug)> {{ $tag->name }}</label>
+                                <label class="{{ $radio }}"><input type="radio" name="tag" value="{{ $tag->slug }}" class="size-5 accent-green" @checked(($filters['tag'] ?? null) === $tag->slug)> {{ $tag->tr('name') }}</label>
                             @endforeach
                         </fieldset>
                     @endif

@@ -4,6 +4,6 @@
 @php
     $path = $product->primary_image?->path ?? 'images/products/product-placeholder.jpg';
 @endphp
-<img src="{{ asset($path) }}" alt="{{ $product->name }}" width="330" height="440" sizes="{{ $sizes }}"
+<img src="{{ asset($path) }}" alt="{{ $product->tr('name') }}" width="330" height="440" sizes="{{ $sizes }}"
      loading="{{ $eager ? 'eager' : 'lazy' }}" decoding="async" @if ($eager) fetchpriority="high" @endif
      {{ $attributes->merge(['class' => 'h-auto w-full']) }}>

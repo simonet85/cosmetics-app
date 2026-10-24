@@ -7,7 +7,7 @@
     $images = $product->images;
     $mainImage = $product->primary_image?->path ?? 'images/products/product-placeholder.jpg';
     $category = $product->categories->first();
-    $composition = collect(preg_split('/[\r\n,;]+/', (string) $product->ingredients))->map(fn ($l) => trim($l))->filter();
+    $composition = collect(preg_split('/[\r\n,;]+/', (string) $product->tr('ingredients')))->map(fn ($l) => trim($l))->filter();
     $payments = \App\Support\PaymentMethods::acceptedLabels();
     $lowStock = $product->stock > 0 && $product->stock <= 5;
     $maxQty = max(1, $firstVariant ? $firstVariant->stock : $product->stock);
@@ -15,9 +15,9 @@
     $jsonLd = [
         '@context' => 'https://schema.org',
         '@type' => 'Product',
-        'name' => $product->name,
+        'name' => $product->tr('name'),
         'sku' => $product->sku,
-        'description' => $product->short_description ?: \Illuminate\Support\Str::limit(strip_tags((string) $product->full_description), 200),
+        'description' => $product->tr('short_description') ?: \Illuminate\Support\Str::limit(strip_tags((string) $product->tr('full_description')), 200),
         'image' => $images->isNotEmpty() ? $images->map(fn ($i) => asset($i->path))->values()->all() : [asset($mainImage)],
         'offers' => [
             '@type' => 'Offer',
@@ -37,8 +37,8 @@
 @endphp
 
 <x-layouts.storefront
-    :title="$product->name"
-    :description="$product->short_description ?: __('Découvrez :name : prix net en FCFA, composition et livraison.', ['name' => $product->name])"
+    :title="$product->tr('name')"
+    :description="$product->tr('short_description') ?: __('Découvrez :name : prix net en FCFA, composition et livraison.', ['name' => $product->tr('name')])"
     :image="asset($mainImage)"
     :canonical="route('products.show', $product->slug)"
     :robots="$isPreview ? 'noindex,nofollow' : null"
@@ -60,7 +60,7 @@
             <a href="{{ route('shop.index') }}" class="inline-flex min-h-11 items-center underline">{{ __('Boutique') }}</a>
             @if ($category)
                 <span aria-hidden="true" class="mx-2">/</span>
-                <a href="{{ route('shop.category', $category->slug) }}" class="inline-flex min-h-11 items-center underline">{{ $category->name }}</a>
+                <a href="{{ route('shop.category', $category->slug) }}" class="inline-flex min-h-11 items-center underline">{{ $category->tr('name') }}</a>
             @endif
         </nav>
 
@@ -68,7 +68,7 @@
             {{-- Photos --}}
             <div>
                 <div class="border border-ink bg-photo">
-                    <img id="product-main-image" src="{{ asset($mainImage) }}" alt="{{ $product->name }}" width="330" height="440"
+                    <img id="product-main-image" src="{{ asset($mainImage) }}" alt="{{ $product->tr('name') }}" width="330" height="440"
                          fetchpriority="high" class="mx-auto aspect-[4/3] h-auto w-full object-contain lg:aspect-auto lg:h-[34rem]">
                 </div>
                 @if ($images->count() > 1)
@@ -95,7 +95,7 @@
                     @if ($hasDiscount)<x-ui.badge tone="ink">-{{ (int) round((1 - $final / $list) * 100) }} %</x-ui.badge>@endif
                 </div>
 
-                <h1 class="mt-3 text-4xl uppercase sm:text-5xl">{{ $product->name }}</h1>
+                <h1 class="mt-3 text-4xl uppercase sm:text-5xl">{{ $product->tr('name') }}</h1>
 
                 @if ($reviewCount > 0)
                     <a href="#avis" class="mt-2 inline-flex min-h-11 items-center gap-2 text-sm underline">
@@ -107,8 +107,8 @@
                     </a>
                 @endif
 
-                @if ($product->short_description)
-                    <p class="mt-3 max-w-prose text-lg text-ink-muted">{{ $product->short_description }}</p>
+                @if ($product->tr('short_description'))
+                    <p class="mt-3 max-w-prose text-lg text-ink-muted">{{ $product->tr('short_description') }}</p>
                 @endif
 
                 <form method="POST" action="{{ route('cart.add') }}" data-add-to-cart data-product-form class="mt-6 grid gap-5">
@@ -211,7 +211,7 @@
                         <dt class="text-ink-muted">{{ __('Étiquettes') }}</dt>
                         <dd class="flex flex-wrap gap-x-3">
                             @foreach ($product->tags as $tag)
-                                <a href="{{ route('shop.index', ['tag' => $tag->slug]) }}" class="inline-flex min-h-11 items-center underline">{{ $tag->name }}</a>
+                                <a href="{{ route('shop.index', ['tag' => $tag->slug]) }}" class="inline-flex min-h-11 items-center underline">{{ $tag->tr('name') }}</a>
                             @endforeach
                         </dd>
                     @endif
@@ -221,7 +221,7 @@
                     <span class="text-ink-muted">{{ __('Partager :') }}</span>
                     @php
                         $shareUrl = rawurlencode(route('products.show', $product->slug));
-                        $shareText = rawurlencode($product->name);
+                        $shareText = rawurlencode($product->tr('name'));
                     @endphp
                     <a href="https://wa.me/?text={{ $shareText }}%20{{ $shareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center underline">{{ __('WhatsApp') }}<span class="sr-only"> {{ __('(nouvel onglet)') }}</span></a>
                     <a href="https://www.facebook.com/sharer/sharer.php?u={{ $shareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center px-2 underline">{{ __('Facebook') }}<span class="sr-only"> {{ __('(nouvel onglet)') }}</span></a>
@@ -239,16 +239,16 @@
                     </ul>
                 </section>
             @endif
-            @if ($product->how_to_use)
+            @if ($product->tr('how_to_use'))
                 <section class="bg-white p-5 sm:p-8" aria-labelledby="usage">
                     <h2 id="usage" class="text-3xl">{{ __('Conseils d\'utilisation') }}</h2>
-                    <p class="mt-4 whitespace-pre-line">{{ $product->how_to_use }}</p>
+                    <p class="mt-4 whitespace-pre-line">{{ $product->tr('how_to_use') }}</p>
                 </section>
             @endif
-            @if ($product->full_description)
+            @if ($product->tr('full_description'))
                 <section class="bg-white p-5 sm:p-8 lg:col-span-2" aria-labelledby="description">
                     <h2 id="description" class="text-3xl">{{ __('Description') }}</h2>
-                    <p class="mt-4 max-w-prose whitespace-pre-line">{{ $product->full_description }}</p>
+                    <p class="mt-4 max-w-prose whitespace-pre-line">{{ $product->tr('full_description') }}</p>
                 </section>
             @endif
         </div>

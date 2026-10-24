@@ -2,11 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
+    use Translatable;
+
+    /** Text with a translation per language (see Translatable). */
+    protected array $translatable = ['name'];
+
     protected $fillable = ['name', 'slug'];
 
     public function products(): BelongsToMany
