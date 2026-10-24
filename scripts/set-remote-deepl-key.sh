@@ -18,7 +18,9 @@ REMOTE_APP="${DEPLOY_PATH:-domains/klab-consulting.com/laravel}"
 
 if [ -n "${1:-}" ]; then
   [ -f "$1" ] || { echo "file not found: $1" >&2; exit 1; }
-  key="$(head -n 1 "$1" | tr -d '\r\n ')"
+  # a credentials file with a DEEPL_API_KEY=... line, or a file whose first line is the key
+  key="$(sed -n 's/^DEEPL_API_KEY=//p' "$1" | head -n 1 | tr -d '\r\n "')"
+  [ -n "$key" ] || key="$(head -n 1 "$1" | tr -d '\r\n ')"
 else
   read -rsp "DeepL API key (hidden): " key
   echo
