@@ -23,12 +23,15 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 // Language switcher (remembers the choice in a cookie)
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/langue/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 
 // Authentication Routes

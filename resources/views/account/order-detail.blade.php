@@ -7,8 +7,8 @@
     $canCancel = $order->status === 'pending';
 @endphp
 
-<x-layouts.storefront :title="'Commande '.$order->order_number" robots="noindex,nofollow">
-    <x-storefront.account-shell :title="'Commande '.$order->order_number" current="orders">
+<x-layouts.storefront :title="__('Commande').' '.$order->order_number" robots="noindex,nofollow">
+    <x-storefront.account-shell :title="__('Commande').' '.$order->order_number" current="orders">
         <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-12">
             <div>
                 <section aria-labelledby="items-title">
