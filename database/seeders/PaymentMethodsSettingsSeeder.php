@@ -12,19 +12,22 @@ class PaymentMethodsSettingsSeeder extends Seeder
         $settings = [
             [
                 'key' => 'payment_credit_card_enabled',
-                'value' => '1',
+                // Off: no payment gateway is wired to it, orders would stay unpaid
+                'value' => '0',
                 'type' => 'boolean',
                 'group' => 'payment',
             ],
             [
                 'key' => 'payment_paypal_enabled',
-                'value' => '1',
+                // Off: no payment gateway is wired to it, orders would stay unpaid
+                'value' => '0',
                 'type' => 'boolean',
                 'group' => 'payment',
             ],
             [
                 'key' => 'payment_bank_transfer_enabled',
-                'value' => '1',
+                // Off until the shop's bank details exist and are sent to the customer (none are stored today)
+                'value' => '0',
                 'type' => 'boolean',
                 'group' => 'payment',
             ],
