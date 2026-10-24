@@ -16,7 +16,7 @@ class DashboardController extends Controller
         // Statistics
         $totalOrders = Order::count();
         $pendingOrders = Order::where('status', 'pending')->count();
-        $completedOrders = Order::where('status', 'completed')->count();
+        $completedOrders = Order::where('status', 'delivered')->count();
 
         $totalRevenue = Order::where('payment_status', 'paid')->sum('total');
         $monthlyRevenue = Order::where('payment_status', 'paid')

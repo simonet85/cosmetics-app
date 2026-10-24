@@ -115,9 +115,9 @@
                         {{ $product->sku }}
                     </td>
                     <td class="px-6 py-4">
-                        <div class="text-sm font-semibold text-gray-900">{{ number_format($product->final_price, 0) }} FCFA</div>
+                        <div class="text-sm font-semibold text-gray-900">{{ format_fcfa($product->final_price) }}</div>
                         @if($product->final_price < $product->price)
-                        <div class="text-xs text-gray-500 line-through">{{ number_format($product->price, 0) }} FCFA</div>
+                        <div class="text-xs text-gray-500 line-through">{{ format_fcfa($product->price) }}</div>
                         @endif
                     </td>
                     <td class="px-6 py-4">

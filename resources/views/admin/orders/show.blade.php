@@ -89,8 +89,8 @@
                             </div>
 
                             <div class="text-right">
-                                <p class="font-semibold">{{ number_format($item->total, 2) }} FCFA</p>
-                                <p class="text-sm text-gray-600">{{ number_format($item->price, 2) }} FCFA × {{ $item->quantity }}</p>
+                                <p class="font-semibold">{{ format_fcfa($item->total) }}</p>
+                                <p class="text-sm text-gray-600">{{ format_fcfa($item->price) }} × {{ $item->quantity }}</p>
                             </div>
                         </div>
                     @endforeach
@@ -150,29 +150,29 @@
                 <div class="space-y-2">
                     <div class="flex justify-between text-gray-600">
                         <span>Sous-total</span>
-                        <span>{{ number_format($order->subtotal, 2) }} FCFA</span>
+                        <span>{{ format_fcfa($order->subtotal) }}</span>
                     </div>
 
                     <div class="flex justify-between text-gray-600">
                         <span>Livraison</span>
-                        <span>{{ number_format($order->shipping, 2) }} FCFA</span>
+                        <span>{{ format_fcfa($order->shipping) }}</span>
                     </div>
 
                     <div class="flex justify-between text-gray-600">
                         <span>TVA</span>
-                        <span>{{ number_format($order->tax, 2) }} FCFA</span>
+                        <span>{{ format_fcfa($order->tax) }}</span>
                     </div>
 
                     @if($order->discount > 0)
                         <div class="flex justify-between text-green-600">
                             <span>Réduction</span>
-                            <span>-{{ number_format($order->discount, 2) }} FCFA</span>
+                            <span>-{{ format_fcfa($order->discount) }}</span>
                         </div>
                     @endif
 
                     <div class="flex justify-between text-xl font-bold pt-2 border-t">
                         <span>Total</span>
-                        <span>{{ number_format($order->total, 2) }} FCFA</span>
+                        <span>{{ format_fcfa($order->total) }}</span>
                     </div>
                 </div>
             </div>

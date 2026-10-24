@@ -125,6 +125,7 @@ class AdminSettingController extends Controller
 
         // Payment methods settings
         $paymentSettings = [
+            'payment_moneyfusion_enabled',
             'payment_credit_card_enabled',
             'payment_paypal_enabled',
             'payment_bank_transfer_enabled',

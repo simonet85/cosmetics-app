@@ -16,14 +16,14 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg">
-                <i class="fas fa-dollar-sign text-green-600 text-xl"></i>
+                <i class="fas fa-money-bill-wave text-green-600 text-xl"></i>
             </div>
             <span class="text-sm text-gray-500">Ce mois</span>
         </div>
-        <h3 class="text-2xl font-bold text-gray-900">{{ number_format($monthlyRevenue, 0) }} FCFA</h3>
+        <h3 class="text-2xl font-bold text-gray-900">{{ format_fcfa($monthlyRevenue) }}</h3>
         <p class="text-gray-600 text-sm mt-1">Revenus mensuels</p>
         <div class="mt-4 pt-4 border-t border-gray-200">
-            <span class="text-sm text-gray-500">Total: {{ number_format($totalRevenue, 0) }} FCFA</span>
+            <span class="text-sm text-gray-500">Total: {{ format_fcfa($totalRevenue) }}</span>
         </div>
     </div>
 
@@ -40,7 +40,7 @@
         <h3 class="text-2xl font-bold text-gray-900">{{ $totalOrders }}</h3>
         <p class="text-gray-600 text-sm mt-1">Total des commandes</p>
         <div class="mt-4 pt-4 border-t border-gray-200">
-            <span class="text-sm text-gray-500">{{ $completedOrders }} complétées</span>
+            <span class="text-sm text-gray-500">{{ $completedOrders }} livrées</span>
         </div>
     </div>
 
@@ -142,18 +142,19 @@
                     <span class="px-3 py-1 rounded-full text-xs font-semibold
                         @if($order->status === 'pending') bg-yellow-100 text-yellow-800
                         @elseif($order->status === 'processing') bg-blue-100 text-blue-800
-                        @elseif($order->status === 'completed') bg-green-100 text-green-800
+                        @elseif($order->status === 'shipped') bg-indigo-100 text-indigo-800
+                        @elseif($order->status === 'delivered') bg-green-100 text-green-800
                         @elseif($order->status === 'cancelled') bg-red-100 text-red-800
                         @endif">
-                        {{ ucfirst($order->status) }}
+                        {{ \App\Support\OrderLabels::status($order->status) }}
                     </span>
                 </div>
                 <div class="flex items-center justify-between text-sm text-gray-600">
                     <span>
                         <i class="fas fa-user mr-1"></i>
-                        {{ $order->user ? $order->user->name : $order->customer_email }}
+                        {{ $order->user?->full_name ?: $order->customer_email }}
                     </span>
-                    <span class="font-semibold text-gray-900">{{ number_format($order->total, 0) }} FCFA</span>
+                    <span class="font-semibold text-gray-900">{{ format_fcfa($order->total) }}</span>
                 </div>
                 <div class="text-xs text-gray-500 mt-2">
                     <i class="fas fa-clock mr-1"></i>{{ $order->created_at->diffForHumans() }}
@@ -198,7 +199,7 @@
                                 <i class="fas fa-shopping-bag mr-1"></i>
                                 {{ $product->total_sales ?? 0 }} vendus
                             </span>
-                            <span class="font-semibold text-gray-900">{{ number_format($product->price, 0) }} FCFA</span>
+                            <span class="font-semibold text-gray-900">{{ format_fcfa($product->price) }}</span>
                         </div>
                     </div>
                 </div>

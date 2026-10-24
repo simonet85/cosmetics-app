@@ -76,7 +76,7 @@
                                     </p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-semibold">{{ number_format($order->total, 2) }} FCFA</p>
+                                    <p class="font-semibold">{{ format_fcfa($order->total) }}</p>
                                     @php
                                         $statusColors = [
                                             'pending' => 'bg-yellow-100 text-yellow-800',
@@ -187,7 +187,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-gray-600">Total dépensé</p>
-                                <p class="text-xl font-bold">{{ number_format($totalSpent, 2) }} FCFA</p>
+                                <p class="text-xl font-bold">{{ format_fcfa($totalSpent) }}</p>
                             </div>
                         </div>
                     </div>
@@ -212,7 +212,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600">Panier moyen</p>
-                                    <p class="text-xl font-bold">{{ number_format($totalSpent / $customer->orders_count, 2) }} FCFA</p>
+                                    <p class="text-xl font-bold">{{ format_fcfa($totalSpent / $customer->orders_count) }}</p>
                                 </div>
                             </div>
                         </div>

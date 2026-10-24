@@ -213,6 +213,22 @@
                     <div class="space-y-4">
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center">
+                                <i class="fas fa-mobile-alt text-2xl text-gray-600 mr-3"></i>
+                                <div>
+                                    <span class="block text-sm font-medium text-gray-700">Mobile money (MoneyFusion)</span>
+                                    <span class="text-xs text-gray-500">Orange Money, MTN Money, Wave et autres</span>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="payment_moneyfusion_enabled" value="1"
+                                       {{ getSetting('payment_moneyfusion_enabled', '1') == '1' ? 'checked' : '' }}
+                                       class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#5a7c6f]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5a7c6f]"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
                                 <i class="fas fa-credit-card text-2xl text-gray-600 mr-3"></i>
                                 <div>
                                     <span class="block text-sm font-medium text-gray-700">Carte de crédit</span>

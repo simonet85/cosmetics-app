@@ -130,6 +130,14 @@
                     <span>Newsletter</span>
                 </a>
 
+                {{-- Contact form messages --}}
+                @php $unreadMessages = \App\Models\ContactMessage::unread()->count(); @endphp
+                <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded hover:bg-gray-800 {{ request()->routeIs('admin.messages.*') ? 'bg-gray-800' : '' }}">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Messages</span>
+                    @if ($unreadMessages > 0)<span class="ml-auto bg-[#5a7c6f] text-white text-xs font-semibold px-2 py-0.5 rounded-full">{{ $unreadMessages }}<span class="sr-only"> non lus</span></span>@endif
+                </a>
+
                 <hr class="my-4 border-gray-700">
 
                 {{-- Settings --}}

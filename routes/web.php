@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminBannerController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Admin\AdminCustomerController;
+use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminReviewController;
@@ -184,6 +185,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Newsletter
     Route::get('newsletter', [AdminSettingController::class, 'newsletter'])->name('newsletter.index');
+
+    // Contact form messages
+    Route::get('messages', [AdminMessageController::class, 'index'])->name('messages.index');
+    Route::patch('messages/{message}/read', [AdminMessageController::class, 'toggleRead'])->name('messages.read');
+    Route::delete('messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
 
     // Settings
     Route::get('settings', [AdminSettingController::class, 'index'])->name('settings.index');
