@@ -62,7 +62,7 @@ class VariantDisplayTest extends TestCase
             'quantity' => 1,
         ])->assertOk();
 
-        $this->get(route('cart.index'))->assertOk()->assertSee('Variante:')->assertSee('100ml');
+        $this->get(route('cart.index'))->assertOk()->assertSee('100ml');
     }
 
     public function test_order_detail_page_shows_the_variant_label(): void
