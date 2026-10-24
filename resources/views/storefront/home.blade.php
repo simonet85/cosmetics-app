@@ -14,7 +14,16 @@
         ])->filter()->values();
     @endphp
 
-    <div class="wrap py-8 sm:py-12">
+    @php
+        $payments = \App\Support\PaymentMethods::acceptedLabels();
+        $proofs = array_filter([
+            ['truck', \App\Support\Shipping::promise()],
+            $payments ? ['smartphone', __('Paiement : :payments', ['payments' => implode(', ', array_map('mb_strtolower', $payments))])] : null,
+            ['check', __('Commandez sans créer de compte')],
+        ]);
+    @endphp
+
+    <div class="wrap pb-10 pt-6 sm:pb-14 sm:pt-10">
         <h1 class="sr-only">{{ __('Glowing Cosmetics, soins cosmétiques') }}</h1>
 
         @if ($slides->isEmpty())
@@ -35,24 +44,46 @@
                 @endforeach
             </x-storefront.slider>
         @endif
+
+        {{-- What a visitor needs to trust the shop, read from the settings: shown under the first screen, never invented --}}
+        <ul class="mt-6 grid border border-ink bg-mint sm:grid-cols-3" aria-label="{{ __('Nos engagements') }}">
+            @foreach ($proofs as [$icon, $text])
+                <li class="flex min-h-14 items-center gap-3 px-4 py-3 text-sm font-semibold {{ ! $loop->first ? 'border-t border-ink sm:border-l sm:border-t-0' : '' }}">
+                    <x-ui.icon :name="$icon" class="size-6 shrink-0 text-green-deep" />
+                    <span>{{ $text }}</span>
+                </li>
+            @endforeach
+        </ul>
     </div>
 
     @if ($categories->isNotEmpty())
-        <section class="on-dark bg-green py-12 text-white sm:py-16" aria-labelledby="univers">
-            <div class="wrap">
+        @php
+            $columns = [1 => 'lg:grid-cols-1', 2 => 'lg:grid-cols-2', 3 => 'lg:grid-cols-3', 4 => 'lg:grid-cols-4', 5 => 'lg:grid-cols-5', 6 => 'lg:grid-cols-6'][$categories->count()];
+        @endphp
+        <section class="wrap pb-12 sm:pb-16" aria-labelledby="univers">
+            <div class="flex items-end justify-between gap-4">
                 <h2 id="univers" class="text-3xl sm:text-4xl">{{ __('Les rayons') }}</h2>
-                <ul class="mt-6 grid border-t border-white/30 sm:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($categories as $category)
-                        <li class="border-b border-white/30">
-                            <a href="{{ route('shop.category', $category->slug) }}"
-                               class="flex min-h-16 items-center justify-between gap-4 px-4 py-4 text-xl font-semibold uppercase hover:bg-green-deep" style="font-stretch: 75%">
+                <x-ui.button variant="text" :href="route('shop.index')">{{ __('Toute la boutique') }}</x-ui.button>
+            </div>
+            <ul class="mt-6 grid grid-cols-2 border-l border-t border-ink sm:grid-cols-3 {{ $columns }}">
+                @foreach ($categories as $category)
+                    <li class="contents">
+                        <a href="{{ route('shop.category', $category->slug) }}" class="group relative flex flex-col border-b border-r border-ink bg-white hover:bg-mint">
+                            <span class="block bg-photo">
+                                @if ($category->cover)
+                                    <x-storefront.product-image :product="$category->cover" sizes="(min-width: 1024px) 16vw, 50vw" class="aspect-square object-contain" />
+                                @else
+                                    <span class="block aspect-square bg-green" aria-hidden="true"></span>
+                                @endif
+                            </span>
+                            <span class="flex min-h-14 items-center justify-between gap-2 px-3 py-3 text-lg font-semibold uppercase leading-tight" style="font-stretch: 75%">
                                 {{ $category->tr('name') }}
                                 <x-ui.icon name="arrow-right" class="size-5 shrink-0" />
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
+                            </span>
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
         </section>
     @endif
 
@@ -61,32 +92,36 @@
             ->unique('id')->reject(fn ($p) => $lead && $p->id === $lead->id)->take(8);
     @endphp
     @if ($shelf->isNotEmpty())
-        <section class="wrap py-12 sm:py-16" aria-labelledby="selection">
+        <section class="wrap pb-12 sm:pb-16" aria-labelledby="selection">
             <div class="flex items-end justify-between gap-4">
                 <h2 id="selection" class="text-3xl sm:text-4xl">{{ __('La sélection') }}</h2>
                 <x-ui.button variant="text" :href="route('shop.index')">{{ __('Toute la boutique') }}</x-ui.button>
             </div>
-            <ul class="mt-6 divide-y divide-line border-y border-ink">
+            <ul class="mt-6 grid grid-cols-2 border-l border-t border-line lg:grid-cols-4">
                 @foreach ($shelf as $product)
-                    <li class="grid grid-cols-[5rem_1fr] items-center gap-x-4 gap-y-3 py-4 sm:grid-cols-[6rem_1fr_auto_auto] sm:gap-x-6" data-reveal style="--reveal-index: {{ $loop->index }}">
-                        <a href="{{ route('products.show', $product->slug) }}" tabindex="-1" aria-hidden="true" class="bg-photo">
-                            <x-storefront.product-image :product="$product" sizes="96px" class="aspect-[3/4]" />
-                        </a>
-                        <div>
-                            <h3 class="text-xl uppercase">
-                                <a href="{{ route('products.show', $product->slug) }}" class="inline-block py-1 hover:underline">{{ $product->tr('name') }}</a>
-                            </h3>
-                            @if ($product->categories->isNotEmpty())
-                                <p class="text-sm text-ink-muted">{{ $product->categories->first()->tr('name') }}</p>
-                            @endif
-                        </div>
-                        <x-ui.price :amount="$product->final_price" :original="$product->discount_price > 0 ? $product->price : null" size="lg" class="col-start-2 sm:col-start-auto" />
-                        <x-storefront.add-to-cart :product="$product" class="col-span-2 sm:col-span-1" />
-                    </li>
+                    <li class="contents"><x-storefront.product-card :product="$product" /></li>
                 @endforeach
             </ul>
         </section>
     @endif
+
+    <section class="on-dark bg-green py-12 text-white sm:py-16" aria-labelledby="promesses">
+        <div class="wrap">
+            <h2 id="promesses" class="text-3xl sm:text-4xl">{{ __('Commander sans surprise') }}</h2>
+            <dl class="mt-6 grid border-t border-white/40 md:grid-cols-3">
+                @foreach ([
+                    [__('Sans compte obligatoire'), __('Un compte vous permet de retrouver vos commandes et votre panier sur tous vos appareils. Commander reste possible sans compte.')],
+                    [__('Annulation possible'), __('Tant que la commande est « En attente », vous pouvez l\'annuler depuis Mon compte.')],
+                    [__('Suivi par e-mail'), __('Un e-mail vous prévient aussi quand l\'état change.')],
+                ] as [$term, $detail])
+                    <div class="border-b border-white/40 py-5 md:pr-6 {{ ! $loop->first ? 'md:border-l md:pl-6' : '' }}">
+                        <dt class="text-xl font-semibold uppercase" style="font-stretch: 75%">{{ $term }}</dt>
+                        <dd class="mt-2 max-w-prose text-white/90">{{ $detail }}</dd>
+                    </div>
+                @endforeach
+            </dl>
+        </div>
+    </section>
 
     @if ($testimonials->isNotEmpty())
         <section class="bg-mint py-12 sm:py-16" aria-labelledby="avis">
@@ -109,7 +144,14 @@
         </section>
     @endif
 
-    @isset($banners['bottom'])
-        <div class="wrap pb-12 sm:pb-16"><x-storefront.banner :banner="$banners['bottom']" /></div>
-    @endisset
+    <div class="wrap py-12 sm:py-16">
+        @isset($banners['bottom'])
+            <x-storefront.banner :banner="$banners['bottom']" />
+        @else
+            <div class="flex flex-col items-start gap-4 border border-ink p-6 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+                <p class="text-3xl uppercase sm:text-4xl" style="font-stretch: 75%">{{ __('Toute la boutique') }}</p>
+                <x-ui.button :href="route('shop.index')">{{ __('Voir la boutique') }}</x-ui.button>
+            </div>
+        @endisset
+    </div>
 </x-layouts.storefront>

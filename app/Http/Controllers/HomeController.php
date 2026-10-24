@@ -64,10 +64,18 @@ class HomeController extends Controller
             ->limit(6)
             ->get();
 
+        // The rayons have no photo of their own: each one shows the photo of its first product on sale,
+        // and a rayon with nothing on sale is left out (its page would be empty)
+        foreach ($categories as $category) {
+            $category->setRelation('cover', $category->products()->active()->inStock()->with('images')->orderBy('products.id')->first());
+        }
+        $categories = $categories->filter(fn ($category) => $category->cover)->values();
+
         // Get testimonials
         $testimonials = Testimonial::active()
             ->where('show_on_home', true)
             ->orderBy('order')
+            ->limit(3)
             ->get();
 
         return view('storefront.home', compact(
