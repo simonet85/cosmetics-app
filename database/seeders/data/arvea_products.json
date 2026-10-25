@@ -1,0 +1,411 @@
+[
+  {
+    "slug": "arvea-masque-cheveux",
+    "source": "masque-cheveux-dz",
+    "ref": "20122",
+    "name": "Masque Nourrissant Cheveux",
+    "price_dz": 1200,
+    "old_price_dz": 1350,
+    "short_description": "Véritable recette de soin intense, ce masque nourrissant cheveux est conçu pour tout type de cheveux.",
+    "description": "Véritable recette de soin intense, ce masque nourrissant cheveux est conçu pour tout type de cheveux. Grâce à sa formule qui associe la kératine, le beurre de karité et l'huile d'argan avec l'Aloe vera, il nourrit, hydrate et démêle la chevelure, tout en prenant soin des cheveux abîmés et fragilisés. Sa texture veloutée et son parfum délicat rendent son application une expérience sensorielle pour une chevelure revitalisée, souple, lumineuse et non alourdie.",
+    "how_to_use": "Appliquer uniformément une quantité suffisante du masque sur des cheveux humides après le shampooing. Laisser agir entre 3 et 5 minutes puis rincer abondamment.",
+    "ingredients": "AQUA (WATER), ALOE BARBADENSIS LEAF JUICE, CETRIMONIUM CHLORIDE, CETEARYL ALCOHOL, CETYL ALCOHOL, BUTYROSPERMUM PARKII BUTTER, ARGANIA SPINOSA SEED OIL, DIPALMITOYLETHYL HYDROXYETHYLMONIUM METHOSULFATE, GLYCERIN, HYDROLYZED KERATIN, ISOPROPYL MYRISTATE, CAPRYLIC/CAPRIC TRIGLYCERIDE, DICAPRYLYL CARBONATE, CETEARETH-20, POLYQUATERNIUM-37, LAURYL GLUCOSIDE, CITRIC ACID, PHENOXYETHANOL, ETHYLHEXYLGLYCERIN, PARFUM (FRAGRANCE), TETRAMETHYL ACETYLOCTAHYDRONAPHTHALENES, BENZYL SALICYLATE, HEXAMETHYLINDANOPYRAN, BENZYL ALCOHOL, HEXYL CINNAMAL, GERANYL ACETATE, TERPINEOL.",
+    "key_ingredients": "Aloe vera : Hydratant / Nourrissant / Apaisant / Régénérant\nBeurre de karité : Nourrissant / Hydratant / Assouplissant / Réparateur\nHuile d'argan : Nourrissante / Hydratante / Fortifiante / Réparatrice\nGlycérine : Hydratante / Agent conditionneur capillaire\nKératine : Réparatrice / Fortifiante / Apporte de la brillance / Redonne du volume",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "hair-care",
+    "featured": true,
+    "images": [
+      "masque-cheveux-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-shampooing-sans-sulfate",
+    "source": "shampooing-sans-sulfate-dz",
+    "ref": "20356",
+    "name": "Shampooing sans sulfate Care & Repair",
+    "price_dz": 1790,
+    "old_price_dz": null,
+    "short_description": "Les cheveux lissés à la kératine ou traités au collagène ou à la protéine nécessitent un soin particulier.",
+    "description": "Les cheveux lissés à la kératine ou traités au collagène ou à la protéine nécessitent un soin particulier. Pour ceci, ARVEA a spécialement conçu la gamme capillaire « Care & Repair ». Le shampooing de la gamme est formulé à base de tensioactifs anioniques doux, sans sulfate qui moussent et nettoient délicatement sans agresser afin de préserver au maximum les effets des traitements. Il est aussi recommandé pour les cheveux colorés, fins, secs, bouclés ou rebelles qui sont difficiles à lisser ou abîmés et pour le cuir chevelu sensible. Enrichi en collagène, kératine et protéines de blé, il rend les cheveux souples, soyeux et lumineux, sans frisottis et non alourdis. Associé au masque sans sulfate de la gamme, les cheveux seront plus éclatants de beauté.",
+    "how_to_use": "Appliquer une noisette du shampooing sur des cheveux mouillés puis masser délicatement jusqu'à obtention d'une mousse. Rincer abondamment.",
+    "ingredients": "AQUA, SODIUM COCOYL ISETHIONATE, DISODIUM LAURETH SULFOSUCCINATE, TEA-COCOYL GLUTAMATE, COCAMIDOPROPYL BETAINE, COCO-BETAINE, SHEA BUTTER POLYGLYCERYL-4 ESTERS, COCOYL METHYL GLUCAMIDE, GLYCERIN, ARGAN OIL POLYGLYCERYL-6 ESTERS, HYDROLYZED WHEAT PROTEIN, HYDROLYZED KERATIN, HYDROLYZED COLLAGEN, GUAR HYDROXYPROPYLTRIMONIUM CHLORIDE, ACRYLAMIDOPROPYLTRIMONIUM CHLORIDE/ACRYLAMIDE COPOLYMER, PEG-6 CAPRYLIC/CAPRIC GLYCERIDES, TETRASODIUM EDTA, PANTHENOL, ALOE BARBASENSIS LEAF JUICE, SODIUM BENZOATE, SODIUM CITRATE, PEG-120 METHYL GLUCOSE DIOLEATE, CITRIC ACID, PARFUM, HEXYL CINNAMAL, LIMONENE, LINALOOL.",
+    "key_ingredients": "Kératine : Réparatrice / Fortifiante / Hydratante / Apporte de la brillance / Redonne du volume\nCollagène : Réparateur / Hydratant / Fortifiant / Redonne du volume / Restaure l'élasticité\nProtéines de blé : Réparatrices / Hydratantes / Fortifiantes / Redonnent du volume / Restaurent l'éclat\nBeurre de karité : Nourrissant / Hydratant / Assouplissant / Réparateur\nAloe vera : Hydratant / Nourrissant / Apaisant / Régénérant\nHuile d'argan : Régénérante / Nourrissante / Hydratante / Fortifiante / Réparatrice",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "hair-care",
+    "featured": false,
+    "images": [
+      "shampooing-sans-sulfate-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-shampooing-anti-chute",
+    "source": "shampooing-anti-chute-dz",
+    "ref": "20109",
+    "name": "Shampooing Anti-Chute",
+    "price_dz": 1500,
+    "old_price_dz": null,
+    "short_description": "Ce shampooing anti-chute, adapté à un usage fréquent, nettoie en douceur les cheveux tout en aidant à fortifier la fibre capillaire.",
+    "description": "Ce shampooing anti-chute, adapté à un usage fréquent, nettoie en douceur les cheveux tout en aidant à fortifier la fibre capillaire. Formulé à base d'Aloe vera, de provitamine B5 et de glycérine, il hydrate et tonifie le cuir chevelu. Enrichi en biotine, en niacinamide et en zinc PCA, ainsi qu'en actifs fortifiants ciblés, il contribue à un cuir chevelu sain, aide à renforcer l'ancrage du cheveu et à réduire la chute liée à la casse. Les cheveux retrouvent ainsi force, souplesse et brillance, et paraissent visiblement plus denses.",
+    "how_to_use": "Appliquer une quantité suffisante sur des cheveux mouillés, puis masser délicatement jusqu'à obtention d'une mousse. Rincer abondamment.",
+    "ingredients": "AQUA (WATER), MAGNESIUM LAURETH SULFATE, ALOE BARBADENSIS LEAF JUICE, GLYCERIN, SODIUM LAUROYL SARCOSINATE, COCAMIDOPROPYL BETAINE, SODIUM COCOYL ISETHIONATE, BETAINE, NIACINAMIDE, BIOTIN, PANTHENOL, ZINC PCA, COCO-GLUCOSIDE, HYDROLYZED RICE PROTEIN, GLYCERYL OLEATE, HYDROLYZED GLYCOSAMINOGLYCANS, DEXTRAN, ACETYL TETRAPEPTIDE-3, TRIFOLIUM PRATENSE (CLOVER) FLOWER EXTRACT, HYALURONIC ACID, BUTYLENE GLYCOL, CITRIC ACID, XANTHAN GUM, GUAR HYDROXYPROPYLTRIMONIUM CHLORIDE, PEG-150 PENTAERYTHRITYL TETRASTEARATE, BIS-DIISOPROPANOLAMINO-PG-PROPYL DISILOXANE/BIS-VINYL DIMETHICONE COPOLYMER, ACRYLAMIDOPROPYLTRIMONIUM CHLORIDE/ACRYLAMIDE COPOLYMER, PPG-2 HYDROXYETHYL COCAMIDE, PEG-90M, TETRASODIUM EDTA, PHENOXYETHANOL, ETHYLHEXYLGLYCERIN, PARFUM (FRAGRANCE), TERPINEOL.",
+    "key_ingredients": "Aloe vera : Hydratant / Nourrissant / Apaisant / Régénérant\nProvitamine B5 : Adoucissante / Apaisante / Revitalisante\nZinc PCA : Sébo-régulateur / Purifiant / contribue à un cuir chevelu sain\nBiotine : Fortifiante / Revitalisante / Anti-casse\nNiacinamide : Stimule la microcirculation / Revitalisante / Redensifiante",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "hair-care",
+    "featured": true,
+    "images": [
+      "shampooing-anti-chute-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-shampooing-cheveux-secs",
+    "source": "shampooing-cheveux-secs-dz",
+    "ref": "20150",
+    "name": "Shampooing Cheveux Secs",
+    "price_dz": 1050,
+    "old_price_dz": null,
+    "short_description": "Ce shampooing pour cheveux secs, adapté à un usage fréquent, nettoie délicatement les cheveux tout en aidant à préserver l'équilibre hydrolipidique du cuir chevelu.",
+    "description": "Ce shampooing pour cheveux secs, adapté à un usage fréquent, nettoie délicatement les cheveux tout en aidant à préserver l'équilibre hydrolipidique du cuir chevelu. Formulé à base d'huile d'argan et d'Aloe vera, il nourrit la fibre capillaire et aide à limiter la déshydratation. Enrichi en extraits de fleurs (sureau et achillée), en protéines hydrolysées et en provitamine B5, il adoucit, renforce et contribue à améliorer l'élasticité. Les cheveux sont immédiatement souples et brillants au toucher doux et soyeux.",
+    "how_to_use": "Déposer une noix du shampoing sur des cheveux mouillés, masser délicatement au bout des doigts puis rincer abondamment.",
+    "ingredients": "AQUA (WATER), SODIUM LAURETH SULFATE, COCAMIDOPROPYL BETAINE, ALOE BARBADENSIS LEAF JUICE, SODIUM PEG-7 OLIVE OIL CARBOXYLATE, GLYCERIN, OLIVE OIL PEG-7 ESTERS, COCO GLUCOSIDE, ARGAN OIL GLYCERETH-8 ESTERS, BABASSU OIL GLYCERETH-8 ESTERS, SAMBUCUS NIGRA FLOWER EXTRACT, ACHILLEA MILLEFOLIUM FLOWER EXTRACT, PRUNUS AMYGDALUS DULCIS SEED EXTRACT, PANTHENOL, BETAINE, HYDROLYZED WHEAT PROTEIN, HYDROLYZED WHEAT STARCH, HYDROGENATED VEGETABLE OIL, GLYCERYL OLEATE, XANTHAN GUM, SODIUM CHLORIDE, BIS-CETEARYL AMODIMETHICONE, POLYQUATERNIUM-10, CETEARETH-7, CETEARETH-25, POTASSIUM SORBATE, PHENOXYETHANOL, ETHYLHEXYLGLYCERIN, PARFUM (FRAGRANCE), TERPINEOL.",
+    "key_ingredients": "Aloe vera : Hydratant / Nourrissant / Apaisant / Régénérant\nHuile d'argan : Régénérante / Nourrissante / Hydratante / Fortifiante / Réparatrice\nProvitamine B5 : Hydratante / Conditionneur capillaire\nExtrait de fleur de sureau : Adoucissant / Apaisant / Hydratant\nExtrait d'amande douce : Assouplissant / Nourrissant/ Adoucissant",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "hair-care",
+    "featured": false,
+    "images": [
+      "shampooing-cheveux-secs-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-shampooing-cheveux-gras",
+    "source": "shampooing-cheveux-gras-dz",
+    "ref": "20149",
+    "name": "Shampooing Cheveux Gras",
+    "price_dz": 1050,
+    "old_price_dz": null,
+    "short_description": "Ce shampooing pour cheveux gras, adapté à un usage fréquent, purifie et dégraisse le cuir chevelu tout en maintenant son équilibre séborrhéique.",
+    "description": "Ce shampooing pour cheveux gras, adapté à un usage fréquent, purifie et dégraisse le cuir chevelu tout en maintenant son équilibre séborrhéique. Sa formule associe l'Aloe vera aux extraits de lierre, de bardane et de bouleau, aux propriétés séborégulatrices, pour aider à limiter l'excès de sébum sans agresser la fibre capillaire. Enrichi également en provitamine B5, il apporte douceur et hydratation pour prévenir le dessèchement des longueurs. Les cheveux sont immédiatement propres, légers et souples, au toucher aérien.",
+    "how_to_use": "Appliquer une quantité suffisante sur des cheveux mouillés, puis masser délicatement jusqu'à obtention d'une mousse. Rincer abondamment.",
+    "ingredients": "AQUA, SODIUM LAURETH SULFATE, DISODIUM LAURETH SULFOSUCCINATE, COCAMIDE DEA, COCAMIDOPROPYL BETAINE, DISODIUM PEG-8 PALM GLYCERIDES SULFOSUCCINATE, PROPYLENE GLYCOL, GLYCOL DISTEARATE, GUAR HYDROXYPROPYLTRIMONIUM CHLORIDE, GLYCERIN, POLYQUATERNIUM-10, PANTHENOL, CITRUS LIMON FRUIT EXTRACT, URTICA DIOICA EXTRACT, ARCTIUM LAPPA ROOT EXTRACT, LAVANDULA ANGUSTIFOLIA FLOWER EXTRACT, TARAXACUM OFFICINALE ROOT EXTRACT, PLANTAGO MAJOR LEAF EXTRACT, PAPAVER RHOEAS FLOWER EXTRACT, CYNARA SCOLYMUS LEAF EXTRACT, ROSA CENTIFOLIA FLOWER EXTRACT, ALOE BARBADENSIS LEAF JUICE, BENZYL ALCOHOL, METHYLCHLOROISOTHIAZOLINONE, METHYLISOTHIAZOLINONE, PARFUM.",
+    "key_ingredients": "Aloe vera : Hydratant / Nourrissant / Apaisant / Régénérant\nProvitamine B5 : Hydratante / Conditionneur capillaire\nExtrait de la grande bardane : Séborégulateur / Apaisant / Lutte contre la chute des cheveux",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "hair-care",
+    "featured": false,
+    "images": [
+      "shampooing-cheveux-gras-1.webp",
+      "shampooing-cheveux-gras-2.webp"
+    ]
+  },
+  {
+    "slug": "arvea-huile-protectrice-cheveux-sun-protect",
+    "source": "huile-protectrice-cheveux-sun-protect-dz",
+    "ref": "20425",
+    "name": "Huile protectrice cheveux Sun Protect",
+    "price_dz": 2500,
+    "old_price_dz": null,
+    "short_description": "Cette huile capillaire protectrice de la gamme SUN PROTECT est dotée d'un haut facteur de protection solaire SPF 30.",
+    "description": "Cette huile capillaire protectrice de la gamme SUN PROTECT est dotée d'un haut facteur de protection solaire SPF 30. Elle est spécialement développée pour assurer une protection multiple de la kératine des cheveux contre les rayonnements UV, le sel et le chlore. Grâce à sa formule riche en huile de graine de sésame, huile de ricin et en huile d'argan, elle permet aussi d'hydrater et de nourrir les cheveux en procurant un effet mouillé et un fini brillant non gras et non collant. Elle est destinée à tous types de cheveux, même colorés.",
+    "how_to_use": "Vaporiser sur l'ensemble de la chevelure, sèche ou humide, avant exposition et répéter aussi souvent que souhaité pendant l'exposition.",
+    "ingredients": "ISODODECANE, ETHYLHEXYL METHOXYCINNAMATE, TRICAPRYLIN, ISOPROPYL MYRISTATE, C12-15 ALKYL BENZOATE, SESAMUM INDICUM SEED OIL, DIISOPROPYL SEBACATE, DIBUTYL ADIPATE, RICINUS COMMUNIS SEED OIL, QUATERNIUM-95, ARGANIA SPINOSA KERNEL OIL, HELIANTHUS ANNUUS SEED OIL, BUTYROSPERMUM PARKII BUTTER, PROPANEDIOL, POLYHYDROXYSTEARIC ACID, ALOE BARBADENSIS POWDER, TOCOPHEROL, BHT, PARFUM, HEXYL CINNAMAL, BENZYL ALCOHOL, LINALOOL, LIMONENE, CINNAMYL ALCOHOL.",
+    "key_ingredients": "Huile de graine de sésame : Fortifiante et Nourrissante des cheveux / Émolliente / Conditionneur capillaire / Agent masquant\nHuile de ricin : Fortifiante et Nourrissante des cheveux\nHuile d'argan : Fortifiante et Nourrissante des cheveux\nHuile de tournesol : Émolliente / Agent masquant\nBeurre de karité : Hydratant / Assouplissant / Nourrissant / Réparateur\nAloe vera : Régénérant / Hydratant / Réparateur\nVitamine E : Antioxydante",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, laver immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "hair-care",
+    "featured": false,
+    "images": [
+      "huile-protectrice-cheveux-sun-protect-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-serum-visage-hydra-deep-tous-types-de-peaux",
+    "source": "serum-visage-hydra-deep-tous-types-de-peaux-dz",
+    "ref": "20447",
+    "name": "Sérum visage Hydra-Deep, tous types de peaux",
+    "price_dz": 5400,
+    "old_price_dz": null,
+    "short_description": "HYDRA-DEEP est une gamme de soin visage développée par ARVEA.",
+    "description": "HYDRA-DEEP est une gamme de soin visage développée par ARVEA. Elle est déclinée en lignes de produits qui apportent des solutions axées sur l'hydratation profonde et les besoins spécifiques selon le type de peau. Ce sérum pour visage de la gamme HYDRA-DEEP est un soin universel adapté à tous les types de peau. Concentré en complexe d'acide hyaluronique de différents poids moléculaires et en niacinamide, il apporte un shot d'hydratation, renforce la barrière cutanée et repulpe la peau. De plus, Il est enrichi en collagène et en vitamine C, pour plus d'éclat et de fermeté. Ainsi, jour après jour, les signes de l'âge sont estompés. Faisant partie de la ligne peau sèche et sensible et pouvant intégrer les autres lignes de produits, ce sérum répond à un besoin d'hydratation commun quel que soit le type de peau.",
+    "how_to_use": "Déposer grâce à la pipette quelques gouttes dans le creux de la main. Appliquer sur le visage et le cou en pianotant, puis étaler jusqu'à absorption. Compléter par l'application de la crème de soin habituelle.",
+    "ingredients": "AQUA, BUTYLENE GLYCOL, SORBITOL, ISOPENTYLDIOL, PROPANEDIOL, HYDROLYZED GLYCOSAMINOGLYCANS, GLYCERIN, SODIUM HYALURONATE, HYDROLYZED HYALURONIC ACID, HYALURONIC ACID, SODIUM HYALURONATE CROSSPOLYMER, BIOSACCHARIDE GUM-1, NIACINAMIDE, PANTHENOL, ASCORBYL GLUCOSIDE, HYDROLYZED COLLAGEN, BENZYL ALCOHOL, GLYCERYL CAPRYLATE, GLYCERYL UNDECYLENATE.",
+    "key_ingredients": "",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "skincare",
+    "featured": true,
+    "images": [
+      "serum-visage-hydra-deep-tous-types-de-peaux-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-mousse-nettoyante-visage-hydra-deep-peaux-seches-and-sensibles",
+    "source": "mousse-nettoyante-visage-hydra-deep-peaux-seches-and-sensibles-dz",
+    "ref": "20446",
+    "name": "Mousse nettoyante visage Hydra-Deep, peaux sèches et sensibles",
+    "price_dz": 2400,
+    "old_price_dz": null,
+    "short_description": "HYDRA-DEEP est une gamme de soin visage développée par ARVEA.",
+    "description": "HYDRA-DEEP est une gamme de soin visage développée par ARVEA. Elle est déclinée en lignes de produits qui apportent des solutions axées sur l'hydratation profonde et les besoins spécifiques selon le type de peau. Cette mousse nettoyante de la gamme HYDRA-DEEP fait partie de la ligne de produits destinés pour la peau sèche et sensible. Spécialement formulée à base de tensioactifs doux, elle nettoie efficacement en éliminant les impuretés, les traces de maquillage et de pollution, sans dessécher la peau. Riche en urée, glycérine, Aloe vera, huiles végétales hydrosolubles, niacinamide et en provitamine B5, elle apaise les tiraillements et procure un effet hydratant. Sa texture mousse aérienne onctueuse offre une sensation de fraîcheur et de douceur.",
+    "how_to_use": "Prélever 1 à 2 pressions de mousse, la répartir entre les mains puis masser sur la peau du visage préalablement humidifiée, en évitant les yeux. Rincer à l'eau abondamment. S'utilise matin et soir.",
+    "ingredients": "AQUA, PEG-6 CAPRYLIC/CAPRIC GLYCERIDES, ALOE BARBADENSIS LEAF JUICE, UREA, BETAINE, GLYCERINE, CAPRYLYL/CAPRYL GLUCOSIDE, NIACINAMIDE, SODIUM LAUROYL SARCOSINATE, COCO-BETAINE, PANTHENOL, ARGAN OIL GLYCERETH-8 ESTERS, OLIVE OIL POLYGLYCERYL-4 ESTERS, SHEA BUTTER GLYCERETH-8 ESTERS, TETRASODIUM EDTA, CITRIC ACID, BENZYL ALCOHOL, GLYCERYL CAPRYLATE, GLYCERYL UNDECYLENATE, PARFUM.",
+    "key_ingredients": "Glycérine : Hydratante / Émolliente / Humectante\nAloe vera : Hydratant / Régénérant / Apaisant /Régulateur de sébum\nHuiles végétales hydrosolubles : Hydratantes / Régénérantes / Nourrissantes / Réparatrices\nNiacinamide : Hydratante / Apaisante / Anti-tâche / Régénérante\nProvitamine B5 : Hydratante / Apaisante",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, laver immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "skincare",
+    "featured": false,
+    "images": [
+      "mousse-nettoyante-visage-hydra-deep-peaux-seches-and-sensibles-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-eau-micellaire-demaquillante",
+    "source": "eau-micellaire-demaquillante-dz",
+    "ref": "20481",
+    "name": "Eau micellaire démaquillante",
+    "price_dz": 2400,
+    "old_price_dz": null,
+    "short_description": "Cette eau micellaire démaquillante est conçue pour le visage, les yeux et les lèvres, et convient à tous les types de peau, même les plus sensibles.",
+    "description": "Cette eau micellaire démaquillante est conçue pour le visage, les yeux et les lèvres, et convient à tous les types de peau, même les plus sensibles. Elle nettoie et élimine efficacement, sans rinçage, le maquillage y compris waterproof, les impuretés et l'excès de sébum. Sa formule enrichie en glycérine respecte la barrière cutanée et apporte douceur et hydratation.",
+    "how_to_use": "Imbiber des cotons doux ou des carrés lavables avec de l'eau micellaire et appliquer sans frotter matin et/ou soir sur les yeux fermés, les lèvres puis le visage. Ne pas rincer.",
+    "ingredients": "AQUA (WATER), ISOPENTYLDIOL, HEXYLENE GLYCOL, CAPRYLOYL GLYCINE, POLOXAMER 184, PEG-16 MACADAMIA GLYCERIDES, GLYCERIN, DECYL GLUCOSIDE, SACCHARIDE ISOMERATE, XYLITYLGLUCOSIDE, TETRASODIUM EDTA, CITRIC ACID, SODIUM CITRATE, PHENOXYETHANOL, ETHYLHEXYLGLYCERIN.",
+    "key_ingredients": "Glycérine végétale : Hydratante / Émolliente / Humectante",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec le bord interne des yeux. En cas de contact avec le bord interne des yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "skincare",
+    "featured": true,
+    "images": [
+      "eau-micellaire-demaquillante-1.webp",
+      "eau-micellaire-demaquillante-2.webp",
+      "eau-micellaire-demaquillante-3.webp"
+    ]
+  },
+  {
+    "slug": "arvea-masque-exfoliant",
+    "source": "masque-exfoliant-dz",
+    "ref": "20172",
+    "name": "Masque exfoliant",
+    "price_dz": 2100,
+    "old_price_dz": null,
+    "short_description": "Le Masque Exfoliant ARVEA permet une élimination efficace des cellules mortes de la peau du visage pour qu'elle retrouve sa douceur, sa fraîcheur et son éclat.",
+    "description": "Le Masque Exfoliant ARVEA permet une élimination efficace des cellules mortes de la peau du visage pour qu'elle retrouve sa douceur, sa fraîcheur et son éclat. Grâce à sa composition riche en poudre de noyaux d'abricot, aloe vera, huile d'argan bio, extrait naturel de concombre et huile naturelle de Nigelle, le teint est sublimé pour un effet bonne mine immédiat.",
+    "how_to_use": "Appliquer le masque sur la peau du visage humide et laisser agir pendant 4 à 5 minutes. Ensuite, masser légèrement en réalisant des mouvements circulaires, tout en évitant le contour des yeux. Enfin, rincer abondamment à l'eau. A utiliser une à deux fois par semaine. Foire aux questions: Pourquoi exfolier sa peau du visage? La peau de notre organisme se régénère à chaque instant, les cellules mortes ne doivent pas rester accrochées à la surface de l'épiderme pour que ce renouvellement soit parfait. Notre peau a besoin alors d'une exfoliation (ou un gommage) pour éliminer les cellules mortes à la surface de l'épiderme. A part la bonne mine, le teint lumineux et les pores débouchés, le gommage aide la peau du visage à mieux respirer. Est-ce que l'exfoliation du visage se fait de la même façon pour tout type de peau? Tous les types de peaux peuvent bénéficier d'une exfoliation. Il est conseillé de faire un gommage hebdomadaire pour tous les types de peau, pour ceux et celles qui ont la peau grasse, ils peuvent pratiquer un gommage deux à trois fois par semaine. Comment exfolier sa peau du visage? En appliquant le masque exfoliant il faut veiller à ne pas se rapprocher du contour des yeux et des lèvres. Les composants du masque peuvent être agressifs pour ces parties sensibles du visage. Le visage doit être mouillé avant l'application du masque. En massant le visage, il ne faut pas trop appuyer pour ne pas abîmer la barrière cutanée. Est-il nécessaire d'hydrater le visage après exfoliation? Après l'exfoliation du visage, il est préférable d'appliquer une crème hydratante pour garder une peau douce et protégée. Vous pouvez appliquer la crème de jour ou bien la crème de nuit tout dépend du moment de la journée.",
+    "ingredients": "AQUA, ALOE BARBADENSIS LEAF JUICE, PEG-7 GLYCEYL COCOATE, ARGANIA SPINOSA KERNEL OIL, PRUNUS ARMENIACA SEED POWDER,CETYL ALCOHOL, GLYCERIN, GLYCERYL STEARATE, PEG-100 STEARATE, CAPRYLIC-CAPRIC TRIGLYCERIDE, PERSEA GRATISSIMA OIL, ACRYLATES / ACRYLAMIDE COPOLYMER, POLYSORBATE 85, VITIS VINIFERA SEED OIL, OPUNTIA FICUS INDICA SEED OIL, CAPRYLYL/CAPRYL GLUCOSIDE, POLYGLYCERYL-10 ISOSTEARATE, SODIUM DILAURAMIDOGLUTAMIDE LYSINE, IMIDAZOLIDINYL UREA, TOCOPHERYL ACETATE, PANTHENOL, MENTHYL LACTATE, LACTIC ACID, CUCUMIS SATIVUS FRUIT EXTRACT, NIGELLA SATIVA SEED OIL, CELLULOSE GUM, PHENOXYETHANOL, ETHYLHEXYLGLYCERIN, PERFUME.",
+    "key_ingredients": "",
+    "precautions": "Ne pas laisser à la portée des enfants. Eviter le contour des yeux et éviter le contact avec les yeux. En cas de contact, rincer abondamment à l'eau. Ne pas avaler.",
+    "storage_conditions": "A conserver dans un endroit sec, à l'abri de la lumière et loin des sources de la chaleur.",
+    "category": "skincare",
+    "featured": false,
+    "images": [
+      "masque-exfoliant-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-creme-miracle",
+    "source": "creme-miracle-dz",
+    "ref": "20153",
+    "name": "Crème Miracle",
+    "price_dz": 2100,
+    "old_price_dz": null,
+    "short_description": "Un véritable concentré d'hydratation riche en aloe vera, huile d'argan, beurre de karité, huile de pépins de raisin, provitamine B5, camomille et calendula.",
+    "description": "Un véritable concentré d'hydratation riche en aloe vera, huile d'argan, beurre de karité, huile de pépins de raisin, provitamine B5, camomille et calendula. Cette formule exceptionnelle redonne à la peau un confort absolu et une hydratation délicate qui dure 24h. De texture légère et onctueuse, la crème miracle est rapidement absorbée et offre à la peau souplesse et hydratation. Elle est conçue pour le corps et elle peut être utilisée comme une crème pour les mains et les pieds. La crème miracle convient aux hommes et aux femmes.",
+    "how_to_use": "Appliquez une quantité suffisante de la crème sur une peau propre et massez jusqu'à absorption complète du produit. Vous pouvez l'utiliser sur tout le corps. Conseils et questions fréquentes: Appliquer la crème miracle sur le corps juste après la douche (une peau humide et essuyée laisse mieux pénétrer le produit) Déposer la crème sur la peau en massant de bas vers le haut en effectuant des mouvements circulaires.",
+    "ingredients": "AQUA, ALOE BARBADENSIS LEAF JUICE, CETEARYL ALCOHOL, GLYCERIN, VITIS VINIFERA SEED OIL, PROPYLENE GLYCOL, BUTYROSPERMUM PARKII BUTTER, OCTYLDODECANOL, C12-15 ALKYL BENZOATE, GLYCERYL STEARATE, STEARIC ACID, CYLOPENTASILOXANE, CETEARETH-20, POTASSIUM CETYL PHOSPHATE, POLYSORBATE 20, TOCOPHERYL ACETATE, ACRYLATES/ACRYLAMIDE COPOLYMER, POLYSORBATE 85, ALLANTOIN, PANTHENOL, CHAMOMILLA RECUTITA FLOWER EXTRACT, ARGANIA SPINOSA KERNEL OIL, CALENDULA OFFICINALIS FLOWER EXTRACT, DIMETHICONE, PHENOXYETHANOL, CARBOMER, TRIETHANOLAMINE, TETRASODIUM EDTA, ETHYLHEXYLGLYCERIN, PARFUM.",
+    "key_ingredients": "Gel d'aloe vera : Hydratant / Régénérant / Apaisant (anti-inflammatoire) /Régulateur de sébum.\nGlycérine : Hydratant / Emollient / Réparateur\nHuile de pépins de raisin : Antioxydant / Nourrissant / Régénérant / Émollient / Régulateur de sébum\nBeurre de karité : Hydratant / Assouplissant / Nourrissant / Réparateur\nVitamine E : Agent d'entretien de la peau / Antioxydant\nProvitamine B5 : Hydratant / protège la peau des irritations / réduit les rougeurs et soulage les démangeaisons.\nCamomille : apaisant / anti-inflammatoire\nHuile d'argan : Hydratant / Régénérant / Nourrissant / Fortifiant / Réparateur\nCalendula : apaisant / anti-inflammatoire",
+    "precautions": "Pour usage externe seulement. A ne pas laisser à la portée des enfants. A éviter le contact avec les yeux, en cas de contact, rincez directement avec de l'eau. A ne pas avaler.",
+    "storage_conditions": "A conserver dans un endroit sec. Protéger du rayonnement solaire. Tenir à l'écart de la chaleur.",
+    "category": "skincare",
+    "featured": true,
+    "images": [
+      "creme-miracle-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-brume-rafraichissante",
+    "source": "brume-rafraichissante-dz",
+    "ref": "20424",
+    "name": "Brume rafraîchissante Sun Protect",
+    "price_dz": 900,
+    "old_price_dz": null,
+    "short_description": "Cette brume rafraîchissante de la gamme SUN PROTECT apaise instantanément la peau échauffée par le soleil, la rafraîchit, la désaltère et restaure donc son confort et…",
+    "description": "Cette brume rafraîchissante de la gamme SUN PROTECT apaise instantanément la peau échauffée par le soleil, la rafraîchit, la désaltère et restaure donc son confort et ceci grâce à sa formule riche en extrait de fleur d'oranger, extrait de fleur de calendula, extrait de feuille d'olivier et en huiles végétales hydrosolubles. Son format spray permet une application encore plus facile en sortie de plage pour enlever la sensation de sel sur la peau et l'hydrater ou après la douche pour prolonger la fraîcheur et la réhydratation. Facile à emporter aussi dans le sac ou sur soi pour se rafraîchir à tout moment de la journée (quand 'il fait trop chaud, ou lors de longs voyages en voiture, train, bus...). Elle est conçue pour visage et corps et convient pour adultes et enfants > 3 ans.",
+    "how_to_use": "Pulvériser généreusement puis étaler uniformément sur la peau échauffée. Pour le visage, vaporiser dans les mains puis appliquer. Renouveler aussi souvent que nécessaire.",
+    "ingredients": "AQUA, CITRUS AURANTIUM DULCIS FLOWER, OLIVE OIL GLYCERETH-8 ESTERS, ARGAN OIL GLYCERETH-8 ESTERS, SHEA BUTTER POLYGLYCERYL-4 ESTERS, BETAINE, CALENDULA OFFICINALIS FLOWER EXTRACT, SODIUM BENZOATE, OLEA EUROPAEA LEAF EXTRACT, CITRIC ACID.",
+    "key_ingredients": "Extrait de fleur d'oranger doux : Apaisant / Rafraîchissant/ Tonifiant / Hydratant / Adoucissant\nExtrait de fleur de calendula : Hydratant / Adoucissant / Apaisant / Régénérant\nExtrait de feuilles d'olivier : Hydratant / Antioxydant / Protecteur cutané / Apaisant\nHuile d'olive hydrosoluble : Hydratante / Nourrissante / Antioxydante / Protectrice\nHuile d'argan hydrosoluble : Hydratante / Régénérante / Nourrissante/ Réparatrice\nBeurre de karité hydrosoluble : Hydratant / Assouplissant / Nourrissant / Réparateur",
+    "precautions": "Ce produit n'est pas destiné à être utilisé pour les enfants de moins de 3 ans. Pour usage externe uniquement. Ne pas appliquer sur une peau lésée ou endommagée. Éviter le contact avec les yeux. En cas de contact avec les yeux, laver immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "skincare",
+    "featured": false,
+    "images": [
+      "brume-rafraichissante-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-gel-aloe-vera",
+    "source": "gel-aloe-vera-dz",
+    "ref": "20280",
+    "name": "Gel Aloe vera",
+    "price_dz": 1580,
+    "old_price_dz": 1850,
+    "short_description": "C'est une formule constituée de 85% de gel d'Aloe Vera natif qui permet de bénéficier des propriétés hydratante, nourrissante, adoucissante, apaisante et régénératrice de l'Aloe Vera.",
+    "description": "C'est une formule constituée de 85% de gel d'Aloe Vera natif qui permet de bénéficier des propriétés hydratante, nourrissante, adoucissante, apaisante et régénératrice de l'Aloe Vera.",
+    "how_to_use": "A utiliser la nuit sur le visage, le cou, les mains et les autres parties exposées au soleil et, sur le reste du corps, à tout moment de la journée. La peau doit être parfaitement nettoyée et séchée. Conseils et questions fréquentes Peut-on utiliser le gel aloe vera en soin capillaire? Le gel d'aloe vera combat l'excès de sébum du cuir chevelu, avec ses éléments nutritifs, la fibre capillaire sera revitalisée dès la racine. Massez avec délicatesse le cuir chevelu avec le gel avant votre shampoing. Peut-il jouer le rôle d'une crème de nuit? Le gel d'aloe vera est un bon traitement des peaux mixtes à grasses. Il imprègnera les pores de la peau tout en légèreté, sans saturation. Il s'accommode en crème de nuit pour le visage. Ce soin vous donnera un coup de frais à votre visage, lissera le grain de peau pour un rendu et une finition mat, sans brillance et effet luisant!",
+    "ingredients": "ALOE BARADENSIS LEAF JUICE, AQUA, GLYCERIN, CARBOMER, TRIETHANOLAMINE, CAPRYLYL/CAPRYL GLUCOSIDE, POLYGLYCERYL-10 ISOSTEARATE, SODIUM DILAURAMIDOGLUTAMIDE LYSINE, PHENOXYETHANOL, ALLANTOIN, IMIDAZOLIDINYL UREA, ETHYLHEXYLGLYCERIN.",
+    "key_ingredients": "",
+    "precautions": "Ne pas utiliser chez les personnes allergiques à l'aloe vera. Ne pas laisser à la portée des enfants. Eviter le contact avec les yeux. En cas de contact, rincer abondamment à l'eau. Ne pas avaler.",
+    "storage_conditions": "Pour une conservation optimale de votre Gel Aloe Vera après ouverture et, pour un effet apaisant immédiat, le stocker au réfrigérateur.",
+    "category": "body-care",
+    "featured": true,
+    "images": [
+      "gel-aloe-vera-1.webp",
+      "gel-aloe-vera-2.webp"
+    ]
+  },
+  {
+    "slug": "arvea-lait-corps-sweet-carambola",
+    "source": "lait-corps-sweet-carambola-dz",
+    "ref": "20451",
+    "name": "Lait Corps Sweet Carambola 150 ml",
+    "price_dz": 1320,
+    "old_price_dz": 1550,
+    "short_description": "Conçu pour apporter un soin complet à la peau, le lait corps ARVEA est enrichi à l'Aloe vera, l'huile d'argan et des gommes d'origine naturelle.",
+    "description": "Conçu pour apporter un soin complet à la peau, le lait corps ARVEA est enrichi à l'Aloe vera, l'huile d'argan et des gommes d'origine naturelle. Il hydrate en profondeur, nourrit intensément pour rendre la peau douce et procure une sensation de relaxation. Onctueux, non gras et facile à appliquer, il pénètre instantanément et laisse un film lisse, protecteur et non collant sur la peau. Son parfum inspiré de la brume parfumée (Body Splash) SWEET CAROMBOLA prolonge les notes olfactives fruitées sucrées de cette dernière.",
+    "how_to_use": "Déposer grâce à la pompe une quantité suffisante sur une peau préalablement nettoyée et appliquer sur le corps en massant légèrement avec des mouvements circulaires.",
+    "ingredients": "AQUA, PROPYLENE GLYCOL, CAPRYLIC/CAPRIC TRIGLYCERIDE, TRICAPRYLIN, TRIHEPTANOIN, ALOE BARBADENSIS LEAF JUICE, ARGANIA SPINOSA KERNEL OIL, HYDROXYPROPYL METHYLCELLULOSE STEAROXY ETHER, BUTYLENE GLYCOL, CELLULOSE, CAESALPINIA SPINOSA GUM, SODIUM POLYACRYLATE STARCH, PHENOXYETHANOL, TETRASODIUM EDTA, TRIETHANOLAMINE, ETHYLHEXYLGLYCERIN, PARFUM, BENZYL SALICYLATE, LINALOOL, HEXYL CINNAMAL, LIMONENE, BENZYL ALCOHOL, ALPHA-ISOMETHYL IONONE, HYDROXYCITRONELLAL, CITRONELLOL, BENZYL BENZOATE.",
+    "key_ingredients": "Aloe vera : Hydratant / Nourrissant / Anti-âge / Protège la peau\nHuile d'argan : Hydratante / Régénérante / Restructurante / Nourrissante / Réparatrice\nGomme Tara : Protectrice / Filmogène",
+    "precautions": "Pour usage externe uniquement. Ne pas utiliser sur le visage. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "body-care",
+    "featured": false,
+    "images": [
+      "lait-corps-sweet-carambola-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-lait-corps-crunchy-caramel",
+    "source": "lait-corps-crunchy-caramel-dz",
+    "ref": "20449",
+    "name": "Lait Corps Crunchy Caramel 150 ml",
+    "price_dz": 1550,
+    "old_price_dz": null,
+    "short_description": "Conçu pour apporter un soin complet à la peau, le lait corps ARVEA est enrichi à l'Aloe vera, l'huile d'argan et des gommes d'origine naturelle.",
+    "description": "Conçu pour apporter un soin complet à la peau, le lait corps ARVEA est enrichi à l'Aloe vera, l'huile d'argan et des gommes d'origine naturelle. Il hydrate en profondeur, nourrit intensément pour rendre la peau douce et procure une sensation de relaxation. Onctueux, non gras et facile à appliquer, il pénètre instantanément et laisse un film lisse, protecteur et non collant sur la peau. Son parfum inspiré de la brume parfumée (Body Splash) CRUNCHY CARAMEL prolonge les notes olfactives fruitées sucrées de cette dernière.",
+    "how_to_use": "Déposer grâce à la pompe une quantité suffisante sur une peau préalablement nettoyée et appliquer sur le corps en massant légèrement avec des mouvements circulaires.",
+    "ingredients": "AQUA, PROPYLENE GLYCOL, CAPRYLIC/CAPRIC TRIGLYCERIDE, TRICAPRYLIN, TRIHEPTANOIN, ALOE BARBADENSIS LEAF JUICE, ARGANIA SPINOSA KERNEL OIL, HYDROXYPROPYL METHYLCELLULOSE STEAROXY ETHER, BUTYLENE GLYCOL, CELLULOSE, CAESALPINIA SPINOSA GUM, SODIUM POLYACRYLAT STARCH, PHENOXYETHANOL, TETRASODIUM EDTA, TRIETHANOLAMINE, ETHYLHEXYLGLYCERIN, PARFUM, BENZYL SALICYLATE, LIMONENE, LINALOOL.",
+    "key_ingredients": "Aloe vera : Hydratant / Nourrissant / Anti-âge / Protège la peau\nHuile d'argan : Hydratante / Régénérante / Restructurante / Nourrissante / Réparatrice\nGomme Tara : Protectrice / Filmogène",
+    "precautions": "Pour usage externe uniquement. Ne pas utiliser sur le visage. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "body-care",
+    "featured": false,
+    "images": [
+      "lait-corps-crunchy-caramel-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-creme-mains-ocean-bloom",
+    "source": "creme-mains-ocean-bloom-dz",
+    "ref": "20353",
+    "name": "Crème mains Ocean Bloom",
+    "price_dz": 1050,
+    "old_price_dz": null,
+    "short_description": "Souvent exposées aux agressions extérieures et aux produits chimiques ménagers, les mains nécessitent un soin quotidien adapté.",
+    "description": "Souvent exposées aux agressions extérieures et aux produits chimiques ménagers, les mains nécessitent un soin quotidien adapté. Les nouvelles crèmes mains d'ARVEA enrichies en huile de pépin de raisin, huile d'amande douce, beurre de karité, huile d'argan, Aloe vera et provitamine B5, apaisent, hydratent intensément, nourrissent et aident à protéger les mains. Leur texture onctueuse est rapidement absorbée, laissant un film léger, protecteur, non gras et non collant pour des mains douces, souples, confortables et agréablement parfumées. Leur tube pratique de 75 ml est facile à emporter pour une utilisation aisée dès que le besoin est ressenti.",
+    "how_to_use": "Appliquer une quantité suffisante de la crème sur les mains propres et masser jusqu'à absorption complète du produit.",
+    "ingredients": "AQUA, GLYCERIN, TRICAPRYLIN, CETEARYL ALCOHOL, ISOPROPYL MYRISTATE, BUTYROSPERMUM PARKII BUTTER, DICAPRYLYL CARBONATE, SODIUM POLYACRYLATE, ALOE BARBADENSIS LEAF JUICE, BIS-DIGLYCERYL POLYACYLADIPATE-2, VITIS VINIFERA SEED OIL, PRUNUS AMYGDALUS DULCIS OIL, PENTAERYTHRITYL DISTEARATE, DISODIUM CETEARYL SULFOSUCCINATE, PANTHENOL, ARGANIA SPINOSA KERNEL OIL, TOCOPHERYL ACETATE, TETRASODIUM EDTA, PHENOXYETHANOL, ETHYLHEXYLGLYCERIN, PARFUM, HEXYL CINNAMAL, CITRONELLOL, BENZYL CINNAMATE, EUGENOL.",
+    "key_ingredients": "Huile d'amande douce : Hydratante / Nourrissante / Apaisante / Adoucissante\nHuile de pépin de raisin : Antioxydante / Nourrissante / Régénérante / Émolliente\nBeurre de karité : Hydratant / Assouplissant / Nourrissant / Réparateur\nAloe vera : Hydratant / Nourrissant / Anti-âge / Protège la peau / Apaisant\nHuile d'argan : Hydratante / Régénérante / Nourrissante / Fortifiante / Réparatrice\nProvitamine B5 : Hydratante / Entretien la peau / Protège la peau des irritations / Apaisante",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "body-care",
+    "featured": false,
+    "images": [
+      "creme-mains-ocean-bloom-1.webp",
+      "creme-mains-ocean-bloom-2.webp"
+    ]
+  },
+  {
+    "slug": "arvea-creme-apaisante-100-ml",
+    "source": "creme-apaisante-100-ml-dz",
+    "ref": "20126",
+    "name": "Crème apaisante 100 ml",
+    "price_dz": 1220,
+    "old_price_dz": 1400,
+    "short_description": "La crème apaisante est une crème anti-douleur musculaire et articulaire. Elle a également un pouvoir hydratant et nourrissant très agréable, elle laisse la peau souple.",
+    "description": "La crème apaisante est une crème anti-douleur musculaire et articulaire. Elle a également un pouvoir hydratant et nourrissant très agréable, elle laisse la peau souple. C'est une formule exceptionnelle très riche, à base d'aloe vera, huile d'argan, beurre de karité, huiles essentielles d'eucalyptus, romarin, genévrier, lavande, menthol et clou de girofle. Le mariage de ces trésors procure une délicate sensation de chaleur et un effet apaisant magique pour atténuer l'inflammation, calmer les douleurs et soulager les articulations et les muscles.",
+    "how_to_use": "Appliquez la crème en massage sur les muscles et les articulations jusqu'à pénétration complète du produit. Foire aux questions Est-ce qu'un bon massage est nécessaire en appliquant cette crème? Effectivement, la crème apaisante est encore plus efficace en l'appliquant avec un bon massage. Comment profiter des bienfaits de cette crème en cas de rhume? En cas de rhume, vous pouvez profiter des bienfaits du mélange eucalyptus, menthol, romarin, clou de girofle, genévrier et lavande en ajoutant une petite quantité de la crème à un bain d'eau chaude et inhaler par la suite les vapeurs de ces huiles essentielles. Est-ce que l'effet de l'apaisante dépend de la personne? L'effet de chaleur que procure cette crème n'est pas toujours ressenti de la même façon, ça dépend de la personne, de la douleur et de l'application. Quelles sont les personnes qui ne peuvent pas utiliser la crème apaisante? Pour les personnes allergiques au menthol ou au salicylate de méthyle, il y a un risque de brûlure de la peau. Toujours essayer avec une très petite quantité sur une zone de la peau avant d'appliquer. Ne pas utiliser pour les personnes allergiques à l'aloe vera.",
+    "ingredients": "AQUA, METHYL SALICYLATE, OCTYLDODECANOL, C12-15 ALKYL BENZOATE, CETEARYL ALCOHOL, BUTYROSPERMUM PARKII BUTTER, ARGANIA SPINOSA KERNEL OIL, GLYCERIN, PROPYLENE GLYCOL, GLYCERYL STEARATE, CETEARETH-20, STEARIC ACID, TOCOPHERYL ACETATE, ACRYLATES/ACRYLAMIDE COPOLYMER, POLYSORBATE 85, ALLANTOIN, CARBOMER, TRIETHANOLAMINE, ROSMARINUS OFFICINALIS LEAF OIL, MENTHOL, EUCALYPTUS GLOBULUS LEAF OIL, LAVANDULA ANGUSTIFOLIA OIL, ALOE BARBADENSIS LEAF JUICE, TETRASODIUM EDTA, PHENOXYETHANOL, ETHYLHEXYLGLYCERIN.",
+    "key_ingredients": "",
+    "precautions": "Ne pas utiliser l'apaisante sur le visage, les parties sensibles, les muqueuses. Utilisation externe uniquement. Eviter les zones irritées de la peau. Ne pas utiliser pour les enfants de moins de 6 ans. Ne pas laisser à la portée des enfants. Eviter le contact avec les yeux, en cas de contact, rincer directement avec de l'eau. Ce produit est pour utilisation externe uniquement, il ne faut en aucun cas l'ajouter à une tisane ou l'avaler. Ne pas utiliser ce produit dans les bains maures, il y a un risque de brûlure de la peau. Ne pas utiliser cette crème pour les bébés en cas de bronchite par exemple. Pas avant 6 ans.",
+    "storage_conditions": "A conserver dans un endroit frais et sec, à l'abri de l'humidité et de la chaleur.",
+    "category": "body-care",
+    "featured": false,
+    "images": [
+      "creme-apaisante-100-ml-1.webp"
+    ]
+  },
+  {
+    "slug": "arvea-creme-pieds-tres-secs-et-abimes",
+    "source": "creme-pieds-tres-secs-et-abimes-dz",
+    "ref": "20224",
+    "name": "Crème pieds très secs et abîmés",
+    "price_dz": 1100,
+    "old_price_dz": null,
+    "short_description": "Cette crème est un soin formulé spécifiquement pour les pieds très secs et abîmés, contenant des crevasses et des fissures même douloureux.",
+    "description": "Cette crème est un soin formulé spécifiquement pour les pieds très secs et abîmés, contenant des crevasses et des fissures même douloureux. Sa composition riche en Aloe Vera, beurre de karité, huile d'argan, huile de pépins de raisin et huile d'amande douce est associée aux vertus des extraits de plantes, tels que: l'extrait de fleur d'hibiscus, l'extrait de feuilles de rose, l'extrait de fruit d'églantier et l'extrait de pensée. Ce soin aide à éliminer et prévenir les rugosités et les callosités. En plus, il assure une nutrition et une hydratation intense pendant 24 heures. Les pieds sont soulagés, la peau est visiblement plus douce et plus souple. Sa texture non collante est rapidement absorbée.",
+    "how_to_use": "Déposer une quantité suffisante de la crème sur les pieds nettoyés et séchés. Masser doucement, surtout au niveau du talon et des orteils, jusqu'à l'absorption totale du produit. Foire aux questions: La crème pieds très secs et abîmés peut-elle s'utiliser pour des pieds secs sans crevasses ni fissures? Non pour ce type de problème, ARVEA apporte la réponse à travers la crème hydratante qui nourrit et hydrate intensément. L'utilisation de la crème est-elle en cure ou continue? Cette crème s'utilise en cure jusqu'au rétablissement de l'état normal des pieds; on peut par la suite continuer avec la crème pieds puis réutiliser le crème pieds très secs et abîmées lorsque c'est nécessaire.",
+    "ingredients": "AQUA, GLYCERIN, CETEARYL ALCOHOL, C12-15 ALKYL BENZOATE, CAPRYLIC/CAPRIC TRIGLYCERIDE, BUTYROSPERMUM PARKII BUTTER, GLYCERYL STEARATE, PROPYLENE GLYCOL, VITIS VINIFERA SEED OIL, ALOE BARBADENSIS LEAF JUICE, CETEARETH-20, STEARIC ACID, PRUNUS AMYGDALUS DULCIS OIL, POLYSORBATE 80, DIMETHICONE, ARGANIA SPINOSA KERNEL OIL, TOCOPHERYL ACETATE, ACRYLATES/ACRYLAMIDE COPOLYMER, POLYSORBATE 85, MENTHYL LACTATE, ALLANTOIN, PANTHENOL, CETRARIA ISLANDICA EXTRACT, RIBES NIGRUM LEAF EXTRACT, MAYTENUS MACROCARPA (CHUCHUHUASI) BARK EXTRACT, TARTARIC ACID, MALIC ACID, ASCORBIC ACID, HIBISCUS SABDARIFFA FLOWER EXTRACT, ROSA CANINA FRUIT EXTRACT, VIOLA TRICOLOR EXTRACT, SALICYLIC ACID, LACTIC ACID, CITRIC ACID, TETRASODIUM EDTA, PHENOXYETHANOL, ETHYLHEXYLGLYCERIN, PARFUM.",
+    "key_ingredients": "Glycérine : Hydratant / Emollient / protège la peau.\nBeurre de karité : Hydratant / Assouplissant / Nourrissant / Réparateur.\nHuile de pépins de raisin : Antioxydant / Nourrissant / Régénérant / Émollient / Régulateur de sébum\nGel d'Aloe vera : Hydratant / Nourrissant / Anti-âge / Protège la peau / Apaisant /Régulateur de sébum\nHuile d'amande douce : Hydratant / Nourrissant / Apaisant/ Adoucissant\nHuile d'argan : Hydratant / Régénérant / Nourrissant / Réparateur\nExtrait de mousse d'Islande : C'est une plante médicinale ayant des propriétés nettoyantes, émollientes et apaisantes.\nExtrait de feuilles de cassissier : C'est une plante médicinale ayant un effet anti-inflammatoire et antidouleurs\nExtrait de l'écorce de l'arbre de Chuchuhuasi : Ralentit la croissance des microbes/ Antioxydant\nExtrait des fleurs d'Hibiscus : Agent kératolytique / Astringent / Antioxydant\nExtrait des fruits d'églantier : Antioxydant / Nourrissant / Aide à l'exfoliation de la peau\nExtrait de pensée sauvage : Emollient / Apaisant / Protège la peau",
+    "precautions": "Pour usage externe seulement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "body-care",
+    "featured": false,
+    "images": [
+      "creme-pieds-tres-secs-et-abimes-1.webp",
+      "creme-pieds-tres-secs-et-abimes-2.webp",
+      "creme-pieds-tres-secs-et-abimes-3.webp"
+    ]
+  },
+  {
+    "slug": "arvea-savon-argan",
+    "source": "savon-argan-dz",
+    "ref": "20110",
+    "name": "Savon à l'argan",
+    "price_dz": 560,
+    "old_price_dz": null,
+    "short_description": "Un savon surgras, idéal pour une utilisation quotidienne et la douche. Il nettoie en profondeur et en douceur sans dessécher.",
+    "description": "Un savon surgras, idéal pour une utilisation quotidienne et la douche. Il nettoie en profondeur et en douceur sans dessécher. Enrichi en huile végétale d'argan, ce savon hydrate, nourrit et adoucit la peau en laissant un parfum délicat et subtil. Le savon argan est parfaitement adapté pour une peau sèche.",
+    "how_to_use": "Frotter délicatement le savon sur la peau mouillée (visage et corps) et rincer ensuite soigneusement à l'eau.",
+    "ingredients": "SODIUM PALMATE, SODIUM PALM KERNELATE, AQUA, ARGANIA SPINOSA KERNEL OIL, PARFUM, SODIUM CHLORIDE, GLYCERIN, PALM KERNEL ACID, TETRASODIUM ETIDRONATE, TETRASODIUM EDTA.",
+    "key_ingredients": "Huile d'argan : Hydratante / Régénérante / Nourrissante / Adoucissante.\nGlycérine : Hydratante",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler.",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "body-care",
+    "featured": false,
+    "images": [
+      "savon-argan-1.webp",
+      "savon-argan-2.webp"
+    ]
+  },
+  {
+    "slug": "arvea-savon-karite",
+    "source": "savon-karite-dz",
+    "ref": "20232",
+    "name": "Savon au karité",
+    "price_dz": 560,
+    "old_price_dz": null,
+    "short_description": "Un savon surgras, idéal pour une utilisation quotidienne et la douche. Il nettoie en profondeur et en douceur sans dessécher.",
+    "description": "Un savon surgras, idéal pour une utilisation quotidienne et la douche. Il nettoie en profondeur et en douceur sans dessécher. Enrichi en beurre de karité, huile d'amande douce et en argile marron, il hydrate et nourrit en exhalant une senteur citrique florale. Le savon karité est parfaitement adapté à tous les types de peaux y compris les peaux sensibles.",
+    "how_to_use": "Frotter délicatement le savon sur la peau mouillée (visage et corps) et rincer ensuite soigneusement à l'eau.",
+    "ingredients": "SODIUM PALMATE, SODIUM PALM KERNELATE, AQUA, ILLITE, PARFUM, PRUNUS AMYGDALUS DULCIS OIL, BUTYROSPERMUM PARKII BUTTER, SODIUM CHLORIDE, GLYCÉRIN, PALM KERNEL ACID, TETRASODIUM ETIDRONATE, TETRASODIUM EDTA.",
+    "key_ingredients": "Beurre de karité : Hydratant / Assouplissant / Nourrissant / Réparateur\nHuile d'amande douce : Hydratante / Nourrissante / Apaisante/ Adoucissante\nArgile marron : Nettoyante / Humectante / Purifiante/ Adoucissante",
+    "precautions": "Pour usage externe uniquement. Éviter le contact avec les yeux. En cas de contact avec les yeux, rincer immédiatement avec de l'eau. Ne pas avaler. En cas d'ingestion: consulter immédiatement un médecin ou un centre antipoison: 023 36 77 77 (route du petit Staouali Dely Brahim).",
+    "storage_conditions": "Conserver hors de portée des enfants. Protéger du rayonnement solaire et de l'humidité. Tenir à l'écart de la chaleur.",
+    "category": "body-care",
+    "featured": false,
+    "images": [
+      "savon-karite-1.webp",
+      "savon-karite-2.webp"
+    ]
+  }
+]

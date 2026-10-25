@@ -77,7 +77,8 @@ test.describe('navigation and language', () => {
 
         await expect(page).toHaveURL(/\/products\//);
         await expect(page.locator('h1')).toHaveText(name);
-        await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+        // the product, and its breadcrumb
+        await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(2);
         await expect(page.getByText('Prix net')).toBeVisible();
         await expect(page.getByText(/En stock|Plus que \d+ en stock/)).toBeVisible();
     });

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             BannerSeeder::class,
             DemoFrenchSeeder::class,
             DemoProductDetailsSeeder::class,
+            ArveaProductsSeeder::class,
         ]);
     }
 }
