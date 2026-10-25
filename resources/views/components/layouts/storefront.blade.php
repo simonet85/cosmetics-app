@@ -4,6 +4,7 @@
     'image' => null,
     'canonical' => null,
     'robots' => null,
+    'ogType' => 'website',
 ])
 
 @php
@@ -30,7 +31,7 @@
     <link rel="canonical" href="{{ $canonicalUrl }}">
     <link rel="icon" href="{{ asset('images/others/favicon.ico') }}">
 
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="{{ $ogType }}">
     <meta property="og:site_name" content="{{ $brand }}">
     <meta property="og:locale" content="{{ config('locales.available.'.app()->getLocale().'.og', 'fr_FR') }}">
     <meta property="og:title" content="{{ $pageTitle }}">

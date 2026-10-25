@@ -2,6 +2,9 @@
     :title="__('Soins cosmétiques')"
     :description="__('Soins du visage, du corps et des cheveux : composition lisible, prix nets en FCFA, paiement mobile money.')"
 >
+    <x-slot:head>
+        {!! \App\Support\StructuredData::script(\App\Support\StructuredData::organization(), \App\Support\StructuredData::website()) !!}
+    </x-slot:head>
     @php
         $lead = $featuredProducts->first();
 

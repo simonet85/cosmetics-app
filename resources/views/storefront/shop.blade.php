@@ -23,6 +23,13 @@
     :canonical="$activeCategory ? route('shop.category', $activeCategory->slug) : route('shop.index')"
     :robots="$filtered && ! $activeCategory ? 'noindex,follow' : null"
 >
+    <x-slot:head>
+        {!! \App\Support\StructuredData::script(\App\Support\StructuredData::breadcrumbs(array_filter([
+            [__('Accueil'), route('home')],
+            [__('Boutique'), route('shop.index')],
+            $activeCategory ? [$activeCategory->tr('name'), route('shop.category', $activeCategory->slug)] : null,
+        ]))) !!}
+    </x-slot:head>
     <div class="wrap py-6 sm:py-10">
         <nav aria-label="{{ __('Fil d\'Ariane') }}" class="flex flex-wrap items-center text-sm text-ink-muted">
             <a href="{{ route('home') }}" class="inline-flex min-h-11 items-center underline">{{ __('Accueil') }}</a>

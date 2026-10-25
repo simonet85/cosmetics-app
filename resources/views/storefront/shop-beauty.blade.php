@@ -23,6 +23,13 @@
     :canonical="$activeCategory ? route('shop.category', $activeCategory->slug) : route('shop.index')"
     :robots="$filtered && ! $activeCategory ? 'noindex,follow' : null"
 >
+    <x-slot:head>
+        {!! \App\Support\StructuredData::script(\App\Support\StructuredData::breadcrumbs(array_filter([
+            [__('Accueil'), route('home')],
+            [__('Boutique'), route('shop.index')],
+            $activeCategory ? [$activeCategory->tr('name'), route('shop.category', $activeCategory->slug)] : null,
+        ]))) !!}
+    </x-slot:head>
     <div class="tpl-beauty" data-template="beauty">
         {{-- Title band with the rayons and their number of products --}}
         <section class="on-dark bg-green text-white" aria-labelledby="shop-title">

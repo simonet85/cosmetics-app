@@ -12,6 +12,12 @@
     $lowStock = $product->stock > 0 && $product->stock <= 5;
     $maxQty = max(1, $firstVariant ? $firstVariant->stock : $product->stock);
 
+    // Short description first, then the start of the full one, then a generic sentence
+    $metaDescription = $product->tr('short_description')
+        ?: (trim(strip_tags((string) $product->tr('full_description'))) !== ''
+            ? \Illuminate\Support\Str::limit(trim(strip_tags((string) $product->tr('full_description'))), 155)
+            : __('Découvrez :name : prix net en FCFA, composition et livraison.', ['name' => $product->tr('name')]));
+
     $jsonLd = [
         '@context' => 'https://schema.org',
         '@type' => 'Product',
@@ -38,13 +44,24 @@
 
 <x-layouts.storefront
     :title="$product->tr('name')"
-    :description="$product->tr('short_description') ?: __('Découvrez :name : prix net en FCFA, composition et livraison.', ['name' => $product->tr('name')])"
+    :description="$metaDescription"
+    og-type="product"
     :image="asset($mainImage)"
     :canonical="route('products.show', $product->slug)"
     :robots="$isPreview ? 'noindex,nofollow' : null"
 >
     <x-slot:head>
         <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+        {!! \App\Support\StructuredData::script(\App\Support\StructuredData::breadcrumbs(array_filter([
+            [__('Accueil'), route('home')],
+            [__('Boutique'), route('shop.index')],
+            $category ? [$category->tr('name'), route('shop.category', $category->slug)] : null,
+            [$product->tr('name'), route('products.show', $product->slug)],
+        ]))) !!}
+        <meta property="product:price:amount" content="{{ (int) round($final) }}">
+        <meta property="product:price:currency" content="XOF">
+        <meta property="product:availability" content="{{ $product->stock > 0 ? 'in stock' : 'out of stock' }}">
+        <meta property="og:image:alt" content="{{ $product->tr('name') }}">
     </x-slot:head>
 
     @if ($isPreview)
