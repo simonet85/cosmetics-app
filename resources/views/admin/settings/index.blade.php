@@ -240,6 +240,29 @@
                                 @endif
                             </fieldset>
                         @endforeach
+
+                        <hr class="border-gray-200">
+                        <fieldset>
+                            <legend class="block text-sm font-medium text-gray-700 mb-1">Offre à durée limitée (accueil « Glowing Beauty »)</legend>
+                            <p class="text-xs text-gray-500 mb-3">La section avec compte à rebours n'apparaît que si une date de fin est indiquée et n'est pas passée. Laissez la date vide pour la masquer.</p>
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label for="home_offer_ends_at" class="block text-sm text-gray-700 mb-1">Fin de l'offre</label>
+                                    <input type="datetime-local" id="home_offer_ends_at" name="home_offer_ends_at" value="{{ getSetting('home_offer_ends_at') }}"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label for="home_offer_title" class="block text-sm text-gray-700 mb-1">Titre (facultatif)</label>
+                                    <input type="text" id="home_offer_title" name="home_offer_title" maxlength="120" value="{{ getSetting('home_offer_title') }}"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label for="home_offer_text" class="block text-sm text-gray-700 mb-1">Texte (facultatif)</label>
+                                    <textarea id="home_offer_text" name="home_offer_text" rows="2" maxlength="300"
+                                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">{{ getSetting('home_offer_text') }}</textarea>
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
                 </div>
 

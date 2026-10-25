@@ -17,7 +17,7 @@ class StorefrontTemplates
 
     /** @var array<string, array<string, string>> page => template key => label shown in the admin */
     private const AVAILABLE = [
-        'home' => ['classic' => 'Classique'],
+        'home' => ['classic' => 'Classique', 'beauty' => 'Glowing Beauty'],
         'shop' => ['classic' => 'Classique', 'beauty' => 'Glowing Beauty'],
     ];
 

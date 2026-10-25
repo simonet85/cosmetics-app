@@ -13,15 +13,15 @@ Demande du propriétaire (2026-10-25) : les deux maquettes « Glowing Beauty » 
 
 Bandeau de titre avec les rayons et leur nombre de produits en vente (un rayon vide n'est pas proposé) ; colonne de filtres (prix, contenance lue des variantes, promotion, épuisés) et « produits les mieux notés » (avis approuvés seulement) ; barre d'outils : produits par page (9, 12, 18, 24), colonnes (2, 3, 4) et tri avec envoi automatique ; grille de cartes avec badges calculés (HOT, NOUVEAU sur 30 jours, -N %, ÉPUISÉ), prix net, « Ajouter » et favoris ; pagination existante. Toutes les valeurs de la requête inconnues sont ignorées.
 
-## Accueil (à construire)
+## Accueil (construit)
 
-Sections de la maquette, mobile d'abord :
+Mobile d'abord. Choix du propriétaire : les images de marques tierces et les images téléchargées sont autorisées (convertis en JPEG légers dans `public/images/templates/beauty/`), blog omis, compte à rebours oui.
 
-1. **Hero : un slider** (grand visuel en pleine largeur avec flèches, points et pause), alimenté par les bannières de l'admin puis complété par des produits en vedette, comme l'accueil actuel.
-2. **Trois cartes de rayons avec photo** (photo du premier produit en vente du rayon, ou image téléversée).
-3. **Meilleures ventes** et **produits en vedette** : titre à gauche, trois produits à droite.
-4. **Comparaison avant/après** avec trois atouts (deux images et le texte en réglages).
-5. **Offre avec compte à rebours** (date de fin et texte en réglages ; la section disparaît sans date).
-6. Pas de blog.
+1. **Hero : un slider** (grand visuel pleine largeur, flèches, points, pause). Bannières de l'admin d'abord ; sans bannière, une diapositive « marque » (photo `hero.jpg`) puis des produits en vedette jusqu'à trois diapositives.
+2. **Cartes de rayons avec photo** (photo du premier produit en vente), jusqu'à trois.
+3. **Meilleures ventes** et **En vedette** : titre manuscrit à gauche, trois produits à droite, jamais le même produit deux fois.
+4. **Avant / après** : deux photos et un curseur natif (`input range` étiqueté) qui déplace la ligne ; rayons réels en liste ; texte neutre (« les résultats varient »).
+5. **Offre avec compte à rebours** : Réglages > Apparence (date de fin, titre, texte). Sans date, ou date passée, la section disparaît. Le compte à rebours est calculé côté serveur puis mis à jour par JavaScript.
+6. Police manuscrite : Satisfy (`@fontsource/satisfy`), seulement pour les accents de titres.
 
-Données à ajouter côté réglages : images et textes de l'avant/après, date de fin et texte de l'offre. Tout en français et en anglais, avec tests PHPUnit et Playwright.
+Tests : `StorefrontTemplatesTest`, `HomeBeautyTest`, et le parcours Playwright `tests/e2e/templates.spec.ts` (connexion admin locale, choix des modèles, vérification de l'accueil et de la boutique sur bureau et mobile, anglais, retour au modèle classique). À lancer un projet après l'autre : `--workers=1 --project=desktop` puis `--project=mobile`.

@@ -63,7 +63,7 @@ class StorefrontTemplatesTest extends TestCase
     public function test_an_unknown_saved_template_falls_back_to_the_classic_one(): void
     {
         $this->setting('storefront_template_shop', 'nonexistent');
-        $this->setting('storefront_template_home', 'beauty');   // not offered for the home page (yet)
+        $this->setting('storefront_template_home', 'invented');
 
         $this->assertSame('classic', StorefrontTemplates::for('shop'));
         $this->assertSame('classic', StorefrontTemplates::for('home'));
@@ -227,6 +227,6 @@ class StorefrontTemplatesTest extends TestCase
         $admin = $this->admin();
 
         $this->actingAs($admin)->put(route('admin.settings.update'), ['storefront_template_shop' => 'invented'])->assertSessionHasErrors('storefront_template_shop');
-        $this->actingAs($admin)->put(route('admin.settings.update'), ['storefront_template_home' => 'beauty'])->assertSessionHasErrors('storefront_template_home');
+        $this->actingAs($admin)->put(route('admin.settings.update'), ['storefront_template_home' => 'invented'])->assertSessionHasErrors('storefront_template_home');
     }
 }

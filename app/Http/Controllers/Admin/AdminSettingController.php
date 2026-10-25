@@ -135,6 +135,16 @@ class AdminSettingController extends Controller
             }
         }
 
+        // Limited-time offer of the Glowing Beauty home page (an empty date switches the section off)
+        $request->validate([
+            'home_offer_ends_at' => ['nullable', 'date'],
+            'home_offer_title' => ['nullable', 'string', 'max:120'],
+            'home_offer_text' => ['nullable', 'string', 'max:300'],
+        ], ['home_offer_ends_at.date' => 'La date de fin de l\'offre n\'est pas valide.']);
+        foreach (['home_offer_ends_at', 'home_offer_title', 'home_offer_text'] as $key) {
+            $this->updateSetting($key, $request->input($key), 'text', 'appearance');
+        }
+
         // Payment methods settings
         $paymentSettings = [
             'payment_moneyfusion_enabled',

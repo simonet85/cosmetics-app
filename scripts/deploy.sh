@@ -130,7 +130,7 @@ remote 'test -f public/build/manifest.json' || die "assets were not uploaded cor
 # On this host the web root is a separate folder (../public_html) holding its own copy of the public files:
 # Laravel reads the manifest from laravel/public/build but the browser fetches the files from public_html/build.
 say "5c. Publish the assets in the web root"
-remote 'if [ -d ../public_html ]; then rm -rf ../public_html/build.prev; [ -d ../public_html/build ] && mv ../public_html/build ../public_html/build.prev; cp -a public/build ../public_html/build; diff -rq public/build ../public_html/build && echo "   web root build identical"; else echo "   no ../public_html here: nothing to copy"; fi' || die "the assets could not be copied to the web root"
+remote 'if [ -d ../public_html ]; then rm -rf ../public_html/build.prev; [ -d ../public_html/build ] && mv ../public_html/build ../public_html/build.prev; cp -a public/build ../public_html/build; diff -rq public/build ../public_html/build && echo "   web root build identical"; cp -a public/images/. ../public_html/images/ && echo "   web root images updated (files of the repository only, nothing deleted)"; else echo "   no ../public_html here: nothing to copy"; fi' || die "the assets could not be copied to the web root"
 
 # ------------------------------------------------------------------ 6. migrate, caches, back up
 say "6. Migrations and caches"

@@ -164,6 +164,34 @@ function setupAutosubmit() {
     });
 }
 
+// Before / after photos: the range input moves the dividing line (the CSS variable --pos)
+function setupCompare() {
+    document.querySelectorAll('[data-compare]').forEach((root) => {
+        const range = root.querySelector('input[type="range"]');
+        if (!range) return;
+        const apply = () => root.style.setProperty('--pos', `${range.value}%`);
+        range.addEventListener('input', apply);
+        apply();
+    });
+}
+
+// Countdown to the end of an offer: data-countdown holds the end date, each [data-unit] shows days, hours, minutes or seconds
+function setupCountdown() {
+    document.querySelectorAll('[data-countdown]').forEach((root) => {
+        const end = Date.parse(root.dataset.countdown);
+        if (Number.isNaN(end)) return;
+        const pad = (value) => String(value).padStart(2, '0');
+        const tick = () => {
+            const left = Math.max(0, Math.floor((end - Date.now()) / 1000));
+            const values = { days: Math.floor(left / 86400), hours: Math.floor((left % 86400) / 3600), minutes: Math.floor((left % 3600) / 60), seconds: left % 60 };
+            root.querySelectorAll('[data-unit]').forEach((el) => { el.textContent = pad(values[el.dataset.unit]); });
+            if (left === 0) clearInterval(timer);
+        };
+        const timer = setInterval(tick, 1000);
+        tick();
+    });
+}
+
 // Product page: photo gallery, quantity stepper, variant price and stock, favourites
 const formatFcfa = (amount) => `${Math.round(amount).toLocaleString('fr-FR').replace(/\s/g, '\u00A0')}\u00A0FCFA`;
 
@@ -568,6 +596,8 @@ setupAddToCart();
 setupReveal();
 setupFilters();
 setupAutosubmit();
+setupCompare();
+setupCountdown();
 setupProduct();
 setupCart();
 setupCheckout();

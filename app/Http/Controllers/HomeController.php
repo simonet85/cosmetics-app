@@ -6,10 +6,13 @@ use App\Models\Banner;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Testimonial;
+use App\Support\StorefrontTemplates;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Banners managed in the admin: only live ones (active and inside their dates), one per slot of the page.
         // 'hero' and 'promo' are the positions the demo data used before the admin offered named slots.
@@ -78,6 +81,18 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
+        if (StorefrontTemplates::for('home', $request) === 'beauty') {
+            return view('storefront.home-beauty', [
+                'banners' => $banners,
+                'featuredProducts' => $featuredProducts,
+                'hotProducts' => $hotProducts,
+                'bestSellers' => $bestSellers,
+                'categories' => $categories,
+                'offer' => $this->offer(),
+                'wishlistIds' => array_map('intval', session('wishlist', [])),
+            ]);
+        }
+
         return view('storefront.home', compact(
             'banners',
             'featuredProducts',
@@ -86,5 +101,26 @@ class HomeController extends Controller
             'categories',
             'testimonials'
         ));
+    }
+
+    /** The limited-time offer of the Glowing Beauty home page: shown only while its end date (a setting) is in the future. */
+    private function offer(): ?array
+    {
+        $value = getSetting('home_offer_ends_at');
+        if (! filled($value)) {
+            return null;
+        }
+
+        try {
+            $endsAt = Carbon::parse($value, config('app.timezone'));
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return $endsAt->isFuture() ? [
+            'ends_at' => $endsAt,
+            'title' => getSetting('home_offer_title'),
+            'text' => getSetting('home_offer_text'),
+        ] : null;
     }
 }
