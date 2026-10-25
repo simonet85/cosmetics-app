@@ -15,7 +15,7 @@ class Product extends Model
     use HasFactory, SoftDeletes, Translatable;
 
     /** Text with a translation per language (see Translatable). */
-    protected array $translatable = ['name', 'short_description', 'full_description', 'how_to_use', 'ingredients'];
+    protected array $translatable = ['name', 'short_description', 'full_description', 'how_to_use', 'ingredients', 'key_ingredients', 'precautions', 'storage_conditions'];
 
     /**
      * sku and slug carry database-level unique indexes that still apply to soft-deleted rows.
@@ -78,6 +78,9 @@ class Product extends Model
         'full_description',
         'how_to_use',
         'ingredients',
+        'key_ingredients',
+        'precautions',
+        'storage_conditions',
         'is_active',
         'is_archived',
         'views_count',

@@ -85,6 +85,33 @@
                 </div>
             </div>
 
+            {{-- Information tabs of the product page --}}
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-2">Informations produit</h2>
+                <p class="text-sm text-gray-600 mb-6">Affichées en onglets sur la fiche produit. Un onglet sans texte n'apparaît pas.</p>
+
+                <div class="space-y-6">
+                    @foreach ([
+                        ['how_to_use', 'Utilisation', 3, 'Ex. : Appliquer sur peau propre, matin et soir.'],
+                        ['ingredients', 'Ingrédients (liste complète)', 4, 'La liste INCI réelle du produit, telle qu\'imprimée sur l\'emballage.'],
+                        ['key_ingredients', 'Ingrédients clés', 4, 'Une ligne par ingrédient : Nom : bénéfice / bénéfice. Ex. : Aloe vera : Hydratant / Apaisant'],
+                        ['precautions', 'Précautions d\'emploi', 3, 'Ex. : Usage externe uniquement. Éviter le contact avec les yeux.'],
+                        ['storage_conditions', 'Conditions de conservation', 3, 'Ex. : Conserver hors de portée des enfants, à l\'abri de la chaleur.'],
+                    ] as [$field, $label, $rows, $help])
+                        <div>
+                            <label for="{{ $field }}" class="block text-sm font-semibold text-gray-900 mb-2">{{ $label }}</label>
+                            <textarea id="{{ $field }}" name="{{ $field }}" rows="{{ $rows }}"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green @error($field) border-red-500 @enderror"
+                            >{{ old($field, $product->{$field} ?? null) }}</textarea>
+                            <p class="text-xs text-gray-500 mt-1">{{ $help }}</p>
+                            @error($field)
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
             {{-- Pricing --}}
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-xl font-bold text-gray-900 mb-6">Prix</h2>

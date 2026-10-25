@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             BannerSeeder::class,
             DemoFrenchSeeder::class,
+            DemoProductDetailsSeeder::class,
         ]);
     }
 }

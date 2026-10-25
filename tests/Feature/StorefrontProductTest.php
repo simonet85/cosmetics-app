@@ -104,13 +104,13 @@ class StorefrontProductTest extends TestCase
         $this->assertStringContainsString('(épuisé)', $html);
     }
 
-    public function test_composition_and_usage_only_show_when_filled(): void
+    public function test_the_information_tabs_only_show_when_filled(): void
     {
-        $empty = Product::factory()->create(['ingredients' => null, 'how_to_use' => null]);
+        $empty = Product::factory()->create(['ingredients' => null, 'how_to_use' => null, 'precautions' => null, 'storage_conditions' => null, 'key_ingredients' => null]);
         $full = Product::factory()->create(['ingredients' => "Eau, Aloe vera\nGlycérine", 'how_to_use' => 'Appliquer matin et soir.']);
 
-        $this->get(route('products.show', $empty->slug))->assertDontSee('Composition')->assertDontSee("Conseils d'utilisation");
-        $this->get(route('products.show', $full->slug))->assertSee('Aloe vera')->assertSee('Appliquer matin et soir.');
+        $this->get(route('products.show', $empty->slug))->assertDontSee('data-tabs', false);
+        $this->get(route('products.show', $full->slug))->assertSee('data-tabs', false)->assertSee('Aloe vera')->assertSee('Appliquer matin et soir.');
     }
 
     public function test_gallery_thumbnails_only_exist_with_several_photos(): void

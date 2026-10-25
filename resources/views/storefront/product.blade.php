@@ -246,29 +246,16 @@
             </div>
         </div>
 
-        {{-- Details --}}
-        <div class="mt-12 grid gap-px border border-ink bg-ink lg:grid-cols-2">
-            @if ($composition->isNotEmpty())
-                <section class="bg-white p-5 sm:p-8" aria-labelledby="composition">
-                    <h2 id="composition" class="text-3xl">{{ __('Composition') }}</h2>
-                    <ul class="mt-4 divide-y divide-line border-t border-line">
-                        @foreach ($composition as $line)<li class="py-2">{{ $line }}</li>@endforeach
-                    </ul>
-                </section>
-            @endif
-            @if ($product->tr('how_to_use'))
-                <section class="bg-white p-5 sm:p-8" aria-labelledby="usage">
-                    <h2 id="usage" class="text-3xl">{{ __('Conseils d\'utilisation') }}</h2>
-                    <p class="mt-4 whitespace-pre-line">{{ $product->tr('how_to_use') }}</p>
-                </section>
-            @endif
-            @if ($product->tr('full_description'))
-                <section class="bg-white p-5 sm:p-8 lg:col-span-2" aria-labelledby="description">
-                    <h2 id="description" class="text-3xl">{{ __('Description') }}</h2>
-                    <p class="mt-4 max-w-prose whitespace-pre-line">{{ $product->tr('full_description') }}</p>
-                </section>
-            @endif
-        </div>
+        {{-- Description --}}
+        @if ($product->tr('full_description'))
+            <section class="mt-12" aria-labelledby="description">
+                <h2 id="description" class="text-3xl">{{ __('Description') }}</h2>
+                <p class="mt-4 max-w-prose whitespace-pre-line">{{ $product->tr('full_description') }}</p>
+            </section>
+        @endif
+
+        {{-- Utilisation, ingrédients, précautions d'emploi, conditions de conservation --}}
+        <x-storefront.product-info :product="$product" />
 
         {{-- Reviews --}}
         <section class="mt-12" id="avis" aria-labelledby="avis-title">

@@ -192,6 +192,34 @@ function setupCountdown() {
     });
 }
 
+// Tabs (ARIA pattern): click, arrows, Home and End; the panels of the other tabs are hidden with data-inactive
+function setupTabs() {
+    document.querySelectorAll('[data-tabs]').forEach((root) => {
+        const tabs = [...root.querySelectorAll('[role="tab"]')];
+        const select = (tab, focus = false) => {
+            tabs.forEach((other) => {
+                const active = other === tab;
+                other.setAttribute('aria-selected', active ? 'true' : 'false');
+                other.tabIndex = active ? 0 : -1;
+                const panel = document.getElementById(other.getAttribute('aria-controls'));
+                if (panel) panel.toggleAttribute('data-inactive', !active);
+            });
+            if (focus) tab.focus();
+        };
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => select(tab));
+            tab.addEventListener('keydown', (event) => {
+                const target = { ArrowRight: tabs[(index + 1) % tabs.length], ArrowLeft: tabs[(index - 1 + tabs.length) % tabs.length], Home: tabs[0], End: tabs[tabs.length - 1] }[event.key];
+                if (target) {
+                    event.preventDefault();
+                    select(target, true);
+                }
+            });
+        });
+    });
+}
+
 // Product page: photo gallery, quantity stepper, variant price and stock, favourites
 const formatFcfa = (amount) => `${Math.round(amount).toLocaleString('fr-FR').replace(/\s/g, '\u00A0')}\u00A0FCFA`;
 
@@ -598,6 +626,7 @@ setupFilters();
 setupAutosubmit();
 setupCompare();
 setupCountdown();
+setupTabs();
 setupProduct();
 setupCart();
 setupCheckout();
