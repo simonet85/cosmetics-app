@@ -198,6 +198,39 @@ class StorefrontTemplatesTest extends TestCase
         $this->assertStringContainsString('data-autosubmit', $html);
     }
 
+    public function test_the_beauty_palette_covers_the_whole_storefront_once_a_beauty_template_is_chosen(): void
+    {
+        $product = $this->product();
+
+        // classic everywhere by default
+        foreach ([route('home'), route('shop.index'), route('cart.index'), route('products.show', $product->slug)] as $url) {
+            $this->get($url)->assertOk()->assertDontSee('data-theme="beauty"', false);
+        }
+
+        $this->beauty();
+
+        // the header, the announcement bar and the footer follow on every page, not only on the page that has the template
+        foreach ([route('home'), route('shop.index'), route('cart.index'), route('products.show', $product->slug), route('pages.faq')] as $url) {
+            $this->get($url)->assertOk()->assertSee('<html lang="fr" class="tpl-beauty" data-theme="beauty">', false);
+        }
+    }
+
+    public function test_the_home_template_alone_also_switches_the_whole_look(): void
+    {
+        $this->setting('storefront_template_home', 'beauty');
+
+        $this->get(route('cart.index'))->assertOk()->assertSee('data-theme="beauty"', false);
+    }
+
+    public function test_an_admin_preview_changes_the_look_of_that_request_only(): void
+    {
+        $this->product();
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->get(route('shop.index', ['template' => 'beauty']))->assertOk()->assertSee('data-theme="beauty"', false);
+        $this->actingAs($admin)->get(route('cart.index'))->assertOk()->assertDontSee('data-theme="beauty"', false);
+    }
+
     public function test_the_beauty_shop_speaks_english_in_english(): void
     {
         $this->beauty();

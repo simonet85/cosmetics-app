@@ -27,6 +27,16 @@ class StorefrontTemplates
         return self::AVAILABLE[$page] ?? [];
     }
 
+    /**
+     * The look of the whole storefront. As soon as the home page or the shop list uses the Glowing Beauty template,
+     * every storefront page (header, announcement bar, footer, cart, product...) takes its palette, so that
+     * navigating never switches between two looks. The page layouts stay those of each template.
+     */
+    public static function theme(?Request $request = null): string
+    {
+        return in_array('beauty', [self::for('home', $request), self::for('shop', $request)], true) ? 'beauty' : self::DEFAULT;
+    }
+
     /** The template of a page: the admin preview, else the saved setting, else the classic one. */
     public static function for(string $page, ?Request $request = null): string
     {
