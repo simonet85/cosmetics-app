@@ -20,6 +20,12 @@ class SyncTranslations extends Command
     /** @var list<class-string<Model>> */
     private const MODELS = [Product::class, Category::class, Banner::class, Tag::class];
 
+    /** International ingredient names are written in capitals ("AQUA (WATER), GLYCERIN, PARFUM"). */
+    public static function isInciList(string $text): bool
+    {
+        return mb_strtoupper($text) === $text && preg_match('/\p{Lu}{3}/u', $text) === 1;
+    }
+
     public function handle(): int
     {
         $locale = (string) $this->argument('locale');
@@ -38,6 +44,11 @@ class SyncTranslations extends Command
                 foreach ($class::translatableFields() as $field) {
                     $source = $model->getAttribute($field);
                     if (blank($source)) {
+                        continue;
+                    }
+
+                    // An INCI list (AQUA, ALOE BARBADENSIS LEAF JUICE…) is the same in every language: never sent to DeepL
+                    if ($field === 'ingredients' && self::isInciList((string) $source)) {
                         continue;
                     }
 

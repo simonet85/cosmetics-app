@@ -86,6 +86,24 @@ class CatalogueTranslationTest extends TestCase
         $this->assertDatabaseHas('translations', ['translatable_id' => $product->id, 'field' => 'short_description', 'value' => 'For every hair type', 'source_hash' => null]);
     }
 
+    public function test_an_inci_list_is_never_sent_to_deepl_but_a_french_list_is(): void
+    {
+        $inci = $this->product();
+        $inci->update(['ingredients' => 'AQUA (WATER), ALOE BARBADENSIS LEAF JUICE, GLYCERIN.']);
+        $french = Product::factory()->create(['name' => 'Autre', 'short_description' => null, 'full_description' => null, 'how_to_use' => null, 'key_ingredients' => null, 'precautions' => null, 'storage_conditions' => null, 'ingredients' => 'Eau, aloe vera, glycérine']);
+
+        DeepL::shouldReceive('translate')->once()->withArgs(function ($texts) {
+            // the INCI list is absent; the French list and the names/descriptions are sent
+            return ! in_array('AQUA (WATER), ALOE BARBADENSIS LEAF JUICE, GLYCERIN.', $texts, true)
+                && in_array('Eau, aloe vera, glycérine', $texts, true);
+        })->andReturnUsing(fn ($texts) => array_map(fn ($t) => 'EN '.$t, $texts));
+
+        $this->artisan('translations:sync', ['locale' => 'en'])->assertSuccessful();
+
+        $this->assertDatabaseMissing('translations', ['translatable_id' => $inci->id, 'field' => 'ingredients']);
+        $this->assertDatabaseHas('translations', ['translatable_id' => $french->id, 'field' => 'ingredients', 'value' => 'EN Eau, aloe vera, glycérine']);
+    }
+
     public function test_the_sync_command_does_nothing_when_everything_is_up_to_date(): void
     {
         $product = $this->product();
