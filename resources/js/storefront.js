@@ -157,6 +157,13 @@ function setupFilters() {
     });
 }
 
+// A control marked data-autosubmit sends its form as soon as it changes (the sort select of the shop list)
+function setupAutosubmit() {
+    document.querySelectorAll('[data-autosubmit]').forEach((control) => {
+        control.addEventListener('change', () => control.form?.requestSubmit());
+    });
+}
+
 // Product page: photo gallery, quantity stepper, variant price and stock, favourites
 const formatFcfa = (amount) => `${Math.round(amount).toLocaleString('fr-FR').replace(/\s/g, '\u00A0')}\u00A0FCFA`;
 
@@ -560,6 +567,7 @@ setupDialogs();
 setupAddToCart();
 setupReveal();
 setupFilters();
+setupAutosubmit();
 setupProduct();
 setupCart();
 setupCheckout();

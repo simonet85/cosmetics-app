@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\Tag;
+use App\Support\StorefrontTemplates;
 use Illuminate\Http\Request;
 
 class ShopController extends Controller
@@ -18,6 +20,9 @@ class ShopController extends Controller
     ];
 
     /** SQL for the price the customer actually pays (discount price when there is one). */
+    /** Page sizes offered by the shop list. */
+    private const PER_PAGE = [9, 12, 18, 24];
+
     private const EFFECTIVE_PRICE = 'COALESCE(NULLIF(discount_price, 0), price)';
 
     public function index(Request $request)
@@ -46,6 +51,12 @@ class ShopController extends Controller
             // An unknown value (an old bookmarked link) is not an error: the list simply uses the default order
             'sort' => ['nullable', 'string', 'max:30'],
             'sold_out' => ['nullable', 'boolean'],
+            'on_sale' => ['nullable', 'boolean'],
+            'capacity' => ['nullable', 'array', 'max:10'],
+            'capacity.*' => ['string', 'max:50'],
+            // Unknown values are not an error: the list falls back to its default
+            'per_page' => ['nullable', 'string', 'max:5'],
+            'cols' => ['nullable', 'string', 'max:2'],
         ]);
 
         $categorySlug = $category?->slug ?? ($filters['category'] ?? null);
@@ -62,6 +73,14 @@ class ShopController extends Controller
 
         if (! empty($filters['tag'])) {
             $query->whereHas('tags', fn ($q) => $q->where('slug', $filters['tag']));
+        }
+
+        if ($filters['on_sale'] ?? false) {
+            $query->where('discount_price', '>', 0);
+        }
+
+        if (! empty($filters['capacity'])) {
+            $query->whereHas('variants', fn ($q) => $q->where('is_active', true)->whereIn('size', $filters['capacity']));
         }
 
         if (isset($filters['min_price']) && $filters['min_price'] !== null) {
@@ -90,7 +109,10 @@ class ShopController extends Controller
         };
         $query->orderBy('id');
 
-        $products = $query->paginate(12)->withQueryString();
+        $perPage = in_array((int) ($filters['per_page'] ?? 0), self::PER_PAGE, true) ? (int) $filters['per_page'] : 12;
+        $columns = in_array((int) ($filters['cols'] ?? 0), [2, 3, 4], true) ? (int) $filters['cols'] : 3;
+
+        $products = $query->paginate($perPage)->withQueryString();
 
         $categories = Category::active()->parent()->orderBy('order')->orderBy('name')->get();
         $tags = Tag::whereHas('products', fn ($q) => $q->active()->inStock())->orderBy('name')->get();
@@ -101,7 +123,13 @@ class ShopController extends Controller
 
         $activeCategory = $category ?? ($categorySlug ? $categories->firstWhere('slug', $categorySlug) : null);
 
-        return view('storefront.shop', [
+        $template = StorefrontTemplates::for('shop', $request);
+
+        return view($template === 'beauty' ? 'storefront.shop-beauty' : 'storefront.shop', [
+            'perPage' => $perPage,
+            'perPageOptions' => self::PER_PAGE,
+            'columns' => $columns,
+            ...($template === 'beauty' ? $this->beautyExtras() : []),
             'products' => $products,
             'categories' => $categories,
             'tags' => $tags,
@@ -112,6 +140,32 @@ class ShopController extends Controller
             'categorySlug' => $categorySlug,
             'priceRange' => ['min' => (int) floor((float) ($range->min ?? 0)), 'max' => (int) ceil((float) ($range->max ?? 0))],
         ]);
+    }
+
+    /** Extra data of the Glowing Beauty list: category counts, capacities, best rated products, favourites. */
+    private function beautyExtras(): array
+    {
+        $capacities = ProductVariant::query()
+            ->where('is_active', true)->whereNotNull('size')->where('size', '!=', '')
+            ->whereHas('product', fn ($q) => $q->active()->inStock())
+            ->selectRaw('size, COUNT(DISTINCT product_id) as products_count')
+            ->groupBy('size')->orderBy('size')->get();
+
+        $topRated = Product::with('images')->active()->inStock()
+            ->withAvg(['reviews as rating_average' => fn ($q) => $q->approved()], 'rating')
+            ->get()->filter(fn ($p) => $p->rating_average !== null)
+            ->sortByDesc('rating_average')->take(3)->values();
+
+        $stripCategories = Category::active()->parent()->orderBy('order')->orderBy('name')
+            ->withCount(['products as sellable_count' => fn ($q) => $q->active()->inStock()])->get()
+            ->filter(fn ($category) => $category->sellable_count > 0)->values();   // a rayon with nothing on sale leads nowhere
+
+        return [
+            'capacities' => $capacities,
+            'topRated' => $topRated,
+            'stripCategories' => $stripCategories,
+            'wishlistIds' => array_map('intval', session('wishlist', [])),
+        ];
     }
 
     public function show($slug)

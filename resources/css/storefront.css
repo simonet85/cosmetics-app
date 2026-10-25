@@ -26,6 +26,8 @@
     --color-ticket: #fbd38d;
     --color-amber: #9a4b06;
     --color-danger: #b42318;
+    --color-hot: #b42318;   /* "HOT" badge */
+    --color-new: #2e7d32;   /* "NEW" badge, 5.1:1 with white text */
 
     /* Shelf-edge corners: nearly square */
     --radius-xs: 2px;
@@ -222,3 +224,29 @@ html.js .slider-track {
 html.js .slider-track::-webkit-scrollbar { display: none; }
 html.js .slider-slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; }
 html.js .slider-controls { display: flex; }
+
+/*
+ * Glowing Beauty template (Réglages > Apparence). It only re-skins the page it wraps: the tokens below replace the
+ * pharmacy green by a warm brown and the condensed capitals by Archivo at normal width. Header and footer stay as they are.
+ */
+.tpl-beauty {
+    --color-green: #6b3d33;        /* 9.7:1 with white text */
+    --color-green-deep: #52302a;
+    --color-mint: #f5efec;
+    --color-ink: #2a2321;
+    --color-ink-muted: #5b4f4b;
+    --color-line: #e5dcd8;
+    --color-field: #8a7a75;
+    --color-ticket: #ead9d1;
+    scrollbar-color: var(--color-green) var(--color-mint);
+}
+.tpl-beauty h1, .tpl-beauty h2, .tpl-beauty h3 {
+    font-stretch: 100%;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.2;
+    text-transform: none;
+}
+.tpl-beauty .label-caps { font-stretch: 100%; letter-spacing: 0.04em; }
+/* The price component carries its condensed width inline */
+.tpl-beauty [style*='font-stretch'] { font-stretch: 100% !important; }

@@ -30,6 +30,9 @@
                     <a href="#email" class="block px-4 py-2 rounded hover:bg-gray-100">
                         <i class="fas fa-envelope mr-2"></i>Email
                     </a>
+                    <a href="#appearance" class="block px-4 py-2 rounded hover:bg-gray-100">
+                        <i class="fas fa-palette mr-2"></i>Apparence
+                    </a>
                     <a href="#payment" class="block px-4 py-2 rounded hover:bg-gray-100">
                         <i class="fas fa-credit-card mr-2"></i>Paiement
                     </a>
@@ -198,6 +201,45 @@
                                 <span class="ml-2 text-sm text-gray-700">Envoyer notification d'expédition</span>
                             </label>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Appearance: page templates -->
+                <div id="appearance" class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">Apparence de la boutique</h2>
+                    <p class="text-sm text-gray-600 mb-4">Choisissez le modèle de chaque page. Seule la présentation change : produits, prix, panier et paiement restent les mêmes.</p>
+
+                    <div class="space-y-6">
+                        @foreach (['home' => 'Page d\'accueil', 'shop' => 'Page boutique (liste des produits)'] as $page => $pageLabel)
+                            @php
+                                $options = \App\Support\StorefrontTemplates::options($page);
+                                $current = \App\Support\StorefrontTemplates::for($page);
+                            @endphp
+                            <fieldset>
+                                <legend class="block text-sm font-medium text-gray-700 mb-2">{{ $pageLabel }}</legend>
+                                <div class="grid gap-3 sm:grid-cols-2">
+                                    @foreach ($options as $key => $label)
+                                        <label class="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50 {{ $current === $key ? 'border-green bg-gray-50' : 'border-gray-200' }}">
+                                            <input type="radio" name="storefront_template_{{ $page }}" value="{{ $key }}" {{ $current === $key ? 'checked' : '' }}
+                                                   class="border-gray-300 text-green focus:ring-green">
+                                            <span class="text-sm font-medium text-gray-700">{{ $label }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @if (count($options) > 1)
+                                    <p class="mt-2 text-xs text-gray-500">
+                                        Aperçu sans enregistrer :
+                                        @foreach ($options as $key => $label)
+                                            @if ($key !== 'classic')
+                                                <a href="{{ route($page === 'home' ? 'home' : 'shop.index', ['template' => $key]) }}" target="_blank" class="text-green underline">{{ $label }}</a>
+                                            @endif
+                                        @endforeach
+                                    </p>
+                                @else
+                                    <p class="mt-2 text-xs text-gray-500">Un seul modèle est disponible pour cette page pour le moment.</p>
+                                @endif
+                            </fieldset>
+                        @endforeach
                     </div>
                 </div>
 

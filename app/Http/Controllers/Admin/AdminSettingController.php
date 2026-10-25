@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\NewsletterSubscriber;
+use App\Support\StorefrontTemplates;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Laravel\Facades\Image;
@@ -122,6 +123,17 @@ class AdminSettingController extends Controller
         $this->updateSetting('standard_shipping_cost', $request->input('standard_shipping_cost'), 'number', 'shipping');
         $this->updateSetting('free_shipping_threshold', $request->input('free_shipping_threshold'), 'number', 'shipping');
         $this->updateSetting('estimated_delivery_days', $request->input('estimated_delivery_days'), 'text', 'shipping');
+
+        // Page templates: only the templates offered for the page are accepted
+        foreach (['home', 'shop'] as $page) {
+            $request->validate([
+                "storefront_template_{$page}" => ['nullable', 'in:'.implode(',', array_keys(StorefrontTemplates::options($page)))],
+            ], ["storefront_template_{$page}.in" => 'Ce modèle n\'existe pas pour cette page.']);
+
+            if ($request->filled("storefront_template_{$page}")) {
+                $this->updateSetting("storefront_template_{$page}", $request->input("storefront_template_{$page}"), 'text', 'appearance');
+            }
+        }
 
         // Payment methods settings
         $paymentSettings = [
