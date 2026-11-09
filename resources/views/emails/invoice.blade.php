@@ -316,7 +316,7 @@
                 @if($order->moneyFusionPayment)
                     <tr>
                         <td class="label">ID de transaction :</td>
-                        <td>{{ $order->moneyFusionPayment->transaction_id ?? 'N/A' }}</td>
+                        <td>{{ $order->moneyFusionPayment->numero_transaction ?? 'N/A' }}</td>
                     </tr>
                     @if($order->moneyFusionPayment->paid_at)
                         <tr>

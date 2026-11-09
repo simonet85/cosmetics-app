@@ -3,7 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Order;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\InvoicePdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -47,7 +47,7 @@ class OrderPaid extends Mailable
     public function attachments(): array
     {
         // Générer le PDF de la facture
-        $pdf = Pdf::loadView('emails.invoice', ['order' => $this->order]);
+        $pdf = app(InvoicePdf::class)->make($this->order);
 
         return [
             \Illuminate\Mail\Mailables\Attachment::fromData(fn () => $pdf->output(), 'invoice-'.$this->order->order_number.'.pdf')

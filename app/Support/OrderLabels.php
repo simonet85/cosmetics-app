@@ -20,6 +20,18 @@ class OrderLabels
         'refunded' => 'Remboursé',
     ];
 
+    /** @return array<string, string> value => label, for the admin selects */
+    public static function statuses(): array
+    {
+        return array_map(fn ($label) => __($label), self::STATUS);
+    }
+
+    /** @return array<string, string> value => label, for the admin selects */
+    public static function payments(): array
+    {
+        return array_map(fn ($label) => __($label), self::PAYMENT);
+    }
+
     public static function status(?string $status): string
     {
         return isset(self::STATUS[$status]) ? __(self::STATUS[$status]) : (string) $status;

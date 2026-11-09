@@ -4,19 +4,19 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <div class="mb-6">
-        <a href="{{ route('admin.orders.index') }}" class="text-green hover:text-green-deep mb-4 inline-block">
-            <i class="fas fa-arrow-left mr-2"></i>Retour aux commandes
-        </a>
-        <h1 class="text-3xl font-bold">Commande #{{ $order->order_number }}</h1>
-        <p class="text-gray-600 mt-2">Passée le {{ $order->created_at->format('d/m/Y à H:i') }}</p>
-    </div>
-
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            {{ session('success') }}
+    <div class="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div>
+            <a href="{{ route('admin.orders.index') }}" class="text-green hover:text-green-deep mb-4 inline-block">
+                <i class="fas fa-arrow-left mr-2" aria-hidden="true"></i>Retour aux commandes
+            </a>
+            <h1 class="text-3xl font-bold">Commande #{{ $order->order_number }}</h1>
+            <p class="text-gray-600 mt-2">Passée le {{ $order->created_at->format('d/m/Y à H:i') }}</p>
         </div>
-    @endif
+        <a href="{{ route('admin.orders.invoice', $order) }}"
+           class="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-50 transition">
+            <i class="fas fa-file-pdf mr-2" aria-hidden="true"></i>Télécharger la facture
+        </a>
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Content -->
@@ -28,41 +28,80 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Order Status -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Statut de la commande</label>
+                        <label for="order-status" class="block text-sm font-medium text-gray-700 mb-2">Statut de la commande</label>
                         <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST" class="flex gap-2">
                             @csrf
                             @method('PUT')
-                            <select name="status" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
-                                <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>En attente</option>
-                                <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>En traitement</option>
-                                <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Expédiée</option>
-                                <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>Livrée</option>
-                                <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Annulée</option>
+                            <select id="order-status" name="status" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
+                                @foreach (\App\Support\OrderLabels::statuses() as $value => $label)
+                                    <option value="{{ $value }}" @selected($order->status === $value)>{{ $label }}</option>
+                                @endforeach
                             </select>
                             <button type="submit" class="bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
-                                <i class="fas fa-save"></i>
+                                <i class="fas fa-save" aria-hidden="true"></i><span class="sr-only">Enregistrer le statut</span>
                             </button>
                         </form>
                     </div>
 
                     <!-- Payment Status -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Statut du paiement</label>
+                        <label for="payment-status" class="block text-sm font-medium text-gray-700 mb-2">Statut du paiement</label>
                         <form action="{{ route('admin.orders.update-payment-status', $order->id) }}" method="POST" class="flex gap-2">
                             @csrf
                             @method('PUT')
-                            <select name="payment_status" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
-                                <option value="pending" {{ $order->payment_status === 'pending' ? 'selected' : '' }}>En attente</option>
-                                <option value="paid" {{ $order->payment_status === 'paid' ? 'selected' : '' }}>Payé</option>
-                                <option value="failed" {{ $order->payment_status === 'failed' ? 'selected' : '' }}>Échoué</option>
-                                <option value="refunded" {{ $order->payment_status === 'refunded' ? 'selected' : '' }}>Remboursé</option>
+                            <select id="payment-status" name="payment_status" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
+                                @foreach (\App\Support\OrderLabels::payments() as $value => $label)
+                                    <option value="{{ $value }}" @selected($order->payment_status === $value)>{{ $label }}</option>
+                                @endforeach
                             </select>
                             <button type="submit" class="bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
-                                <i class="fas fa-save"></i>
+                                <i class="fas fa-save" aria-hidden="true"></i><span class="sr-only">Enregistrer le statut du paiement</span>
                             </button>
                         </form>
+                        <p class="text-xs text-gray-500 mt-1">Marquer « Payé » envoie la confirmation et la facture au client, comme un paiement en ligne.</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- Shipping Tracking -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">Suivi de livraison</h2>
+
+                <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="status" value="{{ $order->status }}">
+
+                    <div>
+                        <label for="shipping-carrier" class="block text-sm font-medium text-gray-700 mb-2">Transporteur</label>
+                        <input type="text" id="shipping-carrier" name="shipping_carrier" maxlength="255"
+                               value="{{ old('shipping_carrier', $order->shipping_carrier) }}"
+                               placeholder="Ex. DHL, Yalidine..."
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label for="tracking-number" class="block text-sm font-medium text-gray-700 mb-2">N° de suivi</label>
+                        <input type="text" id="tracking-number" name="tracking_number" maxlength="255"
+                               value="{{ old('tracking_number', $order->tracking_number) }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label for="tracking-url" class="block text-sm font-medium text-gray-700 mb-2">Lien de suivi</label>
+                        <input type="url" id="tracking-url" name="tracking_url" maxlength="500"
+                               value="{{ old('tracking_url', $order->tracking_url) }}"
+                               placeholder="https://..."
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
+                    </div>
+
+                    <div class="md:col-span-3 flex flex-wrap items-center justify-between gap-2">
+                        <p class="text-xs text-gray-500">Laissez un champ vide pour l'effacer.</p>
+                        <button type="submit" class="bg-green text-white px-4 py-2 rounded-lg hover:bg-green-deep transition">
+                            <i class="fas fa-truck mr-2" aria-hidden="true"></i>Enregistrer le suivi
+                        </button>
+                    </div>
+                </form>
             </div>
 
             <!-- Order Items -->
@@ -78,7 +117,7 @@
                                      class="w-20 h-20 object-cover rounded">
                             @else
                                 <div class="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">
-                                    <i class="fas fa-image text-gray-400"></i>
+                                    <i class="fas fa-image text-gray-400" aria-hidden="true"></i>
                                 </div>
                             @endif
 
@@ -182,67 +221,82 @@
                 <h2 class="text-xl font-semibold mb-4">Paiement</h2>
 
                 <div class="space-y-2">
-                    <div class="flex justify-between">
+                    <div class="flex justify-between gap-4">
                         <span class="text-gray-600">Méthode</span>
-                        <span class="font-medium">
-                            {{ getPaymentMethodLabel($order->payment_method) }}
-                        </span>
+                        <span class="font-medium text-right">{{ \App\Support\PaymentMethods::label($order->payment_method) }}</span>
                     </div>
 
-                    <div class="flex justify-between">
+                    <div class="flex justify-between gap-4">
+                        <span class="text-gray-600">Montant</span>
+                        <span class="font-medium">{{ format_fcfa($order->total) }}</span>
+                    </div>
+
+                    <div class="flex justify-between gap-4 items-center">
                         <span class="text-gray-600">Statut</span>
-                        <span>
-                            @php
-                                $paymentColors = [
-                                    'pending' => 'bg-yellow-100 text-yellow-800',
-                                    'paid' => 'bg-green-100 text-green-800',
-                                    'failed' => 'bg-red-100 text-red-800',
-                                    'refunded' => 'bg-gray-100 text-gray-800',
-                                ];
-                                $paymentLabels = [
-                                    'pending' => 'En attente',
-                                    'paid' => 'Payé',
-                                    'failed' => 'Échoué',
-                                    'refunded' => 'Remboursé',
-                                ];
-                            @endphp
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $paymentColors[$order->payment_status] ?? 'bg-gray-100 text-gray-800' }}">
-                                {{ $paymentLabels[$order->payment_status] ?? $order->payment_status }}
-                            </span>
-                        </span>
+                        @include('admin.orders.partials.payment-badge', ['status' => $order->payment_status])
                     </div>
 
                     @if($order->payment_method === 'moneyfusion')
                         @php $mfPayment = $order->moneyFusionPayment; @endphp
                         @if($mfPayment)
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Jeton MoneyFusion</span>
-                            <span class="font-mono text-xs break-all text-right ml-4">{{ $mfPayment->token_pay }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Paiement créé le</span>
-                            <span class="font-medium">{{ $mfPayment->created_at->format('d/m/Y H:i') }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Statut côté MoneyFusion (local)</span>
-                            <span class="font-medium">{{ $mfPayment->statut }}</span>
-                        </div>
-                        @if($mfPayment->paid_at)
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Payé le</span>
-                            <span class="font-medium">{{ $mfPayment->paid_at->format('d/m/Y H:i') }}</span>
-                        </div>
+                            <hr class="my-2">
+                            <div class="flex justify-between gap-4">
+                                <span class="text-gray-600">Moyen</span>
+                                <span class="font-medium text-right">{{ $mfPayment->moyen ?: '—' }}</span>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <span class="text-gray-600">N° de transaction</span>
+                                <span class="font-mono text-xs break-all text-right ml-4">{{ $mfPayment->numero_transaction ?: '—' }}</span>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <span class="text-gray-600">Numéro envoyé</span>
+                                <span class="font-medium text-right">{{ $mfPayment->numero_send ?: '—' }}</span>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <span class="text-gray-600">Montant crédité (net de frais)</span>
+                                <span class="font-medium text-right">{{ format_fcfa($mfPayment->montant) }}</span>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <span class="text-gray-600">Frais MoneyFusion</span>
+                                <span class="font-medium text-right">{{ format_fcfa($mfPayment->frais) }}</span>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <span class="text-gray-600">Jeton MoneyFusion</span>
+                                <span class="font-mono text-xs break-all text-right ml-4">{{ $mfPayment->token_pay }}</span>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <span class="text-gray-600">Paiement créé le</span>
+                                <span class="font-medium text-right">{{ $mfPayment->created_at->format('d/m/Y H:i') }}</span>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <span class="text-gray-600">Statut chez MoneyFusion</span>
+                                <span class="font-medium text-right">{{ $mfPayment->statut }}</span>
+                            </div>
+                            @if($mfPayment->paid_at)
+                                <div class="flex justify-between gap-4">
+                                    <span class="text-gray-600">Payé le</span>
+                                    <span class="font-medium text-right">{{ $mfPayment->paid_at->format('d/m/Y H:i') }}</span>
+                                </div>
+                            @endif
                         @endif
+
+                        @if($paymentUrl = $order->moneyfusion_payment_url ?: $order->moneyFusionPayment?->payment_url)
+                            <div class="pt-2">
+                                <a href="{{ $paymentUrl }}" target="_blank" rel="noopener"
+                                   class="inline-flex items-center gap-2 text-sm text-green hover:text-green-deep">
+                                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>Ouvrir le lien de paiement
+                                </a>
+                            </div>
                         @endif
 
                         @if($order->payment_status !== 'paid')
-                        <form action="{{ route('admin.orders.check-payment', $order) }}" method="POST" class="pt-3">
-                            @csrf
-                            <button type="submit" class="w-full px-4 py-2 bg-green text-white rounded-lg hover:bg-green-deep transition-colors">
-                                <i class="fas fa-sync-alt mr-2"></i>Vérifier le paiement
-                            </button>
-                            <p class="text-xs text-gray-500 mt-1">Interroge MoneyFusion et met la commande à jour.</p>
-                        </form>
+                            <form action="{{ route('admin.orders.check-payment', $order) }}" method="POST" class="pt-3">
+                                @csrf
+                                <button type="submit" class="w-full px-4 py-2 bg-green text-white rounded-lg hover:bg-green-deep transition-colors">
+                                    <i class="fas fa-sync-alt mr-2" aria-hidden="true"></i>Vérifier le paiement
+                                </button>
+                                <p class="text-xs text-gray-500 mt-1">Interroge MoneyFusion et met la commande à jour.</p>
+                            </form>
                         @endif
                     @endif
                 </div>
@@ -251,26 +305,7 @@
             <!-- Order Status -->
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-semibold mb-4">Statut</h2>
-
-                @php
-                    $statusColors = [
-                        'pending' => 'bg-yellow-100 text-yellow-800',
-                        'processing' => 'bg-blue-100 text-blue-800',
-                        'shipped' => 'bg-purple-100 text-purple-800',
-                        'delivered' => 'bg-green-100 text-green-800',
-                        'cancelled' => 'bg-red-100 text-red-800',
-                    ];
-                    $statusLabels = [
-                        'pending' => 'En attente',
-                        'processing' => 'En traitement',
-                        'shipped' => 'Expédiée',
-                        'delivered' => 'Livrée',
-                        'cancelled' => 'Annulée',
-                    ];
-                @endphp
-                <span class="px-4 py-2 inline-flex text-sm leading-5 font-semibold rounded-full {{ $statusColors[$order->status] ?? 'bg-gray-100 text-gray-800' }}">
-                    {{ $statusLabels[$order->status] ?? $order->status }}
-                </span>
+                @include('admin.orders.partials.status-badge', ['status' => $order->status, 'size' => 'px-4 py-2 text-sm leading-5'])
             </div>
         </div>
     </div>

@@ -126,6 +126,23 @@
                 </div>
             @endif
 
+            @if ($errors->any())
+                <div role="alert" class="mb-6 flex items-start justify-between gap-3 border border-red-700 bg-red-50 px-4 py-3 text-red-900">
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-exclamation-triangle mt-1" aria-hidden="true"></i>
+                        <div>
+                            <p class="font-semibold">Certaines informations sont invalides.</p>
+                            <ul class="mt-1 list-inside list-disc text-sm">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                    <button type="button" data-dismiss class="inline-flex size-8 shrink-0 cursor-pointer items-center justify-center hover:bg-red-100"><i class="fas fa-times" aria-hidden="true"></i><span class="sr-only">Fermer ce message</span></button>
+                </div>
+            @endif
+
             @yield('content')
         </div>
     </main>

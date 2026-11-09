@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Admin\AdminCustomerController;
 use App\Http\Controllers\Admin\AdminMessageController;
+use App\Http\Controllers\Admin\AdminOrderBulkController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminOrderExportController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\AdminSettingController;
@@ -170,11 +172,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Categories Management
     Route::resource('categories', AdminCategoryController::class)->except(['show']);
 
-    // Orders Management
-    Route::resource('orders', AdminOrderController::class)->only(['index', 'show', 'update']);
+    // Orders Management. The explicit GET routes are declared before the resource, otherwise
+    // "orders/export" would be captured as an order id.
+    Route::get('orders/export', AdminOrderExportController::class)->name('orders.export');
+    Route::get('orders/{order}/invoice', [AdminOrderController::class, 'invoice'])->whereNumber('order')->name('orders.invoice');
+    Route::resource('orders', AdminOrderController::class)->only(['index', 'show']);
     Route::put('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
     Route::put('orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
     Route::post('orders/{order}/check-payment', [AdminOrderController::class, 'checkPayment'])->name('orders.check-payment');
+    Route::post('orders/bulk-status', [AdminOrderBulkController::class, 'updateStatus'])->middleware('throttle:30,1')->name('orders.bulk-status');
+    Route::post('orders/bulk-check-payments', [AdminOrderBulkController::class, 'checkPayments'])->middleware('throttle:10,1')->name('orders.bulk-check-payments');
 
     // Customers Management
     Route::resource('customers', AdminCustomerController::class)->only(['index', 'show', 'destroy']);

@@ -116,7 +116,21 @@ class Order extends Model
 
     public function moneyFusionPayment()
     {
-        return $this->hasOne(\Simonet85\LaravelMoneyFusion\Models\MoneyFusionPayment::class, 'order_id');
+        // A retry creates a new payment row; the order page shows the latest one
+        return $this->hasOne(\Simonet85\LaravelMoneyFusion\Models\MoneyFusionPayment::class, 'order_id')->latestOfMany();
+    }
+
+    /** The customer's name for the admin lists: the account's, else the shipping address's. */
+    public function customerName(): string
+    {
+        if ($this->user) {
+            return trim($this->user->first_name.' '.$this->user->last_name);
+        }
+
+        $shipping = $this->shipping_address ?? [];
+        $name = trim(($shipping['first_name'] ?? '').' '.($shipping['last_name'] ?? ''));
+
+        return $name !== '' ? $name : 'Invité';
     }
 
     public function scopePaid($q)
