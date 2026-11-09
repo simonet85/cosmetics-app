@@ -149,7 +149,7 @@ class CheckoutController extends Controller
     private function toOrder(Order $order): RedirectResponse
     {
         if ($order->moneyfusion_payment_url && $order->payment_status === 'pending') {
-            return redirect($order->moneyfusion_payment_url);
+            return redirect($order->pendingUrl());
         }
 
         return redirect($order->successUrl())->with('success', __('Cette commande a déjà été enregistrée.'));
@@ -291,8 +291,10 @@ class CheckoutController extends Controller
                     DB::commit();
                     $this->rememberOrder($key, $order);
 
-                    // Redirect to MoneyFusion payment page
-                    return redirect($paymentResult['url']);
+                    // Keep a tab on the shop: MoneyFusion ends Wave payments on its own static success
+                    // page (no redirect back), so the payer opens the gateway from the pending page and
+                    // this tab follows the payment to the success page.
+                    return redirect($order->pendingUrl());
                 } catch (Throwable $e) {
                     DB::rollBack();
                     report($e);

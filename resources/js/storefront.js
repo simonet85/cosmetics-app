@@ -422,6 +422,7 @@ function setupPaymentStatus() {
     const startedAt = Date.now();
     let timer = null;
     let busy = false;
+    let finished = false;
 
     // Every 5 s for the first 5 minutes, then every 30 s
     const nextDelay = () => (Date.now() - startedAt < 5 * 60 * 1000 ? 5000 : 30000);
@@ -439,11 +440,13 @@ function setupPaymentStatus() {
             const data = await response.json();
 
             if (data.state === 'paid') {
+                finished = true;
                 if (message) message.textContent = data.message;
                 window.location.href = data.redirect;
                 return;
             }
             if (data.state === 'failed') {
+                finished = true;
                 pendingBox?.classList.add('hidden');
                 failedBox?.classList.remove('hidden');
                 keepPolling = false;
@@ -460,6 +463,13 @@ function setupPaymentStatus() {
     }
 
     button?.addEventListener('click', check);
+
+    // The payer comes back from the gateway tab: browsers throttle background timers, so ask right away
+    // instead of waiting for the next scheduled poll.
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !finished) check();
+    });
+
     check();
 }
 

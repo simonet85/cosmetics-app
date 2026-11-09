@@ -147,6 +147,23 @@ class MoneyFusionWebhookTest extends TestCase
         Mail::assertNothingSent();
     }
 
+    public function test_the_gateway_fees_are_not_mistaken_for_a_wrong_amount(): void
+    {
+        Mail::fake();
+        $order = $this->order();
+        $this->payment($order);
+        // MoneyFusion reports the net amount in "Montant" and its fees separately (seen with Wave)
+        $this->gatewayAnswers('paid', ['Montant' => 22700, 'frais' => 300]);
+
+        $this->notify()->assertOk();
+
+        $order->refresh();
+        $this->assertSame('paid', $order->payment_status);
+        $this->assertSame('processing', $order->status);
+        $this->assertSame('paid', MoneyFusionPayment::first()->statut);
+        Mail::assertSent(OrderPaid::class);
+    }
+
     public function test_a_duplicate_notification_does_not_send_a_second_email(): void
     {
         Mail::fake();

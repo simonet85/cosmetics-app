@@ -3,12 +3,14 @@
 namespace App\Providers;
 
 use App\Services\CartService;
+use App\Services\MoneyFusionService;
 use App\View\Composers\StorefrontComposer;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Simonet85\LaravelMoneyFusion\MoneyFusionService as PackageMoneyFusionService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(\App\Support\Translations::class);
+
+        // The package's amount check ignores its own fees, so paid sessions were never credited
+        $this->app->bind(PackageMoneyFusionService::class, MoneyFusionService::class);
     }
 
     /**

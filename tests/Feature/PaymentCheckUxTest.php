@@ -172,6 +172,16 @@ class PaymentCheckUxTest extends TestCase
         $this->assertMatchesRegularExpression('/id="failed-box" class="[^"]*hidden/', $response->getContent());
     }
 
+    public function test_the_pending_page_offers_to_open_the_gateway_in_a_new_tab(): void
+    {
+        [$order] = $this->pending(['moneyfusion_payment_url' => 'https://pay.moneyfusion.test/pay/tok_ux']);
+
+        $this->get($order->pendingUrl())->assertOk()
+            ->assertSee('Payer maintenant')
+            ->assertSee('https://pay.moneyfusion.test/pay/tok_ux')
+            ->assertSee('target="_blank"', false);
+    }
+
     public function test_the_pending_page_is_not_public(): void
     {
         [$order] = $this->pending();

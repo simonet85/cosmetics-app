@@ -33,7 +33,7 @@ class MoneyFusionCheckoutTest extends TestCase
         ];
     }
 
-    public function test_choosing_moneyfusion_creates_the_order_and_payment_then_redirects_to_the_gateway(): void
+    public function test_choosing_moneyfusion_creates_the_order_and_payment_then_opens_the_pending_page(): void
     {
         Http::fake(['moneyfusion.test/pay' => Http::response([
             'statut' => true,
@@ -45,7 +45,7 @@ class MoneyFusionCheckoutTest extends TestCase
 
         $this->withSession($this->cartWith($product, 2))
             ->post(route('checkout.process'), $this->checkoutData())
-            ->assertRedirect('https://pay.moneyfusion.test/checkout/tok_abc');
+            ->assertRedirect(Order::firstOrFail()->pendingUrl());
 
         $order = Order::firstOrFail();
         $this->assertSame('moneyfusion', $order->payment_method);
