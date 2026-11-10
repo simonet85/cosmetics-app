@@ -60,6 +60,45 @@ class AdminSettingController extends Controller
         return back()->with('success', $unsubscribed ? 'Abonné désinscrit.' : 'Abonné réactivé.');
     }
 
+    /** Add an address from the back office (a customer heard over the phone, a paper sign-up sheet…). */
+    public function storeSubscriber(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+        ], [
+            'email.required' => 'Indiquez une adresse e-mail.',
+            'email.email' => 'L\'adresse e-mail doit être valide.',
+        ]);
+
+        $email = mb_strtolower(trim($validated['email']));
+        $subscriber = NewsletterSubscriber::where('email', $email)->first();
+
+        if ($subscriber && $subscriber->unsubscribed_at === null) {
+            return back()->with('error', 'Cet e-mail est déjà abonné.');
+        }
+
+        if ($subscriber) {
+            $subscriber->update(['subscribed_at' => now(), 'unsubscribed_at' => null]);
+
+            return back()->with('success', 'Abonné réactivé.');
+        }
+
+        NewsletterSubscriber::create([
+            'email' => $email,
+            'token' => Str::random(32),
+            'subscribed_at' => now(),
+        ]);
+
+        return back()->with('success', 'Abonné ajouté.');
+    }
+
+    public function destroySubscriber(NewsletterSubscriber $subscriber)
+    {
+        $subscriber->delete();
+
+        return back()->with('success', 'Abonné supprimé.');
+    }
+
     public function index()
     {
         return view('admin.settings.index');

@@ -23,6 +23,10 @@ class ProductController extends Controller
     {
         $product = Product::where('slug', $slug)->firstOrFail();
 
+        if ($product->reviews()->where('user_id', auth()->id())->exists()) {
+            return back()->with('error', __('Vous avez déjà publié un avis sur ce produit.'));
+        }
+
         $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
             'title' => 'required|string|max:255',
@@ -61,8 +65,8 @@ class ProductController extends Controller
     public function quickView($slug)
     {
         $product = Product::with(['images', 'categories'])
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating')
+            ->withCount(['reviews' => fn ($query) => $query->approved()])
+            ->withAvg(['reviews' => fn ($query) => $query->approved()], 'rating')
             ->where('slug', $slug)
             ->active()
             ->firstOrFail();

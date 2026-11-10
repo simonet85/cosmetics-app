@@ -42,6 +42,7 @@
                     <option value="">Tous les statuts</option>
                     <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Actif</option>
                     <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactif</option>
+                    <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>Expirés</option>
                 </select>
             </div>
 
@@ -172,6 +173,23 @@
                                    title="Modifier">
                                     <i class="fas fa-edit"></i>
                                 </a>
+                                <form action="{{ route('admin.coupons.toggle', $coupon) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                            class="{{ $coupon->is_active ? 'text-gray-600 hover:text-gray-900' : 'text-green hover:text-green-deep' }} mr-3"
+                                            title="{{ $coupon->is_active ? 'Désactiver' : 'Activer' }}">
+                                        <i class="fas {{ $coupon->is_active ? 'fa-toggle-on' : 'fa-toggle-off' }}"></i>
+                                        <span class="sr-only">{{ $coupon->is_active ? 'Désactiver' : 'Activer' }} le coupon</span>
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.coupons.duplicate', $coupon) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="text-blue-600 hover:text-blue-900 mr-3" title="Dupliquer">
+                                        <i class="fas fa-copy"></i>
+                                        <span class="sr-only">Dupliquer le coupon</span>
+                                    </button>
+                                </form>
                                 <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')

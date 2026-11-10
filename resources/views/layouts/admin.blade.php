@@ -1,6 +1,6 @@
 @php
     $user = auth()->user();
-    $unreadMessages = \App\Models\ContactMessage::unread()->count();
+    $unreadMessages = \App\Models\ContactMessage::unreadCount();
 
     // [label, route, icon, active pattern, indent]
     $menu = [

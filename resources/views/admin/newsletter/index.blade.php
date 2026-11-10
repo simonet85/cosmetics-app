@@ -12,6 +12,27 @@
         </a>
     </div>
 
+    <!-- Manual sign-up -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Ajouter un abonné</h2>
+        <form method="POST" action="{{ route('admin.newsletter.store') }}" class="flex flex-col sm:flex-row gap-3 sm:items-end">
+            @csrf
+            <div class="flex-1">
+                <label for="subscriber-email" class="block text-sm font-medium text-gray-700 mb-2">Adresse e-mail</label>
+                <input id="subscriber-email" type="email" name="email" value="{{ old('email') }}" required
+                       placeholder="client@exemple.com"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green focus:border-transparent">
+                @if ($errors->has('email'))
+                    <p class="mt-1 text-sm text-red-600">{{ $errors->first('email') }}</p>
+                @endif
+            </div>
+            <button type="submit" class="bg-green text-white px-6 py-2 rounded-lg hover:bg-green-deep transition min-h-11">
+                <i class="fas fa-plus mr-2" aria-hidden="true"></i>Ajouter
+            </button>
+        </form>
+        <p class="mt-3 text-sm text-gray-500">Un e-mail déjà abonné est refusé ; une adresse désinscrite est réactivée.</p>
+    </div>
+
     <!-- Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-white rounded-lg shadow-md p-6">
@@ -144,6 +165,15 @@
                                             class="text-sm font-medium {{ $subscriber->unsubscribed_at ? 'text-green hover:text-green-deep' : 'text-red-600 hover:text-red-700' }}"
                                             onclick="return confirm('{{ $subscriber->unsubscribed_at ? 'Réabonner' : 'Désinscrire' }} cet abonné ?')">
                                         {{ $subscriber->unsubscribed_at ? 'Réabonner' : 'Désinscrire' }}
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('admin.newsletter.destroy', $subscriber) }}" class="inline ml-4">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            class="text-sm font-medium text-gray-500 hover:text-gray-800"
+                                            onclick="return confirm('Supprimer définitivement cet abonné ?')">
+                                        Supprimer
                                     </button>
                                 </form>
                             </td>

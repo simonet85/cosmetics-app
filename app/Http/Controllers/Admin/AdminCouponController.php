@@ -16,8 +16,11 @@ class AdminCouponController extends Controller
 
         // Filter by status
         if ($request->filled('status')) {
-            $isActive = $request->status === 'active';
-            $query->where('is_active', $isActive);
+            if ($request->status === 'expired') {
+                $query->whereDate('end_date', '<', today());
+            } else {
+                $query->where('is_active', $request->status === 'active');
+            }
         }
 
         // Filter by type
@@ -111,6 +114,44 @@ class AdminCouponController extends Controller
         $coupon->update($validated);
 
         return redirect()->route('admin.coupons.index')->with('success', 'Coupon mis à jour avec succès.');
+    }
+
+    public function toggle(Coupon $coupon)
+    {
+        $coupon->update(['is_active' => ! $coupon->is_active]);
+
+        return back()->with('success', $coupon->is_active
+            ? 'Coupon '.$coupon->code.' activé.'
+            : 'Coupon '.$coupon->code.' désactivé.');
+    }
+
+    public function duplicate(Coupon $coupon)
+    {
+        $base = $coupon->code.'-COPIE';
+        $code = $base;
+        $suffix = 1;
+
+        while (Coupon::where('code', $code)->exists()) {
+            $suffix++;
+            $code = $base.'-'.$suffix;
+        }
+
+        $copy = Coupon::create([
+            'code' => $code,
+            'type' => $coupon->type,
+            'value' => $coupon->value,
+            'min_amount' => $coupon->min_amount,
+            'max_discount' => $coupon->max_discount,
+            'start_date' => $coupon->start_date,
+            'end_date' => $coupon->end_date,
+            'usage_limit' => $coupon->usage_limit,
+            'used_count' => 0,
+            // A copy is off until the owner has checked it, never live by accident
+            'is_active' => false,
+        ]);
+
+        return redirect()->route('admin.coupons.edit', $copy)
+            ->with('success', 'Coupon dupliqué sous le code '.$copy->code.'. Il reste inactif jusqu\'à son activation.');
     }
 
     public function destroy(Coupon $coupon)

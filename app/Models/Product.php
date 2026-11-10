@@ -142,12 +142,13 @@ class Product extends Model
 
     public function getAverageRatingAttribute()
     {
-        return $this->reviews()->avg('rating') ?? 0;
+        // Only approved reviews are public: pending ones must never move the stars
+        return $this->reviews()->where('is_approved', true)->avg('rating') ?? 0;
     }
 
     public function getTotalReviewsAttribute()
     {
-        return $this->reviews()->count();
+        return $this->reviews()->where('is_approved', true)->count();
     }
 
     /**

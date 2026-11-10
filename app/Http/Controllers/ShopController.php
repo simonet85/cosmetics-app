@@ -201,6 +201,9 @@ class ShopController extends Controller
             'reviewAverage' => $reviews->count() ? round($reviews->avg('rating'), 1) : null,
             'relatedProducts' => $relatedProducts,
             'inWishlist' => in_array($product->id, session('wishlist', [])),
+            'userReview' => auth()->check()
+                ? $product->reviews()->where('user_id', auth()->id())->first()
+                : null,
         ]);
     }
 }

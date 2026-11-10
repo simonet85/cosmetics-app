@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminBannerController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Admin\AdminCustomerController;
+use App\Http\Controllers\Admin\AdminMessageBulkController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOrderBulkController;
 use App\Http\Controllers\Admin\AdminOrderController;
@@ -95,7 +96,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
 Route::prefix('products')->name('products.')->group(function () {
     Route::get('/{product:slug}', [ProductController::class, 'show'])->name('show');
     Route::get('/{product:slug}/quick-view', [ProductController::class, 'quickView'])->name('quickView');
-    Route::post('/{product}/reviews', [ProductController::class, 'storeReview'])->middleware('auth')->name('reviews.store');
+    Route::post('/{product}/reviews', [ProductController::class, 'storeReview'])->middleware(['auth', 'throttle:5,1'])->name('reviews.store');
 });
 
 // Cart Routes
@@ -201,6 +202,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('reviews/{review}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
 
     // Coupons Management
+    Route::patch('coupons/{coupon}/toggle', [AdminCouponController::class, 'toggle'])->name('coupons.toggle');
+    Route::post('coupons/{coupon}/duplicate', [AdminCouponController::class, 'duplicate'])->name('coupons.duplicate');
     Route::resource('coupons', AdminCouponController::class);
 
     // Banners Management
@@ -209,10 +212,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Newsletter
     Route::get('newsletter/export', AdminNewsletterExportController::class)->name('newsletter.export');
     Route::get('newsletter', [AdminSettingController::class, 'newsletter'])->name('newsletter.index');
+    Route::post('newsletter', [AdminSettingController::class, 'storeSubscriber'])->name('newsletter.store');
+    Route::delete('newsletter/{subscriber}', [AdminSettingController::class, 'destroySubscriber'])->name('newsletter.destroy');
     Route::patch('newsletter/{subscriber}/toggle', [AdminSettingController::class, 'toggleSubscriber'])->name('newsletter.toggle');
 
     // Contact form messages
+    Route::post('messages/bulk', AdminMessageBulkController::class)->middleware('throttle:30,1')->name('messages.bulk');
     Route::get('messages', [AdminMessageController::class, 'index'])->name('messages.index');
+    Route::get('messages/{message}', [AdminMessageController::class, 'show'])->whereNumber('message')->name('messages.show');
+    Route::post('messages/{message}/reply', [AdminMessageController::class, 'reply'])->name('messages.reply');
     Route::patch('messages/{message}/read', [AdminMessageController::class, 'toggleRead'])->name('messages.read');
     Route::delete('messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
 

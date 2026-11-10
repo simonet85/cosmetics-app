@@ -1,10 +1,11 @@
 {{-- Sortable table header: keeps the filters, toggles the direction, shows the active one.
-     Expects $column, $label and the $filters array from the controller. --}}
+     Expects $column, $label and the $filters array from the controller; $route defaults to the order list. --}}
 @php
+    $routeName = $route ?? 'admin.orders.index';
     $active = ($filters['sort'] ?? 'created_at') === $column;
     $current = $filters['direction'] ?? 'desc';
     $next = $active ? ($current === 'asc' ? 'desc' : 'asc') : 'asc';
-    $url = route('admin.orders.index', array_filter(
+    $url = route($routeName, array_filter(
         array_merge($filters, ['sort' => $column, 'direction' => $next]),
         fn ($value) => $value !== null && $value !== ''
     ));

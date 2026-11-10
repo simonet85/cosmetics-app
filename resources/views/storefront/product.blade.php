@@ -264,6 +264,9 @@
             @if (session('success'))
                 <p role="status" class="mt-4 border border-green bg-mint px-4 py-3 font-semibold">{{ session('success') }}</p>
             @endif
+            @if (session('error'))
+                <p role="alert" class="mt-4 border border-danger px-4 py-3 font-semibold text-danger">{{ session('error') }}</p>
+            @endif
 
             @if ($reviews->isEmpty())
                 <p class="mt-4 text-ink-muted">{{ __('Aucun avis pour le moment.') }}</p>
@@ -290,6 +293,10 @@
 
             <div class="mt-8 max-w-xl">
                 @auth
+                    @if ($userReview)
+                        <h3 class="text-2xl">{{ __('Votre avis') }}</h3>
+                        <p class="mt-2" role="status">{{ __('Vous avez déjà publié un avis sur ce produit. Il sera publié après modération.') }}</p>
+                    @else
                     <h3 class="text-2xl">{{ __('Écrire un avis') }}</h3>
                     <form method="POST" action="{{ route('products.reviews.store', $product->slug) }}" class="mt-4 grid gap-5">
                         @csrf
@@ -315,6 +322,7 @@
                         <p class="text-sm text-ink-muted">{{ __('Votre avis est publié après vérification.') }}</p>
                         <x-ui.button type="submit" variant="secondary" class="w-full sm:w-auto">{{ __('Envoyer mon avis') }}</x-ui.button>
                     </form>
+                    @endif
                 @else
                     <p><a href="{{ route('login') }}" class="inline-flex min-h-11 items-center font-semibold underline">{{ __('Connectez-vous pour donner votre avis') }}</a></p>
                 @endauth
