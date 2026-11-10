@@ -339,9 +339,11 @@ Il faut une entrée cron qui lance le planificateur **chaque minute** (Hostinger
 * * * * * cd ~/domains/klab-consulting.com/laravel && php artisan schedule:run >> ~/domains/klab-consulting.com/laravel/storage/logs/scheduler.log 2>&1
 ```
 
-Hostinger désactive `proc_open`, `exec` et `shell_exec` : `runInBackground()` échoue en silence (seule une erreur
-`Process class relies on proc_open` apparaît dans le log). Les événements planifiés doivent donc rester **synchrones**
-et terminer en moins de 60 secondes. Rediriger la sortie vers `scheduler.log` plutôt que `/dev/null` facilite le diagnostic.
+Hostinger désactive `proc_open`, `exec` et `shell_exec`. Or Laravel exécute **tous** les événements planifiés de type
+commande via Symfony Process : `Schedule::command(...)` échoue donc en silence sur cet hébergement (seule une erreur
+`Process class relies on proc_open` apparaît dans le log). Les tâches sont pour cette raison déclarées avec
+`Schedule::call(fn () => Artisan::call(...))`, qui s'exécute dans le processus courant ; elles doivent terminer en
+moins de 60 secondes. Rediriger la sortie vers `scheduler.log` plutôt que `/dev/null` facilite le diagnostic.
 
 Variables nécessaires en production : `MONEYFUSION_APP_KEY`, `MONEYFUSION_API_URL`, `MONEYFUSION_CHECK_PAYMENT_URL`,
 `MONEYFUSION_WEBHOOK_URL`, `MONEYFUSION_RETURN_URL` (sans clé, aucun paiement ne peut être vérifié).
