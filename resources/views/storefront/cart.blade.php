@@ -93,6 +93,9 @@
                     <h2 id="summary-title" class="text-2xl">{{ __('Résumé') }}</h2>
                     <dl class="tnum mt-4 grid gap-2">
                         <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ trans_choice('Sous-total (:count article)|Sous-total (:count articles)', $itemCount) }}</dt><dd data-sum="subtotal">{{ format_fcfa($subtotal) }}</dd></div>
+                        @if ($discount > 0)
+                            <div class="flex justify-between gap-4 text-green-deep"><dt>{{ __('Réduction') }}</dt><dd data-sum="discount">-{{ format_fcfa($discount) }}</dd></div>
+                        @endif
                         <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ __('Taxes (:taxrate %)', ['taxrate' => $taxRate]) }}</dt><dd data-sum="tax">{{ format_fcfa($tax) }}</dd></div>
                         <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ __('Livraison') }}</dt><dd data-sum="shipping">{{ $shipping > 0 ? format_fcfa($shipping) : 'Gratuite' }}</dd></div>
                         <div class="mt-2 flex items-baseline justify-between gap-4 border-t border-ink pt-3"><dt class="text-lg font-bold">{{ __('Total') }}</dt><dd class="text-2xl font-bold" style="font-stretch: 75%" data-sum="total">{{ format_fcfa($total) }}</dd></div>

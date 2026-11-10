@@ -50,6 +50,16 @@ class AdminSettingController extends Controller
         return view('admin.newsletter.index', compact('subscribers', 'stats'));
     }
 
+    /** Admin-side counterpart of the public unsubscribe link (the public link lives in emails). */
+    public function toggleSubscriber(NewsletterSubscriber $subscriber)
+    {
+        $unsubscribed = $subscriber->unsubscribed_at === null;
+
+        $subscriber->update(['unsubscribed_at' => $unsubscribed ? now() : null]);
+
+        return back()->with('success', $unsubscribed ? 'Abonné désinscrit.' : 'Abonné réactivé.');
+    }
+
     public function index()
     {
         return view('admin.settings.index');

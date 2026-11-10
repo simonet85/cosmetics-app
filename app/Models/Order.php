@@ -14,7 +14,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'order_number', 'subtotal', 'shipping', 'tax', 'discount', 'total', 'status', 'payment_method', 'moneyfusion_token', 'moneyfusion_payment_url', 'payment_status', 'shipping_address', 'billing_address', 'notes', 'customer_email', 'customer_phone', 'shipping_cost', 'tracking_number', 'shipping_carrier', 'tracking_url'];
+    protected $fillable = ['user_id', 'order_number', 'subtotal', 'shipping', 'tax', 'discount', 'coupon_code', 'total', 'status', 'payment_method', 'moneyfusion_token', 'moneyfusion_payment_url', 'payment_status', 'shipping_address', 'billing_address', 'notes', 'customer_email', 'customer_phone', 'shipping_cost', 'tracking_number', 'shipping_carrier', 'tracking_url'];
 
     protected $casts = ['subtotal' => 'decimal:2', 'shipping' => 'decimal:2', 'tax' => 'decimal:2', 'discount' => 'decimal:2', 'total' => 'decimal:2', 'shipping_address' => AddressCast::class, 'billing_address' => AddressCast::class, 'stock_released_at' => 'datetime'];
 
@@ -47,6 +47,9 @@ class Order extends Model
             }
         }
 
+        // The coupon use is given back with the stock: a cancelled order must not keep a limited code used up
+        app(\App\Services\CouponService::class)->release($this);
+
         $this->stock_released_at = now();
 
         return true;
@@ -77,6 +80,8 @@ class Order extends Model
                 ProductVariant::whereKey($item->variant_id)->update(['stock' => DB::raw('GREATEST(stock - '.(int) $item->quantity.', 0)')]);
             }
         }
+
+        app(\App\Services\CouponService::class)->reserve($this);
 
         $this->stock_released_at = null;
 

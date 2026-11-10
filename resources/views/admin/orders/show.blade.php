@@ -204,7 +204,7 @@
 
                     @if($order->discount > 0)
                         <div class="flex justify-between text-green-600">
-                            <span>Réduction</span>
+                            <span>Réduction @if($order->coupon_code)({{ $order->coupon_code }})@endif</span>
                             <span>-{{ format_fcfa($order->discount) }}</span>
                         </div>
                     @endif

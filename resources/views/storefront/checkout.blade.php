@@ -47,6 +47,10 @@
             </div>
         @endif
 
+        {{-- Coupon forms live outside the checkout form: a form cannot be nested in another one --}}
+        <form id="coupon-apply-form" method="POST" action="{{ route('checkout.coupon.apply') }}" class="hidden">@csrf</form>
+        <form id="coupon-remove-form" method="POST" action="{{ route('checkout.coupon.remove') }}" class="hidden">@csrf @method('DELETE')</form>
+
         <form action="{{ route('checkout.process') }}" method="POST" data-checkout class="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start lg:gap-12">
             @csrf
             <input type="hidden" name="checkout_token" value="{{ $checkoutToken }}">
@@ -139,10 +143,35 @@
 
                 <dl class="tnum mt-4 grid gap-2">
                     <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ trans_choice('Sous-total (:count article)|Sous-total (:count articles)', $itemCount) }}</dt><dd>{{ format_fcfa($subtotal) }}</dd></div>
+                    @if ($discount > 0)
+                        <div class="flex justify-between gap-4 text-green-deep"><dt>{{ __('Réduction (:code)', ['code' => $couponCode]) }}</dt><dd>-{{ format_fcfa($discount) }}</dd></div>
+                    @endif
                     <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ __('Taxes (:taxrate %)', ['taxrate' => $taxRate]) }}</dt><dd>{{ format_fcfa($tax) }}</dd></div>
                     <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ __('Livraison') }}</dt><dd>{{ $shipping > 0 ? format_fcfa($shipping) : 'Gratuite' }}</dd></div>
                     <div class="mt-2 flex items-baseline justify-between gap-4 border-t border-ink pt-3"><dt class="text-lg font-bold">{{ __('Total') }}</dt><dd class="text-2xl font-bold" style="font-stretch: 75%">{{ format_fcfa($total) }}</dd></div>
                 </dl>
+
+                <div class="mt-5 border-t border-line pt-4">
+                    <h3 class="text-lg">{{ __('Code promo') }}</h3>
+                    @if ($couponCode)
+                        <div class="mt-2 flex items-center justify-between gap-3 border border-green bg-mint px-3 py-2 text-sm">
+                            <span class="font-semibold">{{ $couponCode }}</span>
+                            <span class="tnum text-green-deep">-{{ format_fcfa($discount) }}</span>
+                        </div>
+                        <button type="submit" form="coupon-remove-form" class="mt-2 inline-flex min-h-11 items-center text-sm underline">{{ __('Retirer le code') }}</button>
+                    @else
+                        <div class="mt-2 flex gap-2">
+                            <label for="field-coupon" class="sr-only">{{ __('Code promo') }}</label>
+                            <input id="field-coupon" form="coupon-apply-form" name="coupon" type="text" value="{{ old('coupon') }}" autocomplete="off"
+                                   placeholder="{{ __('Ex. BIENVENUE10') }}"
+                                   class="min-w-0 flex-1 rounded-sm border border-field bg-white px-3 py-2 uppercase">
+                            <button type="submit" form="coupon-apply-form" class="border border-ink px-4 py-2 font-semibold hover:bg-mint">{{ __('Appliquer') }}</button>
+                        </div>
+                        @if ($couponError)
+                            <p role="alert" class="mt-2 text-sm font-medium text-danger">{{ $couponError }}</p>
+                        @endif
+                    @endif
+                </div>
 
                 <x-ui.button type="submit" class="mt-5 w-full" :disabled="$methods->isEmpty()" data-submit>
                     <x-ui.icon name="check" class="size-5" />

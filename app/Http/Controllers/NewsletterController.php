@@ -32,4 +32,17 @@ class NewsletterController extends Controller
 
         return back()->with('newsletter_success', __('Merci ! Votre adresse e-mail est bien inscrite à la newsletter.'));
     }
+
+    /** One-click unsubscribe from an emailed link: the random token is the proof of ownership. */
+    public function unsubscribe(string $token): RedirectResponse
+    {
+        $subscriber = NewsletterSubscriber::where('token', $token)->firstOrFail();
+
+        if ($subscriber->unsubscribed_at === null) {
+            $subscriber->update(['unsubscribed_at' => now()]);
+        }
+
+        return redirect()->route('home')
+            ->with('newsletter_success', __('Votre adresse e-mail a bien été désinscrite de la newsletter.'));
+    }
 }

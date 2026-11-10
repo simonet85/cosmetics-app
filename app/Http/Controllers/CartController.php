@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Services\CartService;
+use App\Services\CouponService;
 use App\Support\Shipping;
 use Illuminate\Http\Request;
 
@@ -14,11 +15,12 @@ class CartController extends Controller
 
     public function index()
     {
-        $cartItems = array_values($this->cart->lines());
+        $lines = $this->cart->lines();
+        $cartItems = array_values($lines);
 
-        ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals();
+        ['subtotal' => $subtotal, 'discount' => $discount, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->totalsFor($lines);
 
-        return view('storefront.cart', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total'));
+        return view('storefront.cart', compact('cartItems', 'subtotal', 'discount', 'tax', 'shipping', 'total'));
     }
 
     public function add(Request $request)
@@ -152,7 +154,7 @@ class CartController extends Controller
         $this->cart->save($cart);
 
         $lines = $this->cart->lines();
-        $totals = $this->cart->totals($lines);
+        $totals = $this->totalsFor($lines);
 
         return response()->json([
             'success' => true,
@@ -185,7 +187,7 @@ class CartController extends Controller
         unset($cart[$request->cart_item_id]);
         $this->cart->save($cart);
 
-        $totals = $this->cart->totals();
+        $totals = $this->totalsFor();
 
         return response()->json([
             'success' => true,
@@ -214,11 +216,28 @@ class CartController extends Controller
         ]);
     }
 
-    /** @param  array{subtotal: float, tax: float, shipping: float, total: float}  $totals */
+    /**
+     * Cart totals with the coupon remembered at checkout, so changing a quantity keeps the discount
+     * consistent with the page the customer is about to pay on.
+     *
+     * @param  array<string, array{subtotal: float}>|null  $lines
+     * @return array{subtotal: float, discount: float, tax: float, shipping: float, total: float}
+     */
+    private function totalsFor(?array $lines = null): array
+    {
+        $lines ??= $this->cart->lines();
+
+        $coupon = app(CouponService::class)->sessionCoupon((float) array_sum(array_column($lines, 'subtotal')));
+
+        return $this->cart->totals($lines, $coupon['discount']);
+    }
+
+    /** @param  array{subtotal: float, discount: float, tax: float, shipping: float, total: float}  $totals */
     private function totalsPayload(array $totals): array
     {
         return [
             'subtotal' => round($totals['subtotal']),
+            'discount' => round($totals['discount']),
             'tax' => round($totals['tax']),
             'shipping' => round($totals['shipping']),
             'total' => round($totals['total']),
@@ -226,11 +245,12 @@ class CartController extends Controller
         ];
     }
 
-    /** @param  array{subtotal: float, tax: float, shipping: float, total: float}  $totals */
+    /** @param  array{subtotal: float, discount: float, tax: float, shipping: float, total: float}  $totals */
     private function formattedTotals(array $totals): array
     {
         return [
             'subtotal' => format_fcfa($totals['subtotal']),
+            'discount' => $totals['discount'] > 0 ? '-'.format_fcfa($totals['discount']) : format_fcfa(0),
             'tax' => format_fcfa($totals['tax']),
             'shipping' => $totals['shipping'] > 0 ? format_fcfa($totals['shipping']) : __('Gratuite'),
             'total' => format_fcfa($totals['total']),

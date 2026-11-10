@@ -290,7 +290,7 @@
                 @endif
                 @if($order->discount > 0)
                     <tr>
-                        <td class="label">Rabais :</td>
+                        <td class="label">Rabais @if($order->coupon_code)({{ $order->coupon_code }})@endif :</td>
                         <td class="amount">-{{ format_fcfa($order->discount) }}</td>
                     </tr>
                 @endif

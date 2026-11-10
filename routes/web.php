@@ -8,8 +8,10 @@ use App\Http\Controllers\Admin\AdminCustomerController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOrderBulkController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminNewsletterExportController;
 use App\Http\Controllers\Admin\AdminOrderExportController;
 use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\AdminReviewBulkController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\AdminSettingController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -120,6 +122,8 @@ Route::prefix('wishlist')->name('wishlist.')->group(function () {
 Route::prefix('checkout')->name('checkout.')->group(function () {
     Route::get('/', [CheckoutController::class, 'index'])->name('index');
     Route::post('/process', [CheckoutController::class, 'process'])->name('process');
+    Route::post('/coupon', [CheckoutController::class, 'applyCoupon'])->middleware('throttle:20,1')->name('coupon.apply');
+    Route::delete('/coupon', [CheckoutController::class, 'removeCoupon'])->name('coupon.remove');
     Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
     Route::get('/pending/{order}', [CheckoutController::class, 'pending'])->name('pending');
 });
@@ -138,6 +142,10 @@ Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 
 // Newsletter
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->middleware('throttle:10,1')->name('newsletter.subscribe');
+Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])
+    ->where('token', '[A-Za-z0-9]{32}')
+    ->middleware('throttle:30,1')
+    ->name('newsletter.unsubscribe');
 
 // MoneyFusion Payment Routes
 Route::prefix('payment')->name('payment.')->group(function () {
@@ -187,6 +195,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('customers', AdminCustomerController::class)->only(['index', 'show', 'destroy']);
 
     // Reviews Management
+    Route::post('reviews/bulk', AdminReviewBulkController::class)->middleware('throttle:30,1')->name('reviews.bulk');
     Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
     Route::patch('reviews/{review}/approve', [AdminReviewController::class, 'approve'])->name('reviews.approve');
     Route::delete('reviews/{review}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
@@ -198,7 +207,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('banners', AdminBannerController::class);
 
     // Newsletter
+    Route::get('newsletter/export', AdminNewsletterExportController::class)->name('newsletter.export');
     Route::get('newsletter', [AdminSettingController::class, 'newsletter'])->name('newsletter.index');
+    Route::patch('newsletter/{subscriber}/toggle', [AdminSettingController::class, 'toggleSubscriber'])->name('newsletter.toggle');
 
     // Contact form messages
     Route::get('messages', [AdminMessageController::class, 'index'])->name('messages.index');

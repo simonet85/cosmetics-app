@@ -58,29 +58,34 @@ class CartService
 
     /**
      * @param  array<string, array{subtotal: float}>|null  $lines
-     * @return array{subtotal: float, tax: float, shipping: float, total: float} total is rounded to whole francs
+     * @return array{subtotal: float, discount: float, tax: float, shipping: float, total: float} total is rounded to whole francs
      */
-    public function totals(?array $lines = null): array
+    public function totals(?array $lines = null, float $discount = 0.0): array
     {
         $lines ??= $this->lines();
 
         $subtotal = (float) array_sum(array_column($lines, 'subtotal'));
 
-        // Tax rate is a percentage in the settings
-        $tax = $subtotal * (floatval(getSetting('tax_rate', '15')) / 100);
+        // A coupon never discounts more than the cart is worth
+        $discount = round(min(max(0.0, $discount), $subtotal));
+
+        // Tax rate is a percentage in the settings, applied to what the customer actually pays for the goods
+        $tax = ($subtotal - $discount) * (floatval(getSetting('tax_rate', '15')) / 100);
 
         $standardShippingCost = floatval(getSetting('standard_shipping_cost', '0'));
         $freeShippingThreshold = floatval(getSetting('free_shipping_threshold', '50000'));
-        // An empty cart ships nothing, so it is not charged shipping
+        // An empty cart ships nothing, so it is not charged shipping. The threshold reads the cart before
+        // the coupon, so applying a code never makes shipping appear.
         $shipping = $lines === [] || $subtotal >= $freeShippingThreshold ? 0.0 : $standardShippingCost;
 
         return [
             'subtotal' => $subtotal,
+            'discount' => $discount,
             'tax' => $tax,
             'shipping' => $shipping,
             // The CFA franc has no subunit. The total is what the customer is charged and what the payment
             // gateway is sent and checks against, so it must be a whole number of francs everywhere.
-            'total' => round($subtotal + $tax + $shipping),
+            'total' => round($subtotal - $discount + $tax + $shipping),
         ];
     }
 

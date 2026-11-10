@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Services\CartService;
+use App\Services\CouponService;
 use App\Support\CheckoutToken;
 use App\Support\PaymentMethods;
 use Illuminate\Http\RedirectResponse;
@@ -21,22 +22,59 @@ use Throwable;
 
 class CheckoutController extends Controller
 {
-    public function __construct(private CartService $cart) {}
+    public function __construct(private CartService $cart, private CouponService $coupons) {}
 
     public function index()
     {
-        $cartItems = array_values($this->cart->lines());
+        $lines = $this->cart->lines();
+        $cartItems = array_values($lines);
 
         if (empty($cartItems)) {
             return redirect()->route('cart.index')->with('error', __('Votre panier est vide.'));
         }
 
-        ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals();
+        $coupon = $this->coupons->sessionCoupon((float) array_sum(array_column($lines, 'subtotal')));
+        ['subtotal' => $subtotal, 'discount' => $discount, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals($lines, $coupon['discount']);
 
+        $couponCode = $coupon['coupon']?->code;
+        $couponError = $coupon['error'];
         $enabledPaymentMethods = PaymentMethods::enabled();
         $checkoutToken = CheckoutToken::make();
 
-        return view('storefront.checkout', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total', 'enabledPaymentMethods', 'checkoutToken'));
+        return view('storefront.checkout', compact('cartItems', 'subtotal', 'discount', 'tax', 'shipping', 'total', 'couponCode', 'couponError', 'enabledPaymentMethods', 'checkoutToken'));
+    }
+
+    /** Remember a valid coupon for the checkout page; the cart itself is priced again in place(). */
+    public function applyCoupon(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'coupon' => 'required|string|max:50',
+        ], [
+            'coupon.required' => __('Indiquez un code promo.'),
+        ]);
+
+        $lines = $this->cart->lines();
+
+        if (empty($lines)) {
+            return redirect()->route('cart.index')->with('error', __('Votre panier est vide.'));
+        }
+
+        $result = $this->coupons->check($request->input('coupon'), (float) array_sum(array_column($lines, 'subtotal')));
+
+        if ($result['error'] !== null) {
+            return back()->with('error', $result['error'])->withInput();
+        }
+
+        $this->coupons->remember($result['coupon']);
+
+        return back()->with('success', __('Code promo :code appliqué.', ['code' => $result['coupon']->code]));
+    }
+
+    public function removeCoupon(): RedirectResponse
+    {
+        $this->coupons->forget();
+
+        return back()->with('success', __('Code promo retiré.'));
     }
 
     public function process(Request $request)
@@ -174,7 +212,27 @@ class CheckoutController extends Controller
         try {
             DB::beginTransaction();
 
-            ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals($lines);
+            $subtotal = (float) array_sum(array_column($lines, 'subtotal'));
+            $couponCode = session(CouponService::SESSION_KEY);
+            $coupon = null;
+            $discount = 0.0;
+
+            // The code was checked on the checkout page, but it can expire or reach its limit meanwhile:
+            // read (and lock) the row again so the order records a discount that is still valid.
+            if ($couponCode) {
+                $applied = $this->coupons->checkLocked($couponCode, $subtotal);
+
+                if ($applied['error'] !== null) {
+                    $this->coupons->forget();
+
+                    throw new CheckoutException($applied['error']);
+                }
+
+                $coupon = $applied['coupon'];
+                $discount = $applied['discount'];
+            }
+
+            ['subtotal' => $subtotal, 'tax' => $tax, 'shipping' => $shipping, 'total' => $total] = $this->cart->totals($lines, $discount);
 
             // Prepare shipping address
             $shippingAddress = [
@@ -203,6 +261,8 @@ class CheckoutController extends Controller
                 'payment_status' => 'pending',
                 'payment_method' => $request->payment_method,
                 'subtotal' => $subtotal,
+                'discount' => $discount,
+                'coupon_code' => $coupon?->code,
                 'tax' => $tax,
                 'shipping_cost' => $shipping,
                 'total' => $total,
@@ -254,6 +314,9 @@ class CheckoutController extends Controller
                 $variant?->decrement('stock', $item['quantity']);
             }
 
+            // One use per placed order; the row is locked above, so a limited code cannot be overused
+            $coupon?->increment('used_count');
+
             // Handle MoneyFusion payment
             if ($request->payment_method === 'moneyfusion') {
                 try {
@@ -290,6 +353,7 @@ class CheckoutController extends Controller
 
                     DB::commit();
                     $this->rememberOrder($key, $order);
+                    $this->coupons->forget();
 
                     // Keep a tab on the shop: MoneyFusion ends Wave payments on its own static success
                     // page (no redirect back), so the payer opens the gateway from the pending page and
@@ -310,6 +374,7 @@ class CheckoutController extends Controller
 
             DB::commit();
             $this->rememberOrder($key, $order);
+            $this->coupons->forget();
 
             $this->sendReceived($order);
 

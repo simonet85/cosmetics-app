@@ -35,6 +35,11 @@ class AdminReviewController extends Controller
             $query->where('user_id', $request->customer);
         }
 
+        // Filter by verified purchase
+        if ($request->filled('verified')) {
+            $query->where('is_verified_purchase', $request->string('verified')->toString() === '1');
+        }
+
         // Search by title or comment
         if ($request->filled('search')) {
             $search = $request->search;

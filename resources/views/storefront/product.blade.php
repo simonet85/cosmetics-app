@@ -275,6 +275,11 @@
                                 <span class="font-semibold">{{ $nameOf($review->user) }}</span>
                                 <span class="tnum text-sm text-ink-muted">{{ __(':rating sur 5', ['rating' => $review->rating]) }}</span>
                                 <time class="text-sm text-ink-muted" datetime="{{ $review->created_at->toDateString() }}">{{ $review->created_at->translatedFormat('j F Y') }}</time>
+                                @if ($review->is_verified_purchase)
+                                    <span class="inline-flex items-center gap-1 border border-green bg-mint px-2 py-0.5 text-xs font-semibold text-green-deep">
+                                        <x-ui.icon name="check" class="size-3" /> {{ __('Achat vérifié') }}
+                                    </span>
+                                @endif
                             </p>
                             @if ($review->title)<p class="mt-1 font-semibold">{{ $review->title }}</p>@endif
                             <p class="mt-1 max-w-prose">{{ $review->comment }}</p>

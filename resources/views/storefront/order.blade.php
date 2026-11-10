@@ -57,6 +57,9 @@
 
                 <dl class="tnum mt-4 ml-auto grid max-w-sm gap-2">
                     <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ __('Sous-total') }}</dt><dd>{{ format_fcfa($order->subtotal) }}</dd></div>
+                    @if ($order->discount > 0)
+                        <div class="flex justify-between gap-4 text-green-deep"><dt>{{ $order->coupon_code ? __('Réduction (:code)', ['code' => $order->coupon_code]) : __('Réduction') }}</dt><dd>-{{ format_fcfa($order->discount) }}</dd></div>
+                    @endif
                     <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ __('Taxes') }}</dt><dd>{{ format_fcfa($order->tax) }}</dd></div>
                     <div class="flex justify-between gap-4"><dt class="text-ink-muted">{{ __('Livraison') }}</dt><dd>{{ $order->shipping_cost > 0 ? format_fcfa($order->shipping_cost) : 'Gratuite' }}</dd></div>
                     <div class="mt-2 flex items-baseline justify-between gap-4 border-t border-ink pt-3"><dt class="text-lg font-bold">{{ __('Total') }}</dt><dd class="text-2xl font-bold" style="font-stretch: 75%">{{ format_fcfa($order->total) }}</dd></div>

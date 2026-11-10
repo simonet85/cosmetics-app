@@ -44,6 +44,9 @@
 
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;font-size:15px;">
                     <tr><td style="padding:4px 0;color:#4a5750;">Sous-total</td><td align="right">{{ format_fcfa($order->subtotal) }}</td></tr>
+                    @if ($order->discount > 0)
+                        <tr><td style="padding:4px 0;color:#4a5750;">Réduction @if ($order->coupon_code)({{ $order->coupon_code }})@endif</td><td align="right">-{{ format_fcfa($order->discount) }}</td></tr>
+                    @endif
                     <tr><td style="padding:4px 0;color:#4a5750;">Taxes</td><td align="right">{{ format_fcfa($order->tax) }}</td></tr>
                     <tr><td style="padding:4px 0;color:#4a5750;">Livraison</td><td align="right">{{ $order->shipping_cost > 0 ? format_fcfa($order->shipping_cost) : 'Gratuite' }}</td></tr>
                     <tr><td style="padding:10px 0 0;font-size:18px;font-weight:bold;border-top:1px solid #13201a;">Total</td><td align="right" style="padding:10px 0 0;font-size:18px;font-weight:bold;border-top:1px solid #13201a;">{{ format_fcfa($order->total) }}</td></tr>

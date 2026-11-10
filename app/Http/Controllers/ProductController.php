@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -35,12 +36,19 @@ class ProductController extends Controller
             'comment.required' => __('Le commentaire est requis.'),
         ]);
 
+        // A paid order (or one delivered and paid on receipt) for this product makes the review a verified purchase
+        $verified = Order::where('user_id', auth()->id())
+            ->where(fn ($query) => $query->where('payment_status', 'paid')->orWhere('status', 'delivered'))
+            ->whereHas('items', fn ($query) => $query->where('product_id', $product->id))
+            ->exists();
+
         // Create the review
         $product->reviews()->create([
             'user_id' => auth()->id(),
             'rating' => $validated['rating'],
             'title' => $validated['title'],
             'comment' => $validated['comment'],
+            'is_verified_purchase' => $verified,
             'is_approved' => false, // Reviews need admin approval
         ]);
 

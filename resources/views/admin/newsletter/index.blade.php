@@ -4,8 +4,12 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
         <h1 class="text-3xl font-bold">Abonnés Newsletter</h1>
+        <a href="{{ route('admin.newsletter.export', request()->only(['search', 'status'])) }}"
+           class="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-50 transition">
+            <i class="fas fa-file-csv mr-2" aria-hidden="true"></i>Exporter en CSV
+        </a>
     </div>
 
     <!-- Statistics -->
@@ -95,6 +99,9 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Statut
                         </th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -129,10 +136,21 @@
                                     {{ $subscriber->unsubscribed_at ? 'Désabonné' : 'Abonné' }}
                                 </span>
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <form method="POST" action="{{ route('admin.newsletter.toggle', $subscriber) }}" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                            class="text-sm font-medium {{ $subscriber->unsubscribed_at ? 'text-green hover:text-green-deep' : 'text-red-600 hover:text-red-700' }}"
+                                            onclick="return confirm('{{ $subscriber->unsubscribed_at ? 'Réabonner' : 'Désinscrire' }} cet abonné ?')">
+                                        {{ $subscriber->unsubscribed_at ? 'Réabonner' : 'Désinscrire' }}
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">
                                 <i class="fas fa-envelope text-4xl mb-2"></i>
                                 <p>Aucun abonné trouvé</p>
                             </td>
