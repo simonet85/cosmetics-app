@@ -2,14 +2,15 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\AdminBannerController;
+use App\Http\Controllers\Admin\AdminCampaignController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Admin\AdminCustomerController;
 use App\Http\Controllers\Admin\AdminMessageBulkController;
 use App\Http\Controllers\Admin\AdminMessageController;
+use App\Http\Controllers\Admin\AdminNewsletterExportController;
 use App\Http\Controllers\Admin\AdminOrderBulkController;
 use App\Http\Controllers\Admin\AdminOrderController;
-use App\Http\Controllers\Admin\AdminNewsletterExportController;
 use App\Http\Controllers\Admin\AdminOrderExportController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminReviewBulkController;
@@ -215,6 +216,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('newsletter', [AdminSettingController::class, 'storeSubscriber'])->name('newsletter.store');
     Route::delete('newsletter/{subscriber}', [AdminSettingController::class, 'destroySubscriber'])->name('newsletter.destroy');
     Route::patch('newsletter/{subscriber}/toggle', [AdminSettingController::class, 'toggleSubscriber'])->name('newsletter.toggle');
+
+    // Newsletter campaigns
+    Route::post('campaigns/{campaign}/send', [AdminCampaignController::class, 'send'])->name('campaigns.send');
+    Route::post('campaigns/{campaign}/cancel', [AdminCampaignController::class, 'cancel'])->name('campaigns.cancel');
+    Route::get('campaigns/{campaign}/preview', [AdminCampaignController::class, 'preview'])->name('campaigns.preview');
+    Route::resource('campaigns', AdminCampaignController::class)->except(['show']);
 
     // Contact form messages
     Route::post('messages/bulk', AdminMessageBulkController::class)->middleware('throttle:30,1')->name('messages.bulk');

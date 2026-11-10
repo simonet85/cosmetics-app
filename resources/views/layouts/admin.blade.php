@@ -13,6 +13,7 @@
         ['Coupons', 'admin.coupons.index', 'fa-ticket-alt', 'admin.coupons.*', false],
         ['Bannières', 'admin.banners.index', 'fa-image', 'admin.banners.*', false],
         ['Newsletter', 'admin.newsletter.index', 'fa-envelope', 'admin.newsletter.*', false],
+        ['Campagnes', 'admin.campaigns.index', 'fa-paper-plane', 'admin.campaigns.*', true],
         ['Messages', 'admin.messages.index', 'fa-comments', 'admin.messages.*', false],
     ];
 @endphp
