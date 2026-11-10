@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
+use App\Support\PhoneNumber;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -55,5 +57,19 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * A customer who proved a phone number and can sign in with a one-time code.
+     */
+    public function smsEnabled(?string $phone = null): static
+    {
+        $phone ??= fake()->unique()->numerify('07########');
+
+        return $this->state(fn () => ['phone' => $phone])
+            ->afterCreating(fn (User $user) => $user->forceFill([
+                'phone_normalized' => PhoneNumber::normalize($phone),
+                'phone_verified_at' => now(),
+            ])->save());
     }
 }

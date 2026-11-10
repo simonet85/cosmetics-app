@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Support\PhoneNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -161,6 +162,16 @@ class AccountController extends Controller
         }
 
         $user->update($updateData);
+
+        // A different number must be proven again before it can sign the customer in; a plain reformat
+        // of the same number keeps the verification.
+        if (PhoneNumber::normalize($updateData['phone']) !== $user->phone_normalized) {
+            $user->forceFill([
+                'phone_normalized' => null,
+                'phone_verified_at' => null,
+            ])->save();
+            $user->deleteAllOneTimePasswords();
+        }
 
         // Update password if provided
         if ($request->filled('current_password') && $request->filled('new_password')) {

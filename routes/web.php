@@ -31,6 +31,7 @@ use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\SmsLoginController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,15 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+// Passwordless sign-in for customers, by one-time code sent over SMS
+Route::get('/login/sms', [SmsLoginController::class, 'showPhone'])->name('login.sms');
+Route::post('/login/sms', [SmsLoginController::class, 'sendCode'])->middleware('throttle:10,1')->name('login.sms.send');
+Route::get('/login/sms/activate', [SmsLoginController::class, 'showActivation'])->name('login.sms.activate');
+Route::post('/login/sms/activate', [SmsLoginController::class, 'activate'])->middleware('throttle:10,1')->name('login.sms.activate.send');
+Route::get('/login/sms/code', [SmsLoginController::class, 'showCode'])->name('login.sms.code');
+Route::post('/login/sms/code', [SmsLoginController::class, 'verifyCode'])->middleware('throttle:20,1')->name('login.sms.code.verify');
+Route::post('/login/sms/resend', [SmsLoginController::class, 'resendCode'])->middleware('throttle:10,1')->name('login.sms.resend');
 
 // Password reset (the link is e-mailed by the framework's broker)
 Route::get('/forgot-password', [PasswordResetController::class, 'showForgot'])->name('password.request');

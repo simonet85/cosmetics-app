@@ -8,6 +8,9 @@
     'required' => false,
     'autocomplete' => null,
     'inputmode' => null,
+    'pattern' => null,
+    'minlength' => null,
+    'maxlength' => null,
     'wrapper' => null,   // classes for the outer block (grid placement)
 ])
 
@@ -29,6 +32,9 @@
            @if ($required) required @endif
            @if ($autocomplete) autocomplete="{{ $autocomplete }}" @endif
            @if ($inputmode) inputmode="{{ $inputmode }}" @endif
+           @if ($pattern) pattern="{{ $pattern }}" @endif
+           @if ($minlength) minlength="{{ $minlength }}" @endif
+           @if ($maxlength) maxlength="{{ $maxlength }}" @endif
            @if ($error) aria-invalid="true" @endif
            @if ($describedBy) aria-describedby="{{ $describedBy }}" @endif
            {{ $attributes->except('id')->merge(['class' => 'min-h-12 w-full rounded-sm border bg-white px-3 text-base text-ink placeholder:text-ink-muted '.($error ? 'border-danger' : 'border-field')]) }}>

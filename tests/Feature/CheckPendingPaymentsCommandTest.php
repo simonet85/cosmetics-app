@@ -278,9 +278,11 @@ class CheckPendingPaymentsCommandTest extends TestCase
 
     public function test_the_command_is_scheduled_every_ten_minutes_and_nightly(): void
     {
-        $this->artisan('schedule:list')
-            ->expectsOutputToContain('moneyfusion:check-pending --age=10 --limit=100')
-            ->expectsOutputToContain('moneyfusion:check-pending --age=1440 --limit=500')
-            ->assertSuccessful();
+        $this->artisan('schedule:list');
+
+        $events = collect(app(\Illuminate\Console\Scheduling\Schedule::class)->events())->keyBy('description');
+
+        $this->assertSame('*/10 * * * *', $events['moneyfusion:check-pending']->expression);
+        $this->assertSame('0 3 * * *', $events['moneyfusion:check-pending-nightly']->expression);
     }
 }

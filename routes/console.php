@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
+use Spatie\OneTimePasswords\Models\OneTimePassword;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -35,3 +36,11 @@ Schedule::call(fn () => Artisan::call('newsletter:send', [
     ->name('newsletter:send')
     ->everyMinute()
     ->withoutOverlapping(5);
+
+// Expired sign-in codes are useless: drop them instead of keeping customer numbers and codes forever.
+Schedule::call(fn () => Artisan::call('model:prune', [
+    '--model' => [OneTimePassword::class],
+]))
+    ->name('prune-one-time-passwords')
+    ->dailyAt('03:30')
+    ->withoutOverlapping();

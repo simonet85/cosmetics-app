@@ -1,6 +1,7 @@
 @php
     // Only offer a provider when the shop actually has credentials for it
     $social = collect(['google' => 'Google', 'facebook' => 'Facebook'])->filter(fn ($label, $key) => config("services.{$key}.client_id"));
+    $smsLogin = config('vonage.api_key') || app()->environment(['local', 'testing']);
 @endphp
 
 <x-layouts.storefront :title="__('Connexion')" :description="__('Connectez-vous à votre compte Glowing Cosmetics.')" robots="noindex,follow">
@@ -20,6 +21,13 @@
 
             <x-ui.button type="submit" class="w-full">{{ __('Se connecter') }}</x-ui.button>
         </form>
+
+        @if ($smsLogin)
+            <div class="grid gap-2 border-t border-line pt-5">
+                <p class="text-sm text-ink-muted">{{ __('Sans mot de passe : recevez un code par SMS.') }}</p>
+                <x-ui.button variant="secondary" :href="route('login.sms')" class="w-full">{{ __('Se connecter par SMS') }}</x-ui.button>
+            </div>
+        @endif
 
         @if ($social->isNotEmpty())
             <div class="grid gap-2 border-t border-line pt-5">
