@@ -32,10 +32,18 @@
             <h2 class="label-caps text-base text-white">{{ __('Nouveautés par e-mail') }}</h2>
             <form action="{{ route('newsletter.subscribe') }}" method="POST" class="mt-3 grid gap-3">
                 @csrf
+                @if (session('newsletter_success'))
+                    <p role="status" class="text-sm font-semibold text-white">{{ session('newsletter_success') }}</p>
+                @endif
                 <div class="grid gap-1.5">
                     <label for="newsletter-email" class="text-sm font-semibold">{{ __('Votre adresse e-mail') }}</label>
-                    <input id="newsletter-email" name="email" type="email" required autocomplete="email"
+                    @php($newsletterError = isset($errors) ? $errors->getBag('newsletter')->first('email') : null)
+                    <input id="newsletter-email" name="email" type="email" required autocomplete="email" value="{{ old('email') }}"
+                           @if ($newsletterError) aria-invalid="true" aria-describedby="newsletter-email-error" @endif
                            class="min-h-12 w-full rounded-sm border border-white/60 bg-ink px-3 text-base text-white placeholder:text-white/60">
+                    @if ($newsletterError)
+                        <p id="newsletter-email-error" role="alert" class="text-sm font-medium text-[#ffb4a8]">{{ $newsletterError }}</p>
+                    @endif
                 </div>
                 <x-ui.button type="submit" variant="inverse">{{ __('S\'inscrire') }}</x-ui.button>
             </form>

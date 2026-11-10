@@ -247,6 +247,7 @@ class CartTest extends TestCase
             ['key' => 'tax_rate', 'value' => '10', 'type' => 'text', 'group' => 'general', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'standard_shipping_cost', 'value' => '1500', 'type' => 'text', 'group' => 'general', 'created_at' => now(), 'updated_at' => now()],
         ]);
+        \Illuminate\Support\Facades\Cache::forget('settings');
         $product = Product::factory()->create(['price' => 10000]);
         $this->postJson(route('cart.add'), ['product_id' => $product->id, 'quantity' => 1]);
 

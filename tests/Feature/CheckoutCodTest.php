@@ -51,6 +51,8 @@ class CheckoutCodTest extends TestCase
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('settings');
     }
 
     public function test_guest_cod_checkout_creates_an_order_and_redirects_to_success(): void

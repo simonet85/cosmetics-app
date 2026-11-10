@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class AdminCouponController extends Controller
 {
+    private const SORTABLE = ['created_at', 'code', 'value', 'used_count', 'start_date', 'end_date', 'is_active'];
+
     public function index(Request $request)
     {
         $query = Coupon::query();
@@ -28,10 +30,10 @@ class AdminCouponController extends Controller
             $query->where('code', 'like', "%{$request->search}%");
         }
 
-        // Sort
-        $sortBy = $request->get('sort_by', 'created_at');
-        $sortOrder = $request->get('sort_order', 'desc');
-        $query->orderBy($sortBy, $sortOrder);
+        // Sort: only known columns, stable pagination
+        $sortBy = in_array($request->get('sort_by'), self::SORTABLE, true) ? $request->get('sort_by') : 'created_at';
+        $sortOrder = strtolower((string) $request->get('sort_order')) === 'asc' ? 'asc' : 'desc';
+        $query->orderBy($sortBy, $sortOrder)->orderBy('id', $sortOrder);
 
         $coupons = $query->paginate(20)->withQueryString();
 

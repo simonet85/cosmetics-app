@@ -163,6 +163,7 @@ class StorefrontProductTest extends TestCase
             'key' => 'standard_shipping_cost', 'value' => '2000', 'type' => 'text', 'group' => 'shipping',
             'created_at' => now(), 'updated_at' => now(),
         ]);
+        \Illuminate\Support\Facades\Cache::forget('settings');
 
         $this->get(route('products.show', $product->slug))
             ->assertSee("Livraison gratuite dès 50\u{00A0}000\u{00A0}FCFA");

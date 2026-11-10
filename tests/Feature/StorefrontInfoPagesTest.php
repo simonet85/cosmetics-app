@@ -16,6 +16,8 @@ class StorefrontInfoPagesTest extends TestCase
         DB::table('settings')->updateOrInsert(['key' => $key], [
             'value' => $value, 'type' => 'text', 'group' => 'general', 'created_at' => now(), 'updated_at' => now(),
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('settings');
     }
 
     public function test_every_info_page_is_on_the_storefront_layout_with_one_h1(): void

@@ -22,6 +22,8 @@ class StorefrontFoundationTest extends TestCase
         DB::table('settings')->updateOrInsert(['key' => $key], [
             'value' => $value, 'type' => 'text', 'group' => 'general', 'created_at' => now(), 'updated_at' => now(),
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('settings');
     }
 
     private function page(string $body = '<p>Contenu</p>', string $attributes = 'title="Boutique"'): string

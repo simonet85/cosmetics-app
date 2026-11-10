@@ -43,6 +43,8 @@ class AdminOrderBulkTest extends TestCase
         DB::table('settings')->updateOrInsert(['key' => $key], [
             'value' => $value, 'type' => 'text', 'group' => 'general', 'created_at' => now(), 'updated_at' => now(),
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('settings');
     }
 
     public function test_the_bulk_actions_are_for_admins_only(): void

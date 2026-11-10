@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class AdminReviewController extends Controller
 {
+    private const SORTABLE = ['created_at', 'rating', 'is_approved'];
+
     public function index(Request $request)
     {
         $query = Review::with(['product', 'user']);
@@ -42,10 +44,10 @@ class AdminReviewController extends Controller
             });
         }
 
-        // Sort
-        $sortBy = $request->get('sort_by', 'created_at');
-        $sortOrder = $request->get('sort_order', 'desc');
-        $query->orderBy($sortBy, $sortOrder);
+        // Sort: only known columns, stable pagination
+        $sortBy = in_array($request->get('sort_by'), self::SORTABLE, true) ? $request->get('sort_by') : 'created_at';
+        $sortOrder = strtolower((string) $request->get('sort_order')) === 'asc' ? 'asc' : 'desc';
+        $query->orderBy($sortBy, $sortOrder)->orderBy('id', $sortOrder);
 
         $reviews = $query->paginate(20)->withQueryString();
 

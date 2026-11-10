@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\SettingsUpdateRequest;
 use App\Models\NewsletterSubscriber;
-use App\Support\StorefrontTemplates;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
 
 class AdminSettingController extends Controller
 {
+    private const SORTABLE_SUBSCRIBERS = ['created_at', 'email', 'subscribed_at', 'unsubscribed_at'];
+
     public function newsletter(Request $request)
     {
         $query = NewsletterSubscriber::query();
@@ -29,10 +33,10 @@ class AdminSettingController extends Controller
             $query->where('email', 'like', "%{$request->search}%");
         }
 
-        // Sort
-        $sortBy = $request->get('sort_by', 'created_at');
-        $sortOrder = $request->get('sort_order', 'desc');
-        $query->orderBy($sortBy, $sortOrder);
+        // Sort: only known columns, stable pagination
+        $sortBy = in_array($request->get('sort_by'), self::SORTABLE_SUBSCRIBERS, true) ? $request->get('sort_by') : 'created_at';
+        $sortOrder = strtolower((string) $request->get('sort_order')) === 'asc' ? 'asc' : 'desc';
+        $query->orderBy($sortBy, $sortOrder)->orderBy('id', $sortOrder);
 
         $subscribers = $query->paginate(20)->withQueryString();
 
@@ -51,25 +55,11 @@ class AdminSettingController extends Controller
         return view('admin.settings.index');
     }
 
-    public function update(Request $request)
+    public function update(SettingsUpdateRequest $request)
     {
-        // Validate logo upload
         if ($request->hasFile('site_logo')) {
-            $request->validate([
-                'site_logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            ], [
-                'site_logo.image' => 'Le fichier doit être une image.',
-                'site_logo.mimes' => 'Le logo doit être au format JPEG, PNG, JPG ou GIF.',
-                'site_logo.max' => 'La taille du logo ne doit pas dépasser 2 Mo.',
-            ]);
-
-            // Delete old logo if exists
             $oldLogo = DB::table('settings')->where('key', 'site_logo')->value('value');
-            if ($oldLogo && file_exists(public_path($oldLogo))) {
-                unlink(public_path($oldLogo));
-            }
 
-            // Process and save new logo
             $image = Image::read($request->file('site_logo'));
 
             // Resize to professional logo dimensions (200x60px, maintaining aspect ratio)
@@ -77,27 +67,23 @@ class AdminSettingController extends Controller
 
             // Ensure the logo directory exists
             $logoDir = public_path('images/logo');
-            if (! file_exists($logoDir)) {
+            if (! is_dir($logoDir)) {
                 mkdir($logoDir, 0755, true);
             }
 
-            // Generate unique filename
-            $filename = 'logo-'.time().'.png';
-            $path = 'images/logo/'.$filename;
-
-            // Save the image
+            $path = 'images/logo/logo-'.Str::uuid().'.png';
             $image->save(public_path($path));
 
             // Update logo setting in database
             DB::table('settings')->updateOrInsert(
                 ['key' => 'site_logo'],
-                [
-                    'value' => $path,
-                    'type' => 'text',
-                    'group' => 'general',
-                    'updated_at' => now(),
-                ]
+                ['value' => $path, 'type' => 'text', 'group' => 'general', 'updated_at' => now()]
             );
+
+            // Drop the previous file only once the new one is safely stored
+            if ($oldLogo && $oldLogo !== $path && file_exists(public_path($oldLogo))) {
+                unlink(public_path($oldLogo));
+            }
         }
 
         // General settings
@@ -124,23 +110,14 @@ class AdminSettingController extends Controller
         $this->updateSetting('free_shipping_threshold', $request->input('free_shipping_threshold'), 'number', 'shipping');
         $this->updateSetting('estimated_delivery_days', $request->input('estimated_delivery_days'), 'text', 'shipping');
 
-        // Page templates: only the templates offered for the page are accepted
+        // Page templates (validated by SettingsUpdateRequest: only the templates offered for the page)
         foreach (['home', 'shop'] as $page) {
-            $request->validate([
-                "storefront_template_{$page}" => ['nullable', 'in:'.implode(',', array_keys(StorefrontTemplates::options($page)))],
-            ], ["storefront_template_{$page}.in" => 'Ce modèle n\'existe pas pour cette page.']);
-
             if ($request->filled("storefront_template_{$page}")) {
                 $this->updateSetting("storefront_template_{$page}", $request->input("storefront_template_{$page}"), 'text', 'appearance');
             }
         }
 
         // Limited-time offer of the Glowing Beauty home page (an empty date switches the section off)
-        $request->validate([
-            'home_offer_ends_at' => ['nullable', 'date'],
-            'home_offer_title' => ['nullable', 'string', 'max:120'],
-            'home_offer_text' => ['nullable', 'string', 'max:300'],
-        ], ['home_offer_ends_at.date' => 'La date de fin de l\'offre n\'est pas valide.']);
         foreach (['home_offer_ends_at', 'home_offer_title', 'home_offer_text'] as $key) {
             $this->updateSetting($key, $request->input($key), 'text', 'appearance');
         }
@@ -158,6 +135,8 @@ class AdminSettingController extends Controller
             $isEnabled = $request->input($setting) === '1' ? '1' : '0';
             $this->updateSetting($setting, $isEnabled, 'boolean', 'payment');
         }
+
+        Cache::forget('settings');
 
         return back()->with('success', 'Paramètres mis à jour avec succès.');
     }

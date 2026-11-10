@@ -43,6 +43,8 @@ class AdminOrderWorkflowTest extends TestCase
         DB::table('settings')->updateOrInsert(['key' => $key], [
             'value' => $value, 'type' => 'text', 'group' => 'general', 'created_at' => now(), 'updated_at' => now(),
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('settings');
     }
 
     public function test_marking_the_payment_paid_sends_the_confirmation_with_the_invoice_and_starts_processing(): void

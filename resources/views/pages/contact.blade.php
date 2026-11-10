@@ -12,6 +12,10 @@
         <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
             <form method="POST" action="{{ route('pages.contact.submit') }}" class="grid gap-5">
                 @csrf
+                <div class="hidden" aria-hidden="true">
+                    <label for="field-website">Site web</label>
+                    <input type="text" id="field-website" name="website" tabindex="-1" autocomplete="off">
+                </div>
                 <p class="text-ink-muted">{{ __('Une question sur une commande ? Indiquez son numéro dans votre message.') }}</p>
                 <x-ui.field :label="__('Nom complet')" name="name" :value="old('name', auth()->user()?->full_name)" :error="$errors->first('name')" autocomplete="name" required />
                 <x-ui.field :label="__('Adresse e-mail')" name="email" type="email" :value="old('email', auth()->user()?->email)" :error="$errors->first('email')" autocomplete="email" inputmode="email" required />

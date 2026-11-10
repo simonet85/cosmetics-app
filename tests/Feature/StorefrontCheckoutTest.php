@@ -35,6 +35,8 @@ class StorefrontCheckoutTest extends TestCase
         DB::table('settings')->updateOrInsert(['key' => $key], [
             'value' => $value, 'type' => 'text', 'group' => 'general', 'created_at' => now(), 'updated_at' => now(),
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('settings');
     }
 
     public function test_the_checkout_page_is_the_storefront_one_with_a_token_and_labelled_fields(): void

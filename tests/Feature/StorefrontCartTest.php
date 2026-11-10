@@ -18,6 +18,8 @@ class StorefrontCartTest extends TestCase
         \Illuminate\Support\Facades\DB::table('settings')->updateOrInsert(['key' => 'standard_shipping_cost'], [
             'value' => $cost, 'type' => 'text', 'group' => 'shipping', 'created_at' => now(), 'updated_at' => now(),
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('settings');
     }
 
     private function add(Product $product, int $quantity = 1, ?ProductVariant $variant = null)

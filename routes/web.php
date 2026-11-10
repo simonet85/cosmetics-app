@@ -128,7 +128,7 @@ Route::prefix('checkout')->name('checkout.')->group(function () {
 Route::prefix('pages')->name('pages.')->group(function () {
     Route::get('/about', [PageController::class, 'about'])->name('about');
     Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-    Route::post('/contact', [PageController::class, 'contactSubmit'])->name('contact.submit');
+    Route::post('/contact', [PageController::class, 'contactSubmit'])->middleware('throttle:10,1')->name('contact.submit');
     Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 });
 
@@ -137,7 +137,7 @@ Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 
 // Newsletter
-Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->middleware('throttle:10,1')->name('newsletter.subscribe');
 
 // MoneyFusion Payment Routes
 Route::prefix('payment')->name('payment.')->group(function () {

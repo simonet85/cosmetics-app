@@ -21,6 +21,12 @@ class PageController extends Controller
 
     public function contactSubmit(Request $request)
     {
+        // Hidden trap field: a bot fills it, a person never sees it. Answer like a normal success
+        // so the bot learns nothing, but store and mail nothing.
+        if ($request->filled('website')) {
+            return redirect()->route('pages.contact')->with('success', __('Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.'));
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',

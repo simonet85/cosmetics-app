@@ -114,6 +114,7 @@ class SeoTest extends TestCase
             ['key' => 'storefront_template_home', 'value' => 'beauty', 'type' => 'text', 'group' => 'appearance', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'storefront_template_shop', 'value' => 'beauty', 'type' => 'text', 'group' => 'appearance', 'created_at' => now(), 'updated_at' => now()],
         ]);
+        \Illuminate\Support\Facades\Cache::forget('settings');
 
         $this->assertNotNull($this->node($this->jsonLd($this->get('/')->getContent()), 'Organization'));
         $this->assertNotNull($this->node($this->jsonLd($this->get(route('shop.index'))->getContent()), 'BreadcrumbList'));

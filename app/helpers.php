@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 if (! function_exists('getSetting')) {
@@ -12,7 +13,11 @@ if (! function_exists('getSetting')) {
      */
     function getSetting(string $key, $default = null)
     {
-        $setting = DB::table('settings')->where('key', $key)->first();
+        // One query (and one cache entry) for the whole settings table, not one per key:
+        // the admin screens and the storefront read dozens of settings per request.
+        $settings = Cache::rememberForever('settings', fn () => DB::table('settings')->get()->keyBy('key'));
+
+        $setting = $settings->get($key);
 
         if (! $setting) {
             return $default;
