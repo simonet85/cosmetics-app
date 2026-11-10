@@ -127,6 +127,11 @@
                                 <td class="px-4 py-4">
                                     <div class="text-sm text-gray-900">{{ $order->customerName() }}</div>
                                     <div class="text-sm text-gray-500">{{ $order->customer_email }}</div>
+                                    @if ($order->customer_phone)
+                                        <div class="text-sm text-gray-500">
+                                            <a href="tel:{{ $order->customer_phone }}" class="hover:text-green-deep">{{ $order->customer_phone }}</a>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900">{{ $order->created_at->format('d/m/Y') }}</div>

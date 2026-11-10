@@ -49,6 +49,16 @@ class AdminOrderFilterTest extends TestCase
             ->assertSee('ORD-C3')->assertDontSee('ORD-A1');
     }
 
+    public function test_the_list_shows_the_customer_phone_as_a_callable_link(): void
+    {
+        Order::factory()->create(['order_number' => 'ORD-PH', 'customer_phone' => '0702030405']);
+
+        $html = $this->actingAs($this->admin())->get(route('admin.orders.index'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('href="tel:0702030405"', $html);
+        $this->assertStringContainsString('>0702030405<', $html);
+    }
+
     public function test_status_payment_and_period_filters_combine(): void
     {
         Order::factory()->create([
