@@ -56,7 +56,9 @@ else
       # The dev server owns node_modules (shared mount): a second "npm ci" would empty it under its feet
       docker compose exec -T node npm run build
     else
-      docker compose run --rm --no-deps node sh -c "npm ci --no-audit --no-fund && npm run build"
+      # npm ci reinstalls node_modules; through the Windows bind mount that churns ~40k small files and can run
+      # for hours, so the install happens on a container-local volume and only public/build lands on the host.
+      MSYS_NO_PATHCONV=1 docker compose run --rm --no-deps --volume /var/www/html/node_modules node sh -c "npm ci --no-audit --no-fund && npm run build"
     fi
   else
     npm ci --no-audit --no-fund && npm run build
