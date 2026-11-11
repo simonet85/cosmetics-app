@@ -90,6 +90,11 @@ class SmsLoginService
         RateLimiter::hit($phoneKey, 3600);
         RateLimiter::hit($ipKey, 3600);
 
+        // During activation the number is not stored yet: route this notification to the number the
+        // customer typed, without persisting it until the code is verified. VonageChannel reads
+        // routeNotificationForVonage(), which is phone_normalized.
+        $user->phone_normalized = $phone;
+
         try {
             $user->sendOneTimePassword();
         } catch (Throwable $e) {

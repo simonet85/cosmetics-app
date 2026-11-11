@@ -146,6 +146,24 @@ class SmsOtpEnrollmentTest extends TestCase
         Notification::assertSentToTimes($user, SmsOneTimePasswordNotification::class, 2);
     }
 
+    public function test_the_activation_code_is_routed_to_the_typed_number_before_it_is_stored(): void
+    {
+        $user = User::factory()->create();
+        $routed = null;
+
+        $this->post(route('login.sms.activate.send'), $this->credentials($user))
+            ->assertRedirect(route('login.sms.code'));
+
+        Notification::assertSentTo($user, SmsOneTimePasswordNotification::class, function (SmsOneTimePasswordNotification $notification, array $channels, User $notifiable) use (&$routed): bool {
+            $routed = $notifiable->routeNotificationFor('vonage', $notification);
+
+            return true;
+        });
+
+        $this->assertSame(self::E164, $routed);
+        $this->assertNull($user->fresh()->phone_normalized);
+    }
+
     public function test_an_account_that_is_already_verified_cannot_activate_again(): void
     {
         $user = User::factory()->smsEnabled(self::PHONE)->create();
