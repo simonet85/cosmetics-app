@@ -571,5 +571,18 @@
     "Code incorrect ou expiré. Demandez un nouveau code.": "Incorrect or expired code. Request a new code.",
     "Veuillez patienter avant de demander un nouveau code.": "Please wait before requesting a new code.",
     "L'envoi du SMS a échoué. Réessayez dans un instant.": "The SMS could not be sent. Try again in a moment.",
-    "Le numéro de téléphone est trop long.": "The phone number is too long."
+    "Le numéro de téléphone est trop long.": "The phone number is too long.",
+    "Connexion par e-mail": "E-mail sign-in",
+    "Connectez-vous à votre compte Glowing Cosmetics avec un code reçu par e-mail.": "Sign in to your Glowing Cosmetics account with a code received by e-mail.",
+    "Nous vous envoyons un code à 6 chiffres par e-mail. Aucun mot de passe à retenir.": "We send you a 6-digit code by e-mail. No password to remember.",
+    "Saisissez le code reçu par e-mail pour vous connecter.": "Enter the code received by e-mail to sign in.",
+    "Si un compte existe pour :email, un code à 6 chiffres vient d'y être envoyé. Pensez à regarder vos courriers indésirables.": "If an account exists for :email, a 6-digit code has just been sent to it. Remember to check your spam folder.",
+    "Code reçu par e-mail": "Code received by e-mail",
+    "Changer d'adresse": "Change address",
+    "Sans mot de passe : recevez un code par e-mail.": "No password: get a code by e-mail.",
+    "Se connecter par e-mail": "Sign in by e-mail",
+    "Un nouveau code vient d'être envoyé.": "A new code has just been sent.",
+    "Veuillez patienter une minute avant de demander un nouveau code.": "Please wait a minute before asking for a new code.",
+    "L'envoi de l'e-mail a échoué. Réessayez dans un instant.": "The e-mail could not be sent. Please try again in a moment.",
+    "Renvoyer le code dans :seconds s": "Resend the code in :seconds s"
 }

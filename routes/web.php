@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\EmailLoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MoneyFusion\PaymentCallbackController;
@@ -47,6 +48,13 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+// Passwordless sign-in for customers, by one-time code sent by e-mail (no provider, no cost)
+Route::get('/login/email', [EmailLoginController::class, 'showEmail'])->name('login.email');
+Route::post('/login/email', [EmailLoginController::class, 'sendCode'])->middleware('throttle:10,1')->name('login.email.send');
+Route::get('/login/email/code', [EmailLoginController::class, 'showCode'])->name('login.email.code');
+Route::post('/login/email/code', [EmailLoginController::class, 'verifyCode'])->middleware('throttle:20,1')->name('login.email.code.verify');
+Route::post('/login/email/resend', [EmailLoginController::class, 'resendCode'])->middleware('throttle:10,1')->name('login.email.resend');
 
 // Passwordless sign-in for customers, by one-time code sent over SMS
 Route::get('/login/sms', [SmsLoginController::class, 'showPhone'])->name('login.sms');

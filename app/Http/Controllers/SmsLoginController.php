@@ -44,7 +44,7 @@ class SmsLoginController extends Controller
 
         if (! $user) {
             if ($this->sms->hitIpForUnknownNumber($request) === SmsLoginService::IP_LIMIT) {
-                $this->tooMany(__('Trop de demandes de code. Réessayez dans une heure.'));
+                return $this->refused(__('Trop de demandes de code. Réessayez dans une heure.'), 'login.sms', 'phone');
             }
 
             return redirect()->route('login.sms.activate')
@@ -52,7 +52,7 @@ class SmsLoginController extends Controller
                 ->with('status', __('Aucun compte n\'est associé à ce numéro. Connectez-vous pour activer la connexion par SMS.'));
         }
 
-        return $this->send($request, $user, $phone, false);
+        return $this->send($request, $user, $phone, false, 'login.sms', 'phone');
     }
 
     public function showActivation(): View|RedirectResponse
@@ -91,7 +91,7 @@ class SmsLoginController extends Controller
                 ->withErrors(['phone' => __('Ce numéro est déjà associé à un autre compte.')]);
         }
 
-        return $this->send($request, $user, $phone, true);
+        return $this->send($request, $user, $phone, true, 'login.sms.activate', 'phone');
     }
 
     public function showCode(Request $request): View|RedirectResponse
@@ -107,7 +107,10 @@ class SmsLoginController extends Controller
                 ->with('error', __('Votre session a expiré. Recommencez la connexion.'));
         }
 
-        return view('auth.sms-code', ['phone' => PhoneNumber::mask($pending['phone'])]);
+        return view('auth.sms-code', [
+            'phone' => PhoneNumber::mask($pending['phone']),
+            'retryIn' => $this->sms->cooldownRemaining($pending['phone']),
+        ]);
     }
 
     public function verifyCode(Request $request): RedirectResponse
@@ -184,7 +187,7 @@ class SmsLoginController extends Controller
         }
 
         if ($result === ConsumeOneTimePasswordResult::RateLimitExceeded) {
-            $this->tooMany(__('Trop de tentatives. Réessayez dans une minute.'));
+            return $this->refused(__('Trop de tentatives. Réessayez dans une minute.'), 'login.sms.code', 'code');
         }
 
         $message = match ($result) {
@@ -216,10 +219,11 @@ class SmsLoginController extends Controller
                 ->with('error', __('Votre session a expiré. Recommencez la connexion.'));
         }
 
-        return $this->send($request, $pending['user'], $pending['phone'], $pending['activation']);
+        return $this->send($request, $pending['user'], $pending['phone'], $pending['activation'], 'login.sms.code', 'code');
     }
 
-    private function send(Request $request, User $user, string $phone, bool $activation): RedirectResponse
+    /** @param  string  $page  route to come back to when the code is refused; $field is the field that shows the message */
+    private function send(Request $request, User $user, string $phone, bool $activation, string $page, string $field): RedirectResponse
     {
         $status = $this->sms->sendCode($user, $phone, $request, $activation);
 
@@ -228,17 +232,13 @@ class SmsLoginController extends Controller
             return redirect()->route('login.sms.code');
         }
 
-        if ($status === SmsLoginService::COOLDOWN) {
-            $this->tooMany(__('Veuillez patienter avant de demander un nouveau code.'));
-        }
+        $message = match ($status) {
+            SmsLoginService::COOLDOWN => __('Veuillez patienter avant de demander un nouveau code.'),
+            SmsLoginService::PHONE_LIMIT, SmsLoginService::IP_LIMIT => __('Trop de demandes de code. Réessayez dans une heure.'),
+            default => __('L\'envoi du SMS a échoué. Réessayez dans un instant.'),
+        };
 
-        if ($status === SmsLoginService::PHONE_LIMIT || $status === SmsLoginService::IP_LIMIT) {
-            $this->tooMany(__('Trop de demandes de code. Réessayez dans une heure.'));
-        }
-
-        return redirect()->route($activation ? 'login.sms.activate' : 'login.sms')
-            ->withInput()
-            ->with('error', __('L\'envoi du SMS a échoué. Réessayez dans un instant.'));
+        return $this->refused($message, $page, $field)->withInput();
     }
 
     /** @return array<int, mixed> */
@@ -265,8 +265,9 @@ class SmsLoginController extends Controller
         ];
     }
 
-    private function tooMany(string $message): never
+    /** A refusal is shown on a page of the flow, in French, with a way back; never as a bare error screen. */
+    private function refused(string $message, string $page, string $field): RedirectResponse
     {
-        abort(429, $message);
+        return redirect()->route($page)->withErrors([$field => $message]);
     }
 }

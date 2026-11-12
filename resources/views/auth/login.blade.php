@@ -22,6 +22,11 @@
             <x-ui.button type="submit" class="w-full">{{ __('Se connecter') }}</x-ui.button>
         </form>
 
+        <div class="grid gap-2 border-t border-line pt-5">
+            <p class="text-sm text-ink-muted">{{ __('Sans mot de passe : recevez un code par e-mail.') }}</p>
+            <x-ui.button variant="secondary" :href="route('login.email')" class="w-full">{{ __('Se connecter par e-mail') }}</x-ui.button>
+        </div>
+
         @if ($smsLogin)
             <div class="grid gap-2 border-t border-line pt-5">
                 <p class="text-sm text-ink-muted">{{ __('Sans mot de passe : recevez un code par SMS.') }}</p>

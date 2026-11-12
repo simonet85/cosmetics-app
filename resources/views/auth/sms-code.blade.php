@@ -17,11 +17,13 @@
         <div class="flex flex-wrap items-center justify-between gap-x-4 border-t border-line pt-5">
             <form method="POST" action="{{ route('login.sms.resend') }}">
                 @csrf
-                <x-ui.button variant="text" type="submit">{{ __('Renvoyer le code') }}</x-ui.button>
+                <x-ui.button variant="text" type="submit" id="resend-button">{{ __('Renvoyer le code') }}</x-ui.button>
             </form>
             <a href="{{ route('login.sms') }}" class="inline-flex min-h-11 items-center underline">{{ __('Changer de numéro') }}</a>
         </div>
 
         <p>{{ __('Vous préférez votre mot de passe ?') }} <a href="{{ route('login') }}" class="inline-flex min-h-11 items-center font-semibold underline">{{ __('Se connecter') }}</a></p>
     </x-storefront.auth-card>
+
+    @include('auth.partials.resend-countdown')
 </x-layouts.storefront>

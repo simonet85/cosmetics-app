@@ -284,7 +284,8 @@ class SmsOtpLoginTest extends TestCase
 
         $this->withSession($this->pending($user))
             ->post(route('login.sms.code.verify'), ['code' => $wrong])
-            ->assertStatus(429);
+            ->assertRedirect(route('login.sms.code'))
+            ->assertSessionHasErrors(['code' => __('Trop de tentatives. Réessayez dans une minute.')]);
 
         $this->assertGuest();
     }
@@ -301,7 +302,9 @@ class SmsOtpLoginTest extends TestCase
             $this->travel(61)->seconds();
         }
 
-        $this->post(route('login.sms.send'), ['phone' => self::PHONE])->assertStatus(429);
+        $this->post(route('login.sms.send'), ['phone' => self::PHONE])
+            ->assertRedirect(route('login.sms'))
+            ->assertSessionHasErrors(['phone' => __('Trop de demandes de code. Réessayez dans une heure.')]);
 
         Notification::assertSentToTimes($user, SmsOneTimePasswordNotification::class, 3);
     }
@@ -313,7 +316,9 @@ class SmsOtpLoginTest extends TestCase
         $this->post(route('login.sms.send'), ['phone' => self::PHONE])
             ->assertRedirect(route('login.sms.code'));
 
-        $this->post(route('login.sms.send'), ['phone' => self::PHONE])->assertStatus(429);
+        $this->post(route('login.sms.send'), ['phone' => self::PHONE])
+            ->assertRedirect(route('login.sms'))
+            ->assertSessionHasErrors(['phone' => __('Veuillez patienter avant de demander un nouveau code.')]);
 
         Notification::assertSentToTimes($user, SmsOneTimePasswordNotification::class, 1);
     }
@@ -328,7 +333,9 @@ class SmsOtpLoginTest extends TestCase
 
         $this->post(route('login.sms.send'), ['phone' => '0711111111'])->assertRedirect(route('login.sms.code'));
         $this->post(route('login.sms.send'), ['phone' => '0722222222'])->assertRedirect(route('login.sms.code'));
-        $this->post(route('login.sms.send'), ['phone' => '0733333333'])->assertStatus(429);
+        $this->post(route('login.sms.send'), ['phone' => '0733333333'])
+            ->assertRedirect(route('login.sms'))
+            ->assertSessionHasErrors('phone');
 
         Notification::assertSentTo($first, SmsOneTimePasswordNotification::class);
         Notification::assertSentTo($second, SmsOneTimePasswordNotification::class);

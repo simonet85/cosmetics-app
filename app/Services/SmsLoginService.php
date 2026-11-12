@@ -54,6 +54,12 @@ class SmsLoginService
             ->exists();
     }
 
+    /** Seconds before this number may be sent another code (0 when it may be now). */
+    public function cooldownRemaining(string $phone): int
+    {
+        return RateLimiter::availableIn('sms-otp:cooldown:'.$phone);
+    }
+
     /** Unknown numbers still count against the IP quota, so the form cannot be used to probe accounts. */
     public function hitIpForUnknownNumber(Request $request): string
     {
