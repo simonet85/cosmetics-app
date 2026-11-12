@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide d'utilisation — Glowing Cosmetics</title>
+<meta name="description" content="Guide complet : boutique, back-office, réglages et déploiement de Glowing Cosmetics.">
+<style>
+  :root {
+    --green: #0b7a45;
+    --green-deep: #0a5b36;
+    --mint: #e9f3ed;
+    --ink: #16241c;
+    --muted: #5c6c62;
+    --line: #dce5df;
+    --bg: #f6f8f6;
+    --white: #ffffff;
+    --amber: #8a5a00;
+    --amber-bg: #fdf5e3;
+    --red: #9b2c2c;
+    --red-bg: #fbeeee;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--green-deep); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:hover { color: var(--green); }
+
+  /* ---------- Cover ---------- */
+  .cover {
+    background: var(--ink);
+    color: #fff;
+    padding: 56px 24px 48px;
+  }
+  .cover-inner { max-width: 1180px; margin: 0 auto; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: .18em; font-size: 15px; }
+  .brand .tag {
+    background: var(--green); color: #fff; font-size: 11px; font-weight: 700;
+    letter-spacing: .08em; padding: 3px 8px; border-radius: 3px; text-transform: uppercase;
+  }
+  .cover h1 {
+    margin: 28px 0 10px; font-size: clamp(30px, 4.5vw, 46px); line-height: 1.1;
+    letter-spacing: -0.02em; font-weight: 800;
+  }
+  .cover p.lede { margin: 0; max-width: 720px; color: #c9d6ce; font-size: 17px; }
+  .cover .meta {
+    display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 26px;
+    color: #a9bcb1; font-size: 13.5px;
+  }
+  .cover .meta strong { color: #fff; font-weight: 600; }
+
+  /* ---------- Layout ---------- */
+  .layout {
+    max-width: 1180px; margin: 0 auto; padding: 0 24px 80px;
+    display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px;
+    align-items: start;
+  }
+  nav.toc {
+    position: sticky; top: 24px; margin-top: 40px;
+    border: 1px solid var(--line); background: var(--white); border-radius: 6px;
+    padding: 18px 16px; max-height: calc(100vh - 48px); overflow: auto;
+  }
+  nav.toc h2 {
+    margin: 0 0 10px; font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700;
+  }
+  nav.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: item; }
+  nav.toc li { margin: 0; }
+  nav.toc a {
+    display: block; padding: 5px 8px; border-radius: 4px; color: var(--ink);
+    text-decoration: none; font-size: 14px; line-height: 1.4;
+  }
+  nav.toc a:hover { background: var(--mint); }
+  nav.toc a.active { background: var(--mint); color: var(--green-deep); font-weight: 600; }
+  nav.toc a.sub { padding-left: 26px; font-size: 13px; color: var(--muted); }
+  nav.toc a.sub.active { color: var(--green-deep); }
+  nav.toc .num { display: inline-block; width: 22px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  main { min-width: 0; padding-top: 40px; }
+  section { scroll-margin-top: 20px; }
+
+  /* ---------- Typography ---------- */
+  h2.sec {
+    margin: 64px 0 6px; padding-top: 28px; border-top: 1px solid var(--line);
+    font-size: 27px; line-height: 1.2; letter-spacing: -0.015em; font-weight: 800;
+    display: flex; align-items: baseline; gap: 14px;
+  }
+  section:first-of-type h2.sec { margin-top: 0; padding-top: 0; border-top: 0; }
+  h2.sec .n {
+    flex: none; display: inline-grid; place-items: center; width: 34px; height: 34px;
+    border-radius: 4px; background: var(--green); color: #fff; font-size: 16px; font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  h3 { margin: 34px 0 8px; font-size: 19px; letter-spacing: -0.01em; font-weight: 700; }
+  h4 { margin: 22px 0 6px; font-size: 16px; font-weight: 700; }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 4px 0; }
+  .subtitle { color: var(--muted); margin: -2px 0 20px; font-size: 15.5px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14.5px; background: var(--white); }
+  th, td { border: 1px solid var(--line); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: #eef4f0; font-weight: 600; font-size: 13px; letter-spacing: .02em; }
+  td code, p code, li code { background: #edf1ee; border: 1px solid var(--line); border-radius: 3px; padding: 1px 5px; font: 13px var(--mono); }
+
+  .flow {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0 18px;
+    font-size: 13.5px;
+  }
+  .flow span {
+    background: var(--white); border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px;
+  }
+  .flow b { color: var(--green); font-weight: 800; }
+
+  .note, .warn, .ok {
+    border: 1px solid var(--line); border-left: 4px solid var(--green);
+    background: var(--white); border-radius: 4px; padding: 12px 16px; margin: 16px 0;
+    font-size: 14.5px;
+  }
+  .note b, .warn b, .ok b { display: block; margin-bottom: 2px; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+  .warn { border-left-color: var(--amber); background: var(--amber-bg); }
+  .warn b { color: var(--amber); }
+  .note b { color: var(--green-deep); }
+  .ok { border-left-color: var(--green); background: var(--mint); }
+  .ok b { color: var(--green-deep); }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 28px; position: relative; margin: 7px 0; }
+  .checklist li::before {
+    content: "✓"; position: absolute; left: 0; top: 0; width: 18px; height: 18px;
+    border-radius: 3px; background: var(--mint); color: var(--green-deep);
+    font-size: 12px; font-weight: 700; display: grid; place-items: center;
+  }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 16px 0 22px; }
+  .card {
+    background: var(--white); border: 1px solid var(--line); border-radius: 5px; padding: 16px 18px;
+  }
+  .card h4 { margin: 0 0 6px; font-size: 15px; }
+  .card p { margin: 0; font-size: 14px; color: var(--muted); }
+  .card .kicker { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--green); }
+
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11.5px;
+    font-weight: 700; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+  }
+  .badge.on { background: var(--mint); color: var(--green-deep); }
+  .badge.off { background: #f1f2f1; color: var(--muted); }
+  .badge.warn { background: var(--amber-bg); color: var(--amber); }
+  .badge.red { background: var(--red-bg); color: var(--red); }
+
+  pre {
+    background: #10201a; color: #d9e7de; border-radius: 5px; padding: 14px 16px;
+    overflow: auto; font: 13px/1.6 var(--mono); margin: 12px 0 18px;
+  }
+  pre .c { color: #7f9a8b; }
+
+  .top {
+    display: inline-block; margin-top: 10px; font-size: 12.5px; color: var(--muted);
+    text-decoration: none;
+  }
+  footer {
+    border-top: 1px solid var(--line); margin-top: 72px; padding: 24px 0 0;
+    font-size: 13px; color: var(--muted);
+  }
+
+  @media (max-width: 1023px) {
+    .layout { grid-template-columns: 1fr; gap: 8px; padding-bottom: 56px; }
+    nav.toc { position: static; margin-top: 28px; max-height: none; }
+    main { padding-top: 12px; }
+    h2.sec { margin-top: 44px; }
+  }
+  @media (max-width: 560px) {
+    .cover { padding: 40px 18px 34px; }
+    .layout { padding: 0 16px 56px; }
+    th, td { padding: 7px 9px; }
+  }
+  @media print {
+    body { background: #fff; font-size: 11.5pt; }
+    .cover { background: #fff; color: #000; padding: 0 0 12pt; border-bottom: 2px solid #000; }
+    .brand, .cover p.lede, .cover .meta { color: #333; }
+    .brand .tag, .badge { border: 1px solid #666; }
+    nav.toc { display: none; }
+    .layout { display: block; max-width: none; padding: 0; }
+    main { padding-top: 16pt; }
+    h2.sec { page-break-after: avoid; }
+    table, pre, .note, .warn { page-break-inside: avoid; }
+    a { color: #000; text-decoration: none; }
+    .top { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div class="cover-inner">
+    <div class="brand">GLOWING <span class="tag">Beauty Store</span></div>
+    <h1>Guide d'utilisation<br>Boutique, back-office, réglages et déploiement</h1>
+    <p class="lede">Comment vendre, administrer, configurer et mettre en ligne la boutique Glowing Cosmetics — acteur par acteur, écran par écran.</p>
+    <div class="meta">
+      <span>Application&nbsp;: <strong>Laravel 12 + Blade + Tailwind</strong></span>
+      <span>Dev&nbsp;: <strong>http://localhost:8001</strong></span>
+      <span>Prod&nbsp;: <strong>https://klab-consulting.com</strong></span>
+      <span>Document mis à jour le&nbsp;: <strong>12 novembre 2026</strong></span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav class="toc" aria-label="Sommaire">
+  <h2>Sommaire</h2>
+  <ol>
+    <li><a href="#presentation"><span class="num">1</span>Présentation</a></li>
+    <li><a href="#acteurs"><span class="num">2</span>Acteurs et accès</a></li>
+    <li><a href="#visiteur"><span class="num">3</span>Parcours visiteur</a></li>
+    <li><a href="#compte"><span class="num">4</span>Compte client</a></li>
+    <li><a href="#commande"><span class="num">5</span>Commande et paiements</a></li>
+    <li><a href="#backoffice"><span class="num">6</span>Back-office</a></li>
+    <li><a href="#bo-dashboard" class="sub">6.1 Tableau de bord</a></li>
+    <li><a href="#bo-commandes" class="sub">6.2 Commandes</a></li>
+    <li><a href="#bo-produits" class="sub">6.3 Produits</a></li>
+    <li><a href="#bo-categories" class="sub">6.4 Catégories et coupons</a></li>
+    <li><a href="#bo-marketing" class="sub">6.5 Bannières, newsletter, campagnes</a></li>
+    <li><a href="#bo-clients" class="sub">6.6 Clients, avis, messages</a></li>
+    <li><a href="#reglages"><span class="num">7</span>Réglages</a></li>
+    <li><a href="#deploiement"><span class="num">8</span>Déploiement</a></li>
+    <li><a href="#securite"><span class="num">9</span>Sécurité et sauvegardes</a></li>
+    <li><a href="#depannage"><span class="num">10</span>Dépannage</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ============================================================ 1 -->
+<section id="presentation">
+  <h2 class="sec"><span class="n">1</span>Présentation</h2>
+  <p class="subtitle">Ce que fait la boutique, pour qui, et dans quels environnements.</p>
+
+  <p><strong>Glowing Cosmetics</strong> est une boutique en ligne de cosmétiques (soins du visage, maquillage, soins capillaires, parfums, soins du corps) avec un back-office complet. La boutique fonctionne en <strong>franc CFA (FCFA)</strong>, avec des prix sans décimales, et en <strong>français par défaut</strong> (un sélecteur FR/EN est disponible sur la boutique).</p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="kicker">Boutique</div>
+      <h4>Vendre sans friction</h4>
+      <p>Catalogue filtrable, fiche produit détaillée, panier, favoris, commande possible <strong>sans créer de compte</strong>.</p>
+    </div>
+    <div class="card">
+      <div class="kicker">Paiements</div>
+      <h4>Cinq moyens, activables</h4>
+      <p>Mobile money (MoneyFusion), carte bancaire, PayPal, virement bancaire, paiement à la livraison.</p>
+    </div>
+    <div class="card">
+      <div class="kicker">Back-office</div>
+      <h4>Tout piloter au même endroit</h4>
+      <p>Commandes, produits, catégories, coupons, bannières, avis, messages, newsletter et campagnes.</p>
+    </div>
+    <div class="card">
+      <div class="kicker">Connexion</div>
+      <h4>Trois façons d'entrer</h4>
+      <p>Mot de passe, code à usage unique par e-mail, code à usage unique par SMS. Aucune inscription obligatoire pour acheter.</p>
+    </div>
+  </div>
+
+  <h3>Les deux environnements</h3>
+  <table>
+    <thead><tr><th>Environnement</th><th>Adresse</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Dev</strong> (local, Docker)</td><td><code>http://localhost:8001</code></td><td>Développement, démonstrations, tests. E-mails et SMS écrits dans les journaux, rien n'est envoyé.</td></tr>
+      <tr><td><strong>Production</strong></td><td><code>https://klab-consulting.com</code></td><td>La vraie boutique : paiements réels, envoi réel des e-mails et SMS.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note"><b>Repère d'url</b>Le back-office est toujours à <code>/admin</code> (redirige vers <code>/login</code> si vous n'êtes pas connecté). Le compte client est à <code>/account</code>.</div>
+</section>
+
+<!-- ============================================================ 2 -->
+<section id="acteurs">
+  <h2 class="sec"><span class="n">2</span>Acteurs et accès</h2>
+  <p class="subtitle">Qui utilise la boutique, avec quel compte, et pour quoi faire.</p>
+
+  <table>
+    <thead><tr><th style="width:20%">Acteur</th><th style="width:34%">Accès</th><th>Ce qu'il peut faire</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Visiteur</strong></td>
+        <td>La boutique publique, sans compte</td>
+        <td>Parcourir et filtrer le catalogue, voir les fiches produits, remplir un panier et une liste de favoris (mémorisés par session), <strong>commander en invité</strong>, s'abonner à la newsletter, écrire via le formulaire de contact.</td>
+      </tr>
+      <tr>
+        <td><strong>Client</strong></td>
+        <td>Compte client (<code>/account</code>)</td>
+        <td>Tout ce que fait le visiteur, plus : favoris conservés, suivi et annulation des commandes en attente, adresse et profil enregistrés, historique, dépôt d'avis.</td>
+      </tr>
+      <tr>
+        <td><strong>Administrateur</strong> <span class="badge on">admin</span></td>
+        <td>Back-office (<code>/admin</code>)</td>
+        <td>Gérer commandes, produits, catégories, coupons, bannières, clients, avis, messages, newsletter, campagnes et réglages. Ne peut pas supprimer un autre compte administrateur depuis l'écran Clients.</td>
+      </tr>
+      <tr>
+        <td><strong>Super administrateur</strong> <span class="badge on">super_admin</span></td>
+        <td>Back-office (<code>/admin</code>)</td>
+        <td>Mêmes écrans que l'administrateur ; c'est le rôle du compte fondateur (compte créé à l'installation).</td>
+      </tr>
+      <tr>
+        <td><strong>Technicien</strong></td>
+        <td>SSH serveur, dépôt Git, <code>scripts/deploy.sh</code></td>
+        <td>Déployer, sauvegarder la base, lancer les migrations, surveiller le planificateur. Accès réservé — voir la section <a href="#deploiement">Déploiement</a>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Comptes de démonstration (environnement de dev uniquement)</h3>
+  <table>
+    <thead><tr><th>Compte</th><th>Mot de passe</th><th>Rôle / usage</th></tr></thead>
+    <tbody>
+      <tr><td><code>admin@cosmetics.test</code></td><td><code>password</code></td><td>Super administrateur — back-office</td></tr>
+      <tr><td><code>client@cosmetics.test</code></td><td><code>password</code></td><td>Cliente « Awa » — compte client avec une commande</td></tr>
+      <tr><td><code>john@example.com</code></td><td><code>password</code></td><td>Client</td></tr>
+      <tr><td><code>second@cosmetics.test</code></td><td><code>password</code></td><td>Client</td></tr>
+      <tr><td><code>sms.demo@glowing.test</code></td><td><code>password</code></td><td>Client, téléphone vérifié <code>07 00 00 00 42</code> — démo connexion par SMS</td></tr>
+      <tr><td><code>sms.activation@glowing.test</code></td><td><code>password</code></td><td>Client, téléphone <code>07 00 00 00 43</code> — démo d'activation du téléphone</td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><b>Production</b>Les comptes de production et les accès techniques (SSH, base, prestataires) ne figurent pas dans ce guide. Ils sont conservés hors du dépôt Git, dans un fichier de secrets local non versionné.</div>
+
+  <h3>Trois façons de se connecter (clients)</h3>
+  <ol>
+    <li><strong>E-mail + mot de passe</strong> — le formulaire classique de <code>/login</code>.</li>
+    <li><strong>Code par e-mail</strong> — <code>/login/email</code> : on saisit son adresse, on reçoit un code à 6 chiffres valable quelques minutes, on le saisit. Aucun mot de passe à retenir.</li>
+    <li><strong>Code par SMS</strong> — <code>/login/sms</code> : on saisit son numéro ; si le numéro est déjà connu et vérifié, un code part par SMS ; sinon la page d'activation demande e-mail, mot de passe et numéro pour lier le compte.</li>
+  </ol>
+  <p>Le mot de passe oublié reste disponible via <code>/forgot-password</code> (lien reçu par e-mail). Si Google/Facebook sont configurés, les boutons de connexion sociale apparaissent également.</p>
+</section>
+
+<!-- ============================================================ 3 -->
+<section id="visiteur">
+  <h2 class="sec"><span class="n">3</span>Parcours visiteur</h2>
+  <p class="subtitle">De la page d'accueil à la commande, sans compte.</p>
+
+  <div class="flow">
+    <span>Accueil</span><b>→</b><span>Catalogue / filtres</span><b>→</b><span>Fiche produit</span><b>→</b><span>Panier</span><b>→</b><span>Commande (invité)</span><b>→</b><span>Confirmation</span>
+  </div>
+
+  <h3>3.1 Accueil et boutique</h3>
+  <ul>
+    <li><strong>Accueil</strong> : bannière (slider), catégories, produits mis en avant, section « offre limitée » si une date de fin est configurée, inscription newsletter.</li>
+    <li><strong>Template d'accueil</strong> : la présentation dépend du réglage <em>Apparence</em> — <em>Classique</em> ou <em>Glowing Beauty</em>. Les produits, prix, panier et paiement restent identiques.</li>
+    <li><strong>Boutique</strong> (<code>/shop</code>) : recherche par mot-clé, filtre par catégorie et par tag, prix minimum/maximum, produits en promotion uniquement, produits épuisés inclus ou non, capacité/format, tri.</li>
+    <li><strong>Fiche produit</strong> (<code>/products/…</code>) : galerie d'images, prix et prix promotionnel, stock, formats disponibles, onglets d'informations (utilisation, ingrédients, précautions, conservation), avis approuvés, ajout au panier et aux favoris, aperçu rapide.</li>
+  </ul>
+
+  <h3>3.2 Panier et favoris</h3>
+  <ul>
+    <li>Le panier est conservé en session : le visiteur peut modifier les quantités, retirer une ligne ou vider le panier.</li>
+    <li>La <strong>liste de favoris</strong> existe aussi sans compte (session). Une fois connecté, elle est rattachée au compte. Le réglage <em>Liste de souhaits</em> peut la désactiver.</li>
+    <li>Les compteurs du panier et des favoris se mettent à jour dans l'en-tête sans recharger la page.</li>
+  </ul>
+
+  <h3>3.3 Contact, newsletter, pages d'information</h3>
+  <ul>
+    <li><strong>Contact</strong> (<code>/pages/contact</code>) : le message arrive dans <em>Back-office → Messages</em> ; le compteur de non-lus s'affiche dans la barre latérale.</li>
+    <li><strong>Newsletter</strong> : inscription depuis le pied de page ; désinscription par lien personnel reçu par e-mail.</li>
+    <li><strong>Pages</strong> : À propos, FAQ, politique de confidentialité, conditions générales.</li>
+  </ul>
+
+  <div class="note"><b>Avis clients</b>Un avis déposé sur une fiche produit n'est visible qu'après validation dans le back-office. Il faut être connecté pour déposer un avis, et le dépôt est limité en fréquence.</div>
+</section>
+
+<!-- ============================================================ 4 -->
+<section id="compte">
+  <h2 class="sec"><span class="n">4</span>Compte client</h2>
+  <p class="subtitle">Tableau de bord, commandes et profil.</p>
+
+  <h3>4.1 Tableau de bord</h3>
+  <p><code>/account/dashboard</code> affiche un récapitulatif : nombre de commandes, commandes en attente, commandes livrées, total payé, puis les dernières commandes avec leur statut et un lien « Voir ».</p>
+
+  <h3>4.2 Commandes</h3>
+  <ul>
+    <li><strong>Mes commandes</strong> : liste de toutes les commandes du compte, avec statut, paiement et montant.</li>
+    <li><strong>Détail</strong> : articles, quantités, adresses, mode de paiement, statut, suivi éventuel (transporteur et numéro de suivi renseignés par l'administrateur).</li>
+    <li><strong>Annulation</strong> : possible uniquement tant que la commande est <em>En attente</em>. L'annulation remet automatiquement les articles en stock.</li>
+  </ul>
+
+  <h3>4.3 Profil</h3>
+  <p>Le client peut modifier son prénom, nom, e-mail, téléphone, adresse, ville, code postal, pays et avatar, et changer son mot de passe (le mot de passe actuel est demandé). Le changement d'e-mail vérifie l'unicité de l'adresse.</p>
+
+  <h3>4.4 Connexion sans mot de passe</h3>
+  <p>Les codes à usage unique expirent après quelques minutes. Des limites anti-abus protègent les formulaires : par exemple un même numéro ne peut demander qu'un nombre restreint de codes par heure, avec un délai d'attente entre deux demandes. En cas de blocage, le message indique de patienter.</p>
+  <div class="warn"><b>En dev</b>Les e-mails et SMS ne partent pas réellement : les codes sont écrits dans les journaux (<code>storage/logs/laravel.log</code>, visible via <code>docker compose exec app tail -f storage/logs/laravel.log</code>). Ne jamais activer ce comportement en production.</div>
+</section>
+
+<!-- ============================================================ 5 -->
+<section id="commande">
+  <h2 class="sec"><span class="n">5</span>Commande et paiements</h2>
+  <p class="subtitle">Du panier à l'expédition, avec les cinq moyens de paiement.</p>
+
+  <h3>5.1 Passer commande</h3>
+  <p>La commande est possible <strong>sans compte</strong>. L'écran de paiement demande :</p>
+  <ul>
+    <li>l'adresse de livraison : prénom, nom, e-mail, téléphone, ville, quartier ;</li>
+    <li>une adresse de facturation distincte si besoin (case « identique à la livraison ») ;</li>
+    <li>un code promo facultatif ;</li>
+    <li>un mode de paiement parmi ceux activés par l'administrateur ;</li>
+    <li>des notes de commande facultatives (1 000 caractères maximum).</li>
+  </ul>
+  <p>Le bouton de validation est protégé contre le double envoi : un double clic ou un rechargement retrouve la commande déjà créée au lieu d'en créer une seconde.</p>
+
+  <h3>5.2 Les moyens de paiement</h3>
+  <table>
+    <thead><tr><th>Moyen</th><th>Fonctionnement</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mobile money</strong> (MoneyFusion)</td><td>Redirection vers la page de paiement MoneyFusion (Orange Money, MTN, Wave…). La commande reste <em>En attente de paiement</em> jusqu'à la confirmation. Les notifications manquées sont revérifiées automatiquement toutes les 10 minutes.</td></tr>
+      <tr><td><strong>Paiement à la livraison</strong></td><td>Commande enregistrée immédiatement, réglée en espèces à la réception. Un e-mail de confirmation part si l'option est activée.</td></tr>
+      <tr><td><strong>Virement bancaire</strong></td><td>Commande enregistrée ; les instructions sont communiquées et l'administrateur marque le paiement <em>Payé</em> à réception.</td></tr>
+      <tr><td><strong>Carte bancaire</strong></td><td>Mode proposé au paiement (selon la configuration de la passerelle).</td></tr>
+      <tr><td><strong>PayPal</strong></td><td>Mode proposé au paiement (selon la configuration du compte PayPal).</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>Un interrupteur par moyen</b>Seuls les moyens activés dans <em>Réglages → Paiement</em> apparaissent au client, et le serveur refuse de toute façon une commande envoyée avec un moyen désactivé.</div>
+
+  <h3>5.3 Statuts</h3>
+  <table>
+    <thead><tr><th>Statut de commande</th><th>Statut de paiement</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge warn">En attente</span> — reçue, pas encore préparée (annulable par le client)</td><td><span class="badge warn">En attente</span> — rien encaissé</td></tr>
+      <tr><td><span class="badge on">En préparation</span> — en cours de préparation</td><td><span class="badge on">Payé</span> — encaissé (confirmation + facture envoyées)</td></tr>
+      <tr><td><span class="badge on">Expédiée</span> — remise au transporteur</td><td><span class="badge red">Échoué</span> — paiement refusé ou abandonné</td></tr>
+      <tr><td><span class="badge on">Livrée</span> — reçue par le client</td><td><span class="badge off">Remboursé</span> — argent restitué</td></tr>
+      <tr><td><span class="badge red">Annulée</span> — stock remis en vente</td><td></td></tr>
+    </tbody>
+  </table>
+  <p>Chaque changement de statut de commande peut déclencher un e-mail au client (la notification d'expédition peut être coupée dans les réglages). Passer un paiement à <em>Payé</em> envoie la même confirmation, avec facture, qu'un paiement par passerelle.</p>
+
+  <h3>5.4 Codes promo</h3>
+  <p>Un coupon s'applique à l'étape du paiement. Il peut être en pourcentage ou en montant fixe, avec un panier minimum, un plafond de remise, une période de validité et un nombre d'utilisations maximum. Un code invalide ou expiré affiche un message et n'empêche pas de commander.</p>
+</section>
+
+<!-- ============================================================ 6 -->
+<section id="backoffice">
+  <h2 class="sec"><span class="n">6</span>Back-office</h2>
+  <p class="subtitle">Les onze écrans de gestion, dans l'ordre de la barre latérale.</p>
+
+  <div class="note"><b>Navigation</b>La barre latérale groupe les écrans : <em>Ventes</em> (commandes, clients), <em>Catalogue</em> (produits, catégories, avis), <em>Marketing</em> (coupons, bannières, newsletter, campagnes), <em>Support</em> (messages), <em>Paramètres</em>. Le compteur de messages non lus apparaît à côté de « Messages ».</div>
+
+  <!-- 6.1 -->
+  <h3 id="bo-dashboard">6.1 Tableau de bord</h3>
+  <p>Vue d'ensemble en un écran : revenus du mois, nombre de commandes, produits actifs, clients, puis le panneau <strong>À traiter</strong> (commandes en attente, avis à modérer, messages non lus, produits en stock bas), le graphique des revenus sur six mois, les commandes récentes et les meilleures ventes.</p>
+  <ul>
+    <li>Le seuil de « stock bas » se règle dans <em>Réglages → Boutique</em>.</li>
+    <li>Un clic sur une ligne du panneau « À traiter » ouvre directement la liste concernée.</li>
+  </ul>
+
+  <!-- 6.2 -->
+  <h3 id="bo-commandes">6.2 Commandes</h3>
+  <ul>
+    <li><strong>Liste</strong> : filtres par statut, paiement, recherche ; export CSV de la sélection ; actions groupées (changement de statut, vérification des paiements en attente).</li>
+    <li><strong>Détail d'une commande</strong> : articles et variantes, adresses, coupon, notes, historique ; changements de statut de commande et de paiement ; champs de suivi (transporteur, numéro, lien) ; bouton <strong>Vérifier le paiement</strong> pour interroger MoneyFusion ; <strong>facture PDF</strong> téléchargeable.</li>
+    <li><strong>Effets automatiques</strong> : annuler remet le stock en vente ; rouvrir une commande annulée le réserve à nouveau ; un changement de statut envoie l'e-mail correspondant (sauf notification d'expédition désactivée).</li>
+  </ul>
+  <div class="warn"><b>Paiement marqué « Payé » à la main</b>Réservé aux encaissements constatés (virement, espèces). Cela déclenche la confirmation et la facture, comme un paiement par passerelle.</div>
+
+  <!-- 6.3 -->
+  <h3 id="bo-produits">6.3 Produits</h3>
+  <p>Liste avec recherche, filtres catégorie et statut, prix, stock, note moyenne. Le formulaire de création/modification est organisé en panneaux :</p>
+  <table>
+    <thead><tr><th>Panneau</th><th>Contenu</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Présentation</strong></td><td>Nom, référence (SKU), description courte (sous le prix), description complète.</td></tr>
+      <tr><td><strong>Informations produit</strong></td><td>Cinq onglets de la fiche : utilisation, ingrédients (liste INCI), ingrédients clés, précautions d'emploi, conditions de conservation. Un onglet vide n'apparaît pas.</td></tr>
+      <tr><td><strong>Prix et stock</strong></td><td>Prix de vente en FCFA, prix promotionnel, pourcentage de réduction calculé automatiquement, quantité en stock.</td></tr>
+      <tr><td><strong>Publication</strong></td><td>Statut (actif/inactif), mise en vedette sur l'accueil.</td></tr>
+      <tr><td><strong>Catégories / Tags</strong></td><td>Classement dans une ou plusieurs catégories, tags de filtre (texture, besoin, actif…).</td></tr>
+      <tr><td><strong>Images</strong></td><td>Envoi multiple (JPEG, PNG, WEBP, 2 Mo maximum par image) ; la première image est l'image principale.</td></tr>
+    </tbody>
+  </table>
+  <p>La suppression d'un produit est définitive depuis la liste : préférez le statut <em>Inactif</em> pour le retirer de la vente en gardant son historique.</p>
+
+  <!-- 6.4 -->
+  <h3 id="bo-categories">6.4 Catégories et coupons</h3>
+  <h4>Catégories</h4>
+  <p>Nom, catégorie parente (pour une hiérarchie), description, ordre d'affichage, visibilité. Les catégories alimentent le menu de la boutique et les filtres du catalogue.</p>
+  <h4>Coupons</h4>
+  <p>Code, type (pourcentage ou montant fixe), valeur, panier minimum, remise maximale, dates de début et de fin, limite d'utilisation, activation. Actions rapides : dupliquer un coupon, l'activer/désactiver sans le supprimer. Le compteur d'utilisations est visible dans la liste.</p>
+
+  <!-- 6.5 -->
+  <h3 id="bo-marketing">6.5 Bannières, newsletter et campagnes</h3>
+  <h4>Bannières</h4>
+  <p>Image, titre, sous-titre, description, lien et libellé du bouton, type (Hero, Promotionnel, Catégorie, Produit), emplacement (slider principal, haut, milieu ou bas de page, colonne latérale), ordre, dates de diffusion et visibilité. Un aperçu de l'image choisie s'affiche avant l'enregistrement.</p>
+  <h4>Newsletter</h4>
+  <p>Liste des abonnés, ajout manuel par e-mail, activation/désactivation, export CSV. Un abonné désinscrit reste visible mais ne reçoit plus rien.</p>
+  <h4>Campagnes</h4>
+  <p>Rédaction d'un e-mail en texte brut (sujet + message, retours à la ligne conservés), aperçu, enregistrement en brouillon, envoi puis annulation possible tant que l'envoi n'est pas terminé. L'envoi se fait par petits lots côté serveur (planificateur) ; la liste montre l'avancement (envoyés, échecs).</p>
+  <div class="note"><b>Prérequis d'envoi</b>Une campagne ne peut être envoyée que s'il existe au moins un abonné actif. L'envoi dépend du bon fonctionnement du planificateur (voir <a href="#deploiement">Déploiement</a>).</div>
+
+  <!-- 6.6 -->
+  <h3 id="bo-clients">6.6 Clients, avis et messages</h3>
+  <h4>Clients</h4>
+  <p>Recherche par nom ou e-mail, fiche client avec coordonnées et commandes, suppression du compte (impossible pour un compte administrateur).</p>
+  <h4>Avis clients</h4>
+  <p>Modération : approuver, retirer l'approbation, supprimer. Les actions groupées traitent jusqu'à 100 avis à la fois. Seuls les avis approuvés sont visibles sur la boutique.</p>
+  <h4>Messages</h4>
+  <p>Messages du formulaire de contact : marquer lu/non lu (individuellement ou en lot), répondre par e-mail directement depuis le message, supprimer. La réponse envoyée est conservée dans la fiche.</p>
+</section>
+
+<!-- ============================================================ 7 -->
+<section id="reglages">
+  <h2 class="sec"><span class="n">7</span>Réglages</h2>
+  <p class="subtitle">Les six sections de <em>Paramètres</em>, champ par champ, et les variables techniques.</p>
+
+  <p>Les réglages s'appliquent <strong>immédiatement</strong> à la boutique après enregistrement. La colonne de gauche du panneau permet de sauter à une section.</p>
+
+  <h3>7.1 Général</h3>
+  <table>
+    <thead><tr><th>Champ</th><th>Effet</th></tr></thead>
+    <tbody>
+      <tr><td>Logo du site</td><td>PNG ou JPEG, redimensionné à 200 px de large ; remplace le logo de l'en-tête et du pied de page.</td></tr>
+      <tr><td>Nom du site</td><td>Nom affiché (en-tête, pied de page, e-mails).</td></tr>
+      <tr><td>E-mail de contact</td><td>Adresse affichée sur la boutique et destinataire des notifications internes.</td></tr>
+      <tr><td>Téléphone</td><td>Numéro affiché dans le pied de page et la page contact.</td></tr>
+      <tr><td>Description du site</td><td>Texte de présentation (référencement et pied de page).</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.2 Boutique</h3>
+  <table>
+    <thead><tr><th>Champ</th><th>Effet</th></tr></thead>
+    <tbody>
+      <tr><td>Devise</td><td>FCFA, en lecture seule : tous les prix sont formatés en francs CFA, sans décimales.</td></tr>
+      <tr><td>TVA (%)</td><td>Taux appliqué dans les calculs de la boutique.</td></tr>
+      <tr><td>Stock minimum d'alerte</td><td>Un produit dont le stock est inférieur ou égal à ce seuil apparaît dans les alertes du tableau de bord.</td></tr>
+      <tr><td>Avis clients</td><td>Active ou masque la fonction d'avis sur les fiches produit.</td></tr>
+      <tr><td>Liste de souhaits</td><td>Active ou masque les favoris (cœur) sur la boutique.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.3 E-mail</h3>
+  <table>
+    <thead><tr><th>Champ</th><th>Effet</th></tr></thead>
+    <tbody>
+      <tr><td>E-mail d'expédition / Nom d'expédition</td><td>Adresse et nom visibles par le client dans les e-mails de la boutique.</td></tr>
+      <tr><td>Confirmation de commande</td><td>Envoie un e-mail de confirmation à la validation d'une commande.</td></tr>
+      <tr><td>Notification d'expédition</td><td>Envoie un e-mail lorsque la commande passe à <em>Expédiée</em>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.4 Apparence</h3>
+  <table>
+    <thead><tr><th>Champ</th><th>Effet</th></tr></thead>
+    <tbody>
+      <tr><td>Page d'accueil</td><td>Template <em>Classique</em> ou <em>Glowing Beauty</em>, avec un lien d'aperçu avant enregistrement.</td></tr>
+      <tr><td>Page boutique</td><td>Template de la liste des produits, choisi séparément de l'accueil.</td></tr>
+      <tr><td>Offre à durée limitée</td><td>Section de l'accueil « Glowing Beauty » : date de fin, titre, texte. Laissez la date vide pour masquer la section ; elle disparaît d'elle-même une fois la date passée.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.5 Paiement</h3>
+  <p>Cinq interrupteurs : <strong>Mobile money (MoneyFusion)</strong>, <strong>Carte bancaire</strong>, <strong>PayPal</strong>, <strong>Virement bancaire</strong>, <strong>Paiement à la livraison</strong>. Un moyen coupé disparaît de l'écran de paiement et se voit refuser côté serveur. Activez un moyen seulement lorsque son compte (passerelle, coordonnées bancaires, PayPal) est prêt.</p>
+
+  <h3>7.6 Livraison</h3>
+  <table>
+    <thead><tr><th>Champ</th><th>Effet</th></tr></thead>
+    <tbody>
+      <tr><td>Frais standard</td><td>Montant des frais de livraison en FCFA (0 = gratuit).</td></tr>
+      <tr><td>Livraison gratuite dès</td><td>Seuil de panier à partir duquel la livraison est offerte.</td></tr>
+      <tr><td>Délai estimé (jours)</td><td>Délai affiché au client, par exemple « 3-5 ».</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.7 Variables techniques (fichier <code>.env</code>, non versionné)</h3>
+  <p>Ces valeurs ne se modifient pas depuis le back-office ; elles sont lues au démarrage de l'application et nécessitent <code>php artisan config:cache</code> après changement.</p>
+  <table>
+    <thead><tr><th>Variable</th><th>Rôle</th></tr></thead>
+    <tbody>
+      <tr><td><code>APP_ENV</code>, <code>APP_DEBUG</code>, <code>APP_URL</code>, <code>APP_KEY</code></td><td>Environnement, affichage des erreurs (toujours <code>false</code> en production), adresse publique, clé de chiffrement.</td></tr>
+      <tr><td><code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_DATABASE</code>, <code>DB_USERNAME</code>, <code>DB_PASSWORD</code></td><td>Connexion MySQL.</td></tr>
+      <tr><td><code>MAIL_MAILER</code> et réglages SMTP (<code>MAIL_HOST</code>, <code>MAIL_PORT</code>, <code>MAIL_USERNAME</code>, <code>MAIL_PASSWORD</code>, <code>MAIL_ENCRYPTION</code>)</td><td>Envoi réel des e-mails (confirmation, factures, codes de connexion, campagnes). En dev : <code>log</code>.</td></tr>
+      <tr><td><code>VONAGE_KEY</code>, <code>VONAGE_SECRET</code>, <code>VONAGE_SMS_FROM</code></td><td>Envoi réel des SMS (connexion par code). Sans clés en dev, le code est écrit dans le journal.</td></tr>
+      <tr><td><code>MONEYFUSION_APP_KEY</code>, <code>MONEYFUSION_WEBHOOK_URL</code>, <code>MONEYFUSION_RETURN_URL</code></td><td>Passerelle de paiement mobile money, webhook de confirmation et retour client.</td></tr>
+      <tr><td><code>GOOGLE_CLIENT_ID</code>, <code>GOOGLE_CLIENT_SECRET</code>, <code>FACEBOOK_CLIENT_ID</code>, <code>FACEBOOK_CLIENT_SECRET</code></td><td>Connexion sociale (facultative).</td></tr>
+      <tr><td><code>SMS_OTP_*</code>, <code>EMAIL_OTP_*</code></td><td>Limites anti-abus des codes : codes par heure et par numéro/adresse, par IP, délai entre deux demandes, durée de validité de l'écran.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ 8 -->
+<section id="deploiement">
+  <h2 class="sec"><span class="n">8</span>Déploiement</h2>
+  <p class="subtitle">Installer en local, puis publier en production sans interruption non maîtrisée.</p>
+
+  <h3>8.1 Installation locale (Docker)</h3>
+  <ol>
+    <li>Cloner le dépôt et se placer dans le dossier du projet.</li>
+    <li>Lancer <code>docker compose up -d --build</code>. Au premier démarrage, le conteneur <code>app</code> crée <code>.env</code> depuis <code>.env.example</code>, installe Composer, génère la clé, migre la base et crée le lien de stockage.</li>
+    <li>Charger les données de démonstration (facultatif) : <code>docker compose exec app php artisan db:seed</code>.</li>
+    <li>Construire les assets si nécessaire : <code>docker compose run --rm --no-deps --volume /var/www/html/node_modules node sh -c "npm run build"</code>.</li>
+  </ol>
+  <table>
+    <thead><tr><th>Service</th><th>Rôle</th><th>Accès local</th></tr></thead>
+    <tbody>
+      <tr><td><code>web</code></td><td>nginx</td><td>http://localhost:8001</td></tr>
+      <tr><td><code>app</code></td><td>PHP-FPM (artisan, tests, Composer)</td><td><code>docker compose exec app …</code></td></tr>
+      <tr><td><code>db</code></td><td>MySQL 8 (base <code>cosmetics_db</code>, utilisateur <code>cosmetics</code>)</td><td><code>localhost:3308</code></td></tr>
+      <tr><td><code>node</code></td><td>Vite (développement des styles)</td><td>http://localhost:5173</td></tr>
+      <tr><td><code>queue</code>, <code>scheduler</code></td><td>Workers (profil <code>workers</code>)</td><td><code>docker compose --profile workers up</code></td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>Qualité avant de livrer</b><code>docker compose exec app php artisan test</code> exécute toute la suite ; <code>docker compose exec app vendor/bin/pint</code> formate le code PHP.</div>
+
+  <h3>8.2 Préparer la production</h3>
+  <ul class="checklist">
+    <li>Serveur Hostinger avec SSH par clé, PHP 8.5 et MySQL ; racine web dans <code>public_html</code>, application dans <code>domains/klab-consulting.com/laravel</code>.</li>
+    <li>Fichier <code>.env</code> de production renseigné : <code>APP_ENV=production</code>, <code>APP_DEBUG=false</code>, <code>APP_URL</code>, base de données, SMTP, Vonage, MoneyFusion (et Google/Facebook si utilisés).</li>
+    <li>Tâche cron hPanel : <code>php artisan schedule:run</code> <strong>chaque minute</strong> — indispensable aux paiements en attente, aux campagnes newsletter et au nettoyage des codes.</li>
+    <li>Branche <code>main</code> locale propre, à jour avec <code>origin/main</code> ; Docker (ou Node) disponible localement pour construire les assets.</li>
+    <li>Clé SSH autorisée sur le serveur pour le compte de déploiement.</li>
+  </ul>
+
+  <h3>8.3 Publier : <code>scripts/deploy.sh</code></h3>
+  <p>Toujours commencer par un essai à blanc, qui n'écrit rien :</p>
+  <pre>scripts/deploy.sh --dry-run
+scripts/deploy.sh            <span class="c"># déploie origin/main</span></pre>
+  <p>Le script s'arrête à la première erreur et déroule dans cet ordre :</p>
+  <ol>
+    <li><strong>Contrôles locaux</strong> : branche <code>main</code>, arbre propre, identique à <code>origin/main</code> ; construction des assets (<code>public/build</code>) en local, car le serveur n'a pas Node.</li>
+    <li><strong>Contrôles serveur</strong> : SSH, accès à la base, espace disque, arbre Git propre, migrations en attente.</li>
+    <li><strong>Mode maintenance</strong> : <code>php artisan down --retry=60</code>.</li>
+    <li><strong>Sauvegarde de la base</strong> : dump compressé dans <code>~/backups</code> (droits 600), conservé sur le serveur.</li>
+    <li><strong>Mise à jour du code</strong> : <code>git merge --ff-only</code>, <code>composer install --no-dev</code>, envoi de <code>public/build</code>, copie des assets et des images dans <code>public_html</code>.</li>
+    <li><strong>Migrations et caches</strong> : <code>migrate --force</code>, lien de stockage, reconstruction des caches config/routes/vues, puis <code>php artisan up</code>.</li>
+    <li><strong>Tests de fumée</strong> : <code>/</code>, <code>/shop</code>, <code>/login</code> doivent répondre 200, ainsi que la feuille de style et le script chargés par la page ; contrôle que la tâche planifiée MoneyFusion est visible.</li>
+  </ol>
+  <div class="warn"><b>Retour arrière</b>Si une étape échoue après la mise à jour du code, le script affiche la commande exacte pour restaurer le commit précédent et les assets (<code>public/build.prev</code>). La base n'est <strong>pas</strong> restaurée automatiquement : en cas de mauvaise migration, réimportez le dump indiqué par le script.</div>
+
+  <h3>8.4 Tâches planifiées en production</h3>
+  <table>
+    <thead><tr><th>Fréquence</th><th>Tâche</th></tr></thead>
+    <tbody>
+      <tr><td>Toutes les 10 minutes</td><td>Vérification des paiements MoneyFusion en attente (notification manquée) et expiration des paiements abandonnés.</td></tr>
+      <tr><td>Chaque minute</td><td>Envoi des campagnes newsletter par lots de 20 (le planificateur sert de « worker »).</td></tr>
+      <tr><td>Chaque nuit, 03:00</td><td>Vérification MoneyFusion de grande ampleur.</td></tr>
+      <tr><td>Chaque nuit, 03:30</td><td>Suppression des codes de connexion expirés.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.5 Après chaque mise en ligne</h3>
+  <ul class="checklist">
+    <li>Se connecter au back-office et ouvrir le tableau de bord.</li>
+    <li>Parcourir une fiche produit et ajouter au panier.</li>
+    <li>Simuler une commande (paiement à la livraison) et vérifier l'e-mail de confirmation.</li>
+    <li>Vérifier l'heure de la dernière exécution du cron dans hPanel.</li>
+    <li>Consulter <code>storage/logs/laravel.log</code> sur le serveur pour toute erreur nouvelle.</li>
+  </ul>
+</section>
+
+<!-- ============================================================ 9 -->
+<section id="securite">
+  <h2 class="sec"><span class="n">9</span>Sécurité et sauvegardes</h2>
+  <p class="subtitle">Les règles à ne jamais contourner.</p>
+  <ul>
+    <li><strong>Secrets hors Git</strong> : <code>.env</code> et les fichiers d'accès (SSH, base, prestataires) ne sont jamais versionnés ni copiés dans un ticket ou un journal de chat.</li>
+    <li><strong>Codes à usage unique</strong> : ils ne doivent jamais apparaître en clair dans les journaux de production. Le canal « log » n'est prévu que pour le développement local.</li>
+    <li><strong>Comptes administrateurs</strong> : un seul compte par personne, mot de passe long et unique ; la suppression d'un compte administrateur est volontairement impossible depuis l'écran Clients.</li>
+    <li><strong>Paiements</strong> : un moyen de paiement ne s'active qu'une fois le compte prestataire opérationnel ; le statut <em>Payé</em> ne se coche qu'à encaissement constaté.</li>
+    <li><strong>Sauvegardes</strong> : le déploiement prend un dump avant chaque migration ; conservez également une copie hors serveur (base et <code>storage/app/public</code>) selon votre politique de rétention.</li>
+    <li><strong>Mises à jour</strong> : composer/npm et correctifs du serveur sont appliqués par le technicien, puis testés en dev avant déploiement.</li>
+  </ul>
+</section>
+
+<!-- ============================================================ 10 -->
+<section id="depannage">
+  <h2 class="sec"><span class="n">10</span>Dépannage</h2>
+  <p class="subtitle">Les incidents les plus fréquents et leur solution.</p>
+
+  <table>
+    <thead><tr><th style="width:34%">Symptôme</th><th>Cause probable et solution</th></tr></thead>
+    <tbody>
+      <tr><td>Le client ne reçoit pas le code par e-mail</td><td>Vérifier le dossier indésirables, puis les réglages SMTP. En dev, le code est dans <code>storage/logs/laravel.log</code>. Réessayer après le délai anti-abus (60 s par défaut).</td></tr>
+      <tr><td>Le client ne reçoit pas le code par SMS</td><td>Numéro inconnu → la page d'activation s'affiche ; suivre ce parcours. Vérifier les clés Vonage et le crédit du compte. En dev, aucun SMS n'est envoyé.</td></tr>
+      <tr><td>« Cette page a expiré » pendant la commande</td><td>La page de paiement est restée ouverte trop longtemps : recharger et valider à nouveau. Le double envoi est sans danger (même commande retrouvée).</td></tr>
+      <tr><td>Un paiement MoneyFusion reste « En attente »</td><td>La notification n'est peut-être pas arrivée. Ouvrir la commande et cliquer <em>Vérifier le paiement</em> ; sinon attendre la vérification automatique (10 minutes). Contrôler que le cron tourne.</td></tr>
+      <tr><td>Un moyen de paiement n'apparaît pas au paiement</td><td>Il est désactivé dans <em>Réglages → Paiement</em> ; l'activer.</td></tr>
+      <tr><td>Un avis client est invisible</td><td>Il attend la modération : <em>Avis clients</em> → approuver.</td></tr>
+      <tr><td>La campagne newsletter ne démarre pas</td><td>Aucun abonné actif, ou planificateur arrêté. Vérifier le cron <code>schedule:run</code> et l'état (brouillon / envoi / envoyée).</td></tr>
+      <tr><td>« 419 Page expirée » sur un formulaire</td><td>Session expirée : recharger la page, se reconnecter si nécessaire.</td></tr>
+      <tr><td>Page sans style après un déploiement</td><td>Les assets n'ont pas été copiés dans <code>public_html/build</code>. Relancer le script ; vérifier la présence de <code>public/build/manifest.json</code>.</td></tr>
+      <tr><td>Le site reste en maintenance</td><td>Exécuter <code>php artisan up</code> sur le serveur.</td></tr>
+      <tr><td>Une image produit ne s'affiche pas</td><td>Vérifier le lien de stockage (<code>php artisan storage:link</code>) et le format/poids de l'image (2 Mo maximum).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ok"><b>En résumé</b>Le client achète sans compte ; le back-office pilote le catalogue, les promotions et la relation client ; les réglages se font sans toucher au code ; le déploiement est scripté, sauvegardé et vérifié automatiquement.</div>
+
+  <a class="top" href="#presentation">↑ Revenir au sommaire</a>
+</section>
+
+<footer>
+  <p>Guide d'utilisation — Glowing Cosmetics. Application Laravel 12, Blade, Tailwind CSS. Document interne : ne pas diffuser les accès techniques qu'il ne contient pas volontairement.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  var targets = links.map(function (a) {
+    return document.querySelector(a.getAttribute('href'));
+  }).filter(Boolean);
+
+  function setActive(id) {
+    links.forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+  }
+
+  if ('IntersectionObserver' in window && targets.length) {
+    var visible = {};
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        visible[e.target.id] = e.isIntersecting;
+      });
+      for (var i = 0; i < targets.length; i++) {
+        if (visible[targets[i].id]) { setActive(targets[i].id); return; }
+      }
+    }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+
+    targets.forEach(function (t) { io.observe(t); });
+  }
+
+  links.forEach(function (a) {
+    a.addEventListener('click', function () {
+      setActive(a.getAttribute('href').slice(1));
+    });
+  });
+})();
+</script>
+</body>
+</html>
