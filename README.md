@@ -1,496 +1,318 @@
 <div align="center">
   <img src="public/images/others/logo-white-02.png" alt="Glowing Cosmetics" width="300">
 
-  # Glowing Cosmetics E-commerce Platform
+  # Glowing Cosmetics
 
-  Une plateforme e-commerce moderne et élégante pour la vente de produits cosmétiques, développée avec Laravel 12.
+  Boutique en ligne de cosmétiques — catalogue, commandes, paiements mobiles et back-office complet.
 
-  [![Laravel](https://img.shields.io/badge/Laravel-12.35.1-red.svg)](https://laravel.com)
-  [![PHP](https://img.shields.io/badge/PHP-8.2.28-blue.svg)](https://php.net)
+  [![Laravel](https://img.shields.io/badge/Laravel-12-red.svg)](https://laravel.com)
+  [![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://php.net)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-38bdf8.svg)](https://tailwindcss.com)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 </div>
 
 ---
 
-## 📋 Table des matières
+## Sommaire
 
 - [À propos](#à-propos)
 - [Fonctionnalités](#fonctionnalités)
+- [Rôles](#rôles)
 - [Technologies](#technologies)
-- [Prérequis](#prérequis)
-- [Installation](#installation)
+- [Démarrage rapide (Docker)](#démarrage-rapide-docker)
+- [Commandes utiles](#commandes-utiles)
 - [Configuration](#configuration)
+- [Connexion sans mot de passe](#connexion-sans-mot-de-passe)
+- [Paiements](#paiements)
+- [Back-office](#back-office)
+- [Tests et qualité](#tests-et-qualité)
 - [Déploiement](#déploiement)
 - [Structure du projet](#structure-du-projet)
-- [API et Intégrations](#api-et-intégrations)
+- [Documentation](#documentation)
+- [Licence](#licence)
 
 ---
 
-## 🌟 À propos
+## À propos
 
-**Glowing Cosmetics** est une application e-commerce complète développée en Laravel 12, spécialisée dans la vente de produits cosmétiques. La plateforme offre une expérience utilisateur fluide avec un design moderne utilisant Tailwind CSS, un système de paiement sécurisé via MoneyFusion, et un panneau d'administration complet pour la gestion des produits, commandes et clients.
+**Glowing Cosmetics** est une boutique e-commerce développée avec **Laravel 12** (Blade + Tailwind CSS). Elle vend des cosmétiques en **franc CFA (FCFA)**, en français par défaut avec un sélecteur FR/EN, et propose un back-office qui couvre le catalogue, les promotions, les commandes, la relation client et les réglages de la boutique.
 
----
-
-## ✨ Fonctionnalités
-
-### 🛍️ Côté Client
-- **Catalogue de produits** avec filtres et recherche avancée
-- **Variantes de produits** (tailles, couleurs, types)
-- **Panier d'achat** avec gestion des quantités
-- **Liste de souhaits** pour sauvegarder les produits favoris
-- **Système d'avis et notes** pour les produits
-- **Checkout simplifié** avec processus en une page
-- **Gestion de compte** (profil, commandes, adresses)
-- **Processus de commande invité** sans inscription obligatoire
-- **Carousel Slick** pour l'affichage des produits
-- **Design responsive** optimisé pour mobile et desktop
-
-### 💳 Paiements
-- **Intégration MoneyFusion** pour les paiements en ligne
-- **Paiement à la livraison** (Cash on Delivery)
-- **Virement bancaire** avec instructions par email
-- **Gestion SSL configurable** pour les requêtes de paiement
-- **Webhooks et callbacks** pour les notifications de paiement
-- **Suivi des statuts de paiement** en temps réel
-
-### 📧 Notifications
-- **Emails de confirmation de commande** avec facture PDF jointe
-- **Notifications de statut de commande** (en traitement, expédiée, livrée)
-- **Confirmation de paiement** automatique
-- **Instructions de virement bancaire** pour les paiements différés
-- **Génération de factures PDF** avec DomPDF
-
-### 👨‍💼 Panneau d'administration
-- **Gestion complète des produits** (CRUD, images, variantes)
-- **Gestion des commandes** avec filtres et recherche
-- **Gestion des utilisateurs** avec système de rôles (Spatie Permissions)
-- **Gestion des catégories** de produits
-- **Gestion des avis clients** et modération
-- **Tableau de bord** avec statistiques
-- **Mise à jour des statuts** de commande et paiement
-
-### 🔐 Sécurité
-- **Authentification Laravel** avec sessions sécurisées
-- **Gestion des rôles et permissions** (admin, super_admin, customer)
-- **Protection CSRF** sur tous les formulaires
-- **Validation des données** côté serveur
-- **Hashage des mots de passe** avec Bcrypt
-- **Vérification SSL** configurable pour les paiements
+- Développement local : `http://localhost:8001`
+- Production : `https://klab-consulting.com`
 
 ---
 
-## 🛠️ Technologies
+## Fonctionnalités
 
-### Backend
-- **Laravel 12.35.1** - Framework PHP
-- **PHP 8.2.28** - Langage serveur
-- **MySQL 8** - Base de données (conteneur Docker en développement)
-- **Spatie Laravel Permission** - Gestion des rôles
-- **DomPDF** - Génération de PDF
+### Boutique
 
-### Frontend
-- **Blade Templates** - Moteur de templates Laravel
-- **Tailwind CSS** - Framework CSS utility-first
-- **Font Awesome** - Icônes
-- **Slick Carousel** - Carrousel de produits
-- **Vite** - Build tool moderne
+- Accueil avec deux présentations au choix (*Classique* ou *Glowing Beauty*), bannières pilotées depuis le back-office, produits mis en vedette et offre à durée limitée.
+- Catalogue filtrable : recherche, catégories, tags, prix minimum/maximum, promotions, produits épuisés, formats, tri et pagination.
+- Fiche produit : galerie, prix promotionnel, stock, formats, onglets d'informations (utilisation, ingrédients, précautions, conservation) et avis modérés.
+- Panier et liste de souhaits (session pour les visiteurs, rattachés au compte après connexion).
+- **Commande sans compte** : adresse de livraison, adresse de facturation distincte facultative, code promo et notes, avec protection contre le double envoi.
+- Newsletter (inscription, désinscription par lien personnel) et formulaire de contact.
 
-### Intégrations
-- **MoneyFusion** - Passerelle de paiement
-- **Laravel Mail** - Système d'envoi d'emails
+### Comptes clients
+
+- Connexion par mot de passe, **code à usage unique par e-mail**, **code à usage unique par SMS**, connexion sociale facultative (Google/Facebook) et mot de passe oublié.
+- Tableau de bord (commandes, total payé), historique et détail des commandes, annulation tant que la commande est en attente (stock restitué automatiquement).
+- Profil modifiable (coordonnées, avatar, mot de passe).
+
+### Paiements
+
+- **Mobile money via MoneyFusion** (Orange Money, MTN, Wave…), avec webhook, page de retour et réconciliation automatique des paiements en attente.
+- **Paiement à la livraison**, **virement bancaire**, **carte bancaire** et **PayPal**, chacun activable ou non dans les réglages.
+- Statuts de commande (en attente, en préparation, expédiée, livrée, annulée) et de paiement (en attente, payé, échoué, remboursé), e-mails de confirmation, d'expédition et facture PDF.
+
+### Back-office
+
+- **Tableau de bord** : revenus du mois, commandes, produits actifs, clients, panneau « À traiter » (commandes en attente, avis à modérer, messages non lus, stock bas), revenus sur six mois, meilleures ventes.
+- **Commandes** : filtres, export CSV, actions groupées, mise à jour des statuts, suivi transporteur, vérification du paiement, facture PDF.
+- **Produits** : CRUD complet, images multiples, prix et promotion, stock, statut, vedette, catégories, tags et onglets d'informations de la fiche.
+- **Catégories**, **coupons** (pourcentage ou montant fixe, panier minimum, plafond, validité, limite d'utilisation, duplication).
+- **Bannières** (type, emplacement, ordre, dates, image, lien), **clients**, **avis** (modération simple et groupée).
+- **Messages** du formulaire de contact (lu/non lu, réponse par e-mail), **newsletter** (abonnés, export CSV) et **campagnes** e-mail (brouillon, aperçu, envoi par lots, annulation).
+- **Réglages** : identité, boutique, e-mail, apparence, moyens de paiement et livraison — sans toucher au code.
 
 ---
 
-## 📦 Prérequis
+## Rôles
 
-- **PHP** >= 8.2.28
-- **Composer** >= 2.x
-- **Node.js** >= 18.x et **npm** >= 9.x
-- **MySQL** >= 8.0 ou **MariaDB** >= 10.3
-- **Extension PHP**: OpenSSL, PDO, Mbstring, Tokenizer, XML, Ctype, JSON, BCMath, Fileinfo, GD
+| Rôle | Accès | Usage |
+|---|---|---|
+| `customer` | Boutique + `/account` | Achat, favoris, commandes, profil |
+| `admin` | `/admin` | Gestion complète, sauf suppression d'un autre administrateur |
+| `super_admin` | `/admin` | Comme `admin` ; rôle du compte fondateur |
+
+Les visiteurs non connectés peuvent parcourir la boutique et commander en invité.
 
 ---
 
-## 🐳 Démarrage rapide avec Docker (recommandé)
+## Technologies
+
+| Couche | Outils |
+|---|---|
+| Backend | Laravel 12, PHP ≥ 8.2 (conteneur PHP 8.3-FPM), MySQL 8 |
+| Frontend | Blade, Tailwind CSS 4.1, Vite 7, Font Awesome |
+| Paiements | MoneyFusion (mobile money) |
+| E-mails | Laravel Mail (SMTP), DomPDF pour les factures |
+| SMS | Vonage |
+| Codes à usage unique | spatie/laravel-one-time-passwords |
+| Qualité | PHPUnit, Laravel Pint |
+| Déploiement | Docker Compose, script SSH pour hébergement mutualisé Hostinger |
+
+---
+
+## Démarrage rapide (Docker)
 
 Prérequis : Docker et Docker Compose.
 
 ```bash
-git clone https://github.com/votre-username/cosmetics-app.git
+git clone https://github.com/simonet85/cosmetics-app.git
 cd cosmetics-app
-docker compose up --build
+docker compose up -d --build
 ```
 
-Au premier démarrage, le conteneur `app` crée `.env` depuis `.env.example`, installe les dépendances Composer, génère la clé, exécute les migrations et crée le lien `storage`. La première installation peut prendre quelques minutes.
+Au premier démarrage, le conteneur `app` :
+
+1. crée `.env` depuis `.env.example` ;
+2. installe les dépendances Composer ;
+3. génère `APP_KEY` ;
+4. exécute les migrations et crée le lien de stockage.
 
 | Service | Rôle | Accès |
 |---|---|---|
-| `web` | nginx | http://localhost:8000 |
-| `app` | PHP 8.3-FPM | - |
-| `db` | MySQL 8 | `localhost:3307` (base `cosmetics_db`, utilisateur `cosmetics`) |
-| `node` | Vite (dev) | http://localhost:5173 |
-| `queue`, `scheduler` | workers (profil `workers`) | `docker compose --profile workers up` |
+| `web` | nginx | http://localhost:8001 |
+| `app` | PHP 8.3-FPM (artisan, tests, Composer) | `docker compose exec app …` |
+| `db` | MySQL 8 (base `cosmetics_db`, utilisateur `cosmetics`) | `localhost:3308` |
+| `node` | Vite (développement des styles) | http://localhost:5173 |
+| `queue`, `scheduler` | Workers | profil `workers` : `docker compose --profile workers up -d` |
 
-Commandes utiles :
+Charger les données de démonstration (comptes de test inclus) :
 
 ```bash
-docker compose exec app php artisan db:seed          # données de démonstration
-docker compose exec app php artisan test             # tests PHPUnit
-docker compose exec app vendor/bin/pint              # formatage du code
-docker compose down                                  # arrêter (ajouter -v pour supprimer la base)
+docker compose exec app php artisan db:seed
 ```
+
+Comptes de démonstration : `admin@cosmetics.test` / `password` (super administrateur) et `client@cosmetics.test` / `password` (cliente).
 
 ---
 
-## 🚀 Installation (sans Docker)
-
-### 1. Cloner le dépôt
+## Commandes utiles
 
 ```bash
-git clone https://github.com/votre-username/cosmetics-app.git
-cd cosmetics-app
+# Tests et formatage
+docker compose exec app php artisan test
+docker compose exec app vendor/bin/pint
+
+# Base de données
+docker compose exec app php artisan migrate
+docker compose exec app php artisan db:seed
+
+# Assets (le serveur n'a pas Node : on construit en local)
+docker compose run --rm --no-deps --volume /var/www/html/node_modules node sh -c "npm run build"
+
+# Journaux (codes de connexion en développement)
+docker compose exec app tail -f storage/logs/laravel.log
+
+# Console interactive
+docker compose exec app php artisan tinker
 ```
 
-### 2. Installer les dépendances PHP
-
-```bash
-composer install
-```
-
-### 3. Installer les dépendances JavaScript
-
-```bash
-npm install
-```
-
-### 4. Créer le fichier d'environnement
-
-```bash
-cp .env.example .env
-```
-
-### 5. Générer la clé d'application
-
-```bash
-php artisan key:generate
-```
-
-### 6. Configurer la base de données
-
-Créez une base de données MySQL et mettez à jour le fichier `.env` :
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=cosmetics_db
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-### 7. Exécuter les migrations
-
-```bash
-php artisan migrate
-```
-
-### 8. Créer le lien symbolique pour le stockage
-
-```bash
-php artisan storage:link
-```
-
-### 9. Seed la base de données (optionnel)
-
-```bash
-php artisan db:seed
-```
-
-### 10. Compiler les assets
-
-```bash
-# Développement
-npm run dev
-
-# Production
-npm run build
-```
-
-### 11. Démarrer le serveur de développement
-
-```bash
-php artisan serve
-```
-
-L'application sera accessible sur `http://localhost:8000`
+> Le volume nommé `vendor` (voir `docker-compose.override.yml`) évite la lenteur du montage Windows sur `vendor/`.
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
-### Configuration MoneyFusion
+Toute la configuration passe par `.env` (non versionné). Les réglages métier se font dans le back-office ; le fichier `.env` ne sert qu'à l'infrastructure.
 
-Ajoutez vos identifiants MoneyFusion dans le fichier `.env` :
+| Variables | Rôle |
+|---|---|
+| `APP_ENV`, `APP_DEBUG`, `APP_URL`, `APP_KEY` | Environnement, erreurs (`false` en production), URL publique, clé de chiffrement |
+| `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Connexion MySQL |
+| `MAIL_MAILER` + `MAIL_*` | Envoi des e-mails ; `log` en développement, SMTP en production |
+| `VONAGE_KEY`, `VONAGE_SECRET`, `VONAGE_SMS_FROM` | Envoi des SMS ; sans clés, le code est écrit dans le journal (dev uniquement) |
+| `MONEYFUSION_APP_KEY`, `MONEYFUSION_API_URL`, `MONEYFUSION_CHECK_PAYMENT_URL`, `MONEYFUSION_WEBHOOK_URL`, `MONEYFUSION_RETURN_URL` | Passerelle mobile money, vérification et notifications |
+| `GOOGLE_CLIENT_ID/SECRET`, `FACEBOOK_CLIENT_ID/SECRET` | Connexion sociale (facultative) |
+| `SMS_OTP_*`, `EMAIL_OTP_*` | Limites anti-abus des codes (par heure et par numéro/adresse, par IP, délai, validité) |
 
-```env
-MONEYFUSION_API_KEY=votre_cle_api
-MONEYFUSION_MERCHANT_ID=votre_merchant_id
-MONEYFUSION_SANDBOX=true  # false pour production
-MONEYFUSION_SSL_VERIFY=true  # Vérification SSL (true en production)
-```
-
-### Configuration Email
-
-Configurez votre service d'email dans `.env` :
-
-```env
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=votre_email@gmail.com
-MAIL_PASSWORD=votre_mot_de_passe_app
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=noreply@glowingcosmetics.com
-MAIL_FROM_NAME="Glowing Cosmetics"
-```
-
-### Configuration de l'application
-
-```env
-APP_NAME="Glowing Cosmetics"
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://votre-domaine.com
-APP_TIMEZONE=Africa/Kinshasa
-APP_LOCALE=fr
-APP_FALLBACK_LOCALE=fr
-```
+Après modification en production : `php artisan config:cache`.
 
 ---
 
-## 🌐 Déploiement
+## Connexion sans mot de passe
 
-### Déploiement sur serveur de production (Hostinger)
+| Parcours | URL | Fonctionnement |
+|---|---|---|
+| Code par e-mail | `/login/email` | Code à 6 chiffres envoyé par e-mail, valable quelques minutes |
+| Code par SMS | `/login/sms` | Code par SMS si le numéro est connu et vérifié ; sinon écran d'activation (e-mail, mot de passe, numéro) |
+| Mot de passe | `/login` | Formulaire classique |
 
-#### 1. Pousser les modifications sur GitHub
+Des limites anti-abus protègent les formulaires (codes par heure, délai de 60 s entre deux demandes, plafond par IP). En développement, les codes sont écrits dans `storage/logs/laravel.log` — jamais en production.
 
-```bash
-git add .
-git commit -m "Description des modifications"
-git push origin main
-```
+---
 
-#### 2. Se connecter au serveur et tirer les modifications
+## Paiements
 
-```bash
-ssh -p 65002 u104407086@82.25.113.207
-cd ~/domains/klab-consulting.com/laravel
-git pull origin main
-```
+Les cinq moyens sont pilotés par les réglages (`payment_*_enabled`) et contrôlés côté serveur, pas seulement dans le formulaire :
 
-#### 3. Installer les dépendances et compiler les assets
+| Moyen | Comportement |
+|---|---|
+| Mobile money (MoneyFusion) | Redirection vers la page de paiement ; confirmation par webhook/retour ; réconciliation toutes les 10 minutes par le planificateur |
+| Paiement à la livraison | Commande immédiate, réglée en espèces |
+| Virement bancaire | Instructions communiquées, paiement marqué payé à réception |
+| Carte bancaire | Proposée selon la configuration de la passerelle |
+| PayPal | Proposé selon la configuration du compte PayPal |
 
-```bash
-composer install --optimize-autoloader --no-dev
-npm ci
-npm run build
-```
+Endpoints MoneyFusion : `POST /api/moneyfusion/webhook` (notification serveur) et `GET /payment/callback` (retour du client). Une commande annulée libère le stock réservé, et un paiement qui arrive après l'annulation d'une commande abandonnée la rétablit automatiquement.
 
-#### 4. Vider tous les caches
+---
 
-```bash
-php artisan cache:clear
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-```
+## Back-office
 
-#### 5. Optimiser pour la production
+Accessible à `/admin` (rôles `admin` et `super_admin`) :
 
-```bash
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
+1. Tableau de bord
+2. Commandes (export CSV, facture PDF, suivi, vérification du paiement, actions groupées)
+3. Clients
+4. Produits (fiche complète, images, promotion, stock)
+5. Catégories
+6. Avis clients (modération)
+7. Coupons
+8. Bannières
+9. Newsletter (abonnés, export CSV)
+10. Campagnes e-mail (brouillon → envoi par lots → terminée, annulation possible pendant l'envoi)
+11. Messages (réponse par e-mail)
+12. Paramètres (Général, Boutique, E-mail, Apparence, Paiement, Livraison)
 
-#### 6. Exécuter les migrations (si nécessaire)
+---
 
-```bash
-php artisan migrate --force
-```
-
-#### 7. Définir les permissions appropriées
+## Tests et qualité
 
 ```bash
-chmod -R 755 storage bootstrap/cache
+docker compose exec app php artisan test    # suite complète (PHPUnit)
+docker compose exec app vendor/bin/pint     # formatage du code PHP
 ```
 
-### Tâches planifiées (vérification des paiements MoneyFusion)
+Les tests couvrent la boutique, le back-office, les paiements et les codes à usage unique.
 
-Le planificateur Laravel exécute `moneyfusion:check-pending` toutes les 10 minutes (et un balayage chaque nuit à 03:00).
-La commande interroge MoneyFusion pour les paiements restés « en attente », met à jour les commandes (payée, échouée,
-annulée) et **annule les commandes abandonnées** (paiement toujours en attente après 24 h), ce qui remet leur stock en vente.
-Si le payeur paie quand même plus tard, la commande est rétablie automatiquement.
+---
 
-Il faut une entrée cron qui lance le planificateur **chaque minute** (Hostinger : hPanel > Avancé > Tâches Cron) :
+## Déploiement
+
+La production tourne sur un hébergement mutualisé Hostinger (pas de Node sur le serveur, planificateur fourni par une tâche cron). Le déploiement est scripté : il vérifie la branche, construit les assets en local, sauvegarde la base, migre, reconstruit les caches et teste les pages publiques.
+
+```bash
+scripts/deploy.sh --dry-run   # montre les étapes, ne modifie rien
+scripts/deploy.sh             # déploie origin/main
+```
+
+Prérequis :
+
+- branche `main` propre et à jour (`origin/main`) ;
+- clé SSH autorisée sur le serveur ;
+- Docker (ou Node) en local pour `public/build` ;
+- cron hPanel exécutant `php artisan schedule:run` **chaque minute**.
+
+Ligne cron (hPanel > Avancé > Tâches Cron) :
 
 ```bash
 * * * * * cd ~/domains/klab-consulting.com/laravel && php artisan schedule:run >> ~/domains/klab-consulting.com/laravel/storage/logs/scheduler.log 2>&1
 ```
 
-Hostinger désactive `proc_open`, `exec` et `shell_exec`. Or Laravel exécute **tous** les événements planifiés de type
-commande via Symfony Process : `Schedule::command(...)` échoue donc en silence sur cet hébergement (seule une erreur
-`Process class relies on proc_open` apparaît dans le log). Les tâches sont pour cette raison déclarées avec
-`Schedule::call(fn () => Artisan::call(...))`, qui s'exécute dans le processus courant ; elles doivent terminer en
-moins de 60 secondes. Rediriger la sortie vers `scheduler.log` plutôt que `/dev/null` facilite le diagnostic.
+Hostinger désactive `proc_open`, `exec` et `shell_exec` : les tâches planifiées sont donc déclarées avec `Schedule::call(fn () => Artisan::call(...))`, exécuté dans le processus courant, et doivent tenir en moins de 60 secondes.
 
-Variables nécessaires en production : `MONEYFUSION_APP_KEY`, `MONEYFUSION_API_URL`, `MONEYFUSION_CHECK_PAYMENT_URL`,
-`MONEYFUSION_WEBHOOK_URL`, `MONEYFUSION_RETURN_URL` (sans clé, aucun paiement ne peut être vérifié).
+Tâches planifiées :
 
-Lancer à la main : `php artisan moneyfusion:check-pending --age=10 --limit=100 --expire-after=1440`
-(`--expire-after=0` désactive l'annulation des paiements abandonnés ; `--pause` règle l'attente entre deux appels, en ms).
+- vérification des paiements MoneyFusion en attente (toutes les 10 minutes, plus une passe nocturne à 03:00) ; une commande abandonnée depuis plus de 24 h est annulée et son stock libéré ;
+- envoi des campagnes newsletter par lots de 20 (chaque minute) ;
+- suppression des codes de connexion expirés (nuit).
 
-En développement avec Docker : `docker compose --profile workers up` démarre le planificateur (`schedule:work`) et la file.
+En cas d'échec après la mise à jour du code, le script affiche la commande de retour arrière (code et assets). La base n'est pas restaurée automatiquement : réimporter le dump indiqué si une migration a échoué.
 
-### Points de vigilance en production
+Lancer la vérification à la main : `php artisan moneyfusion:check-pending --age=10 --limit=100 --expire-after=1440` (`--expire-after=0` désactive l'annulation des paiements abandonnés).
 
-- Toujours définir `APP_DEBUG=false`
-- Activer `MONEYFUSION_SSL_VERIFY=true`
-- Utiliser des mots de passe forts pour la base de données
-- Configurer HTTPS avec un certificat SSL valide
-- Sauvegarder régulièrement la base de données
-- Surveiller les logs dans `storage/logs/`
+Le détail pas à pas (préparation du serveur, planificateur, retour arrière, checklist) se trouve dans le [guide d'utilisation](docs/guide-utilisation.html#deploiement).
 
 ---
 
-## 📁 Structure du projet
+## Structure du projet
 
 ```
-cosmetics-app/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── Admin/           # Contrôleurs admin
-│   │   │   ├── AuthController.php
-│   │   │   ├── CheckoutController.php
-│   │   │   └── ...
-│   │   └── Middleware/
-│   ├── Models/
-│   │   ├── User.php
-│   │   ├── Product.php
-│   │   ├── Order.php
-│   │   └── ...
-│   └── Mail/                    # Classes d'emails
-├── database/
-│   ├── migrations/              # Migrations de la base de données
-│   └── seeders/                 # Seeders de données
-├── public/
-│   ├── images/
-│   │   ├── products/           # Images de produits
-│   │   ├── avatars/            # Avatars utilisateurs
-│   │   └── others/             # Logos et images statiques
-│   └── storage/                # Lien symbolique vers storage
-├── resources/
-│   ├── views/
-│   │   ├── admin/              # Vues administration
-│   │   ├── checkout/           # Vues processus de commande
-│   │   ├── account/            # Vues compte utilisateur
-│   │   ├── emails/             # Templates d'emails
-│   │   └── layouts/            # Layouts Blade
-│   └── css/
-│       └── app.css             # Styles Tailwind
-├── routes/
-│   ├── web.php                 # Routes web
-│   └── api.php                 # Routes API
-├── storage/
-│   ├── app/
-│   │   └── public/             # Fichiers publics uploadés
-│   └── logs/                   # Logs de l'application
-├── vendor/                     # Dépendances PHP
-├── .env                        # Configuration environnement
-├── composer.json               # Dépendances Composer
-└── package.json                # Dépendances npm
+app/
+  Http/Controllers/        Contrôleurs boutique, compte et admin
+  Http/Controllers/Admin/  Écrans du back-office
+  Models/                  Produits, commandes, coupons, bannières, campagnes…
+  Services/                Workflow commandes, paiements, expéditions
+resources/
+  css/app.css              Thème Tailwind (boutique + admin)
+  views/storefront/        Boutique publique
+  views/admin/             Back-office
+  views/components/admin/  Composants du back-office (panneaux, champs, boutons…)
+routes/web.php             Routes publiques, compte et admin
+database/                  Migrations, seeders et données de démonstration
+docker/                    nginx, MySQL, entrypoint
+scripts/deploy.sh          Déploiement en production
+docs/                      Guide d'utilisation
 ```
 
 ---
 
-## 🔌 API et Intégrations
+## Documentation
 
-### MoneyFusion Webhook
+Le [guide d'utilisation](docs/guide-utilisation.html) détaille, acteur par acteur :
 
-Le système gère automatiquement les webhooks MoneyFusion pour mettre à jour les statuts de paiement :
+- les parcours visiteur et client ;
+- chaque écran du back-office ;
+- chaque réglage et son effet ;
+- l'installation locale, le déploiement, la sécurité et le dépannage.
 
-**Endpoint**: `POST /moneyfusion/webhook`
-
-Le webhook reçoit les notifications de paiement et met à jour :
-- Le statut de paiement de la commande
-- Le statut de la commande (pending → processing)
-- Envoie un email de confirmation de paiement avec facture PDF
-
-### MoneyFusion Callback
-
-Le système gère également les callbacks de retour après paiement :
-
-**Endpoint**: `GET /moneyfusion/callback`
-
-Redirige l'utilisateur vers la page de succès ou d'échec selon le résultat du paiement.
+Ouvrez `docs/guide-utilisation.html` dans un navigateur (aucune dépendance, imprimable).
 
 ---
 
-## 📝 Fonctionnalités du checkout
+## Licence
 
-Le processus de checkout a été simplifié pour améliorer l'expérience utilisateur :
-
-### Champs requis
-- **Prénom** et **Nom**
-- **Email** et **Téléphone**
-- **Ville** et **Quartier** (remplace l'adresse complète)
-
-### Méthodes de paiement
-1. **MoneyFusion** - Paiement en ligne sécurisé
-2. **Paiement à la livraison** - Cash on Delivery
-3. **Virement bancaire** - Instructions envoyées par email
-
----
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! Pour contribuer :
-
-1. Forkez le projet
-2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
-3. Committez vos changements (`git commit -m 'Add some AmazingFeature'`)
-4. Poussez vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrez une Pull Request
-
----
-
-## 📄 Licence
-
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-
----
-
-## 👤 Auteur
-
-**Glowing Cosmetics Team**
-
-- Website: [https://klab-consulting.com](https://klab-consulting.com)
-- GitHub: [@votre-username](https://github.com/votre-username)
-
----
-
-## 🙏 Remerciements
-
-- [Laravel](https://laravel.com) - Framework PHP
-- [Tailwind CSS](https://tailwindcss.com) - Framework CSS
-- [MoneyFusion](https://moneyfusion.com) - Passerelle de paiement
-- [Font Awesome](https://fontawesome.com) - Icônes
-- [Spatie](https://spatie.be) - Packages Laravel
-
----
-
-<div align="center">
-  Développé avec ❤️ par l'équipe Glowing Cosmetics
-</div>
+MIT — voir [LICENSE](LICENSE).
